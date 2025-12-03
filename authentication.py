@@ -1,0 +1,43 @@
+user = []
+
+
+def authentication (username, password):
+    if(len(user) == 0):
+        print("Belum ada user terdaftar. Silakan registrasi terlebih dahulu.")
+        return False
+    else:
+        for i in user:
+            if i['username'] == username :
+                if i['password'] == password:
+                    print("Login berhasil!")
+                    return True
+                else:
+                    print("Password salah!")
+                    return False
+
+def register(username, password):
+    user.append({'username': username, 'password': password})
+    print("Registrasi berhasil!")
+
+
+def logout():
+    print("Logout berhasil!")
+    return False
+
+
+def start_authentication():
+    while True:
+        choice = input("Pilih opsi: 1. Login 2. Register 3. Keluar\n")
+        if choice == '1':
+            username = input("Masukkan username: ")
+            password = input("Masukkan password: ")
+            if authentication(username, password):
+                return True
+        elif choice == '2':
+            username = input("Masukkan username baru: ")
+            password = input("Masukkan password baru: ")
+            register(username, password)
+        elif choice == '3':
+           logout()
+        else:
+            print("Opsi tidak valid. Silakan coba lagi.")
