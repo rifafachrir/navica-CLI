@@ -27,7 +27,7 @@ def logout():
 
 def start_authentication():
     while True:
-        choice = input("Pilih opsi: 1. Login 2. Register 3. Keluar\n")
+        choice = input("Pilih opsi: 1. Login 2. Register 3. Logout\n")
         if choice == '1':
             username = input("Masukkan username: ")
             password = input("Masukkan password: ")
