@@ -10,18 +10,22 @@ def authentication (username, password):
             if i['username'] == username :
                 if i['password'] == password:
                     print("Login berhasil!")
+                    i['status'] = True
                     return True
                 else:
                     print("Password salah!")
                     return False
 
 def register(username, password):
-    user.append({'username': username, 'password': password})
+    user.append({'username': username, 'password': password, 'status': False})
     print("Registrasi berhasil!")
 
 
 def logout():
     print("Logout berhasil!")
+    for i in user:
+        if i['status'] == True:
+            i['status'] = False
     return False
 
 
