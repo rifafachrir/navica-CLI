@@ -76,4 +76,5 @@ def CommunityMenu():
             print("Opsi tidak valid. Silakan coba lagi.")
 
 
-CommunityMenu()
+if __name__ == "__main__":
+    CommunityMenu()

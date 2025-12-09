@@ -1,3 +1,4 @@
+
 user = []
 
 
@@ -37,11 +38,15 @@ def list():
         print(i)
 
 def logout():
-    print("Logout berhasil!")
+    if user == []:
+        print("Kembali ke menu utama.")
     for i in user:
         if i['status'] == True:
             i['status'] = False
-    return False
+            print("Logout Berhasil")
+            print("Kembali ke menu Utama.")
+        else:
+            print("Kembali ke menu utama.")
 
 
 def start_authentication():
@@ -57,7 +62,9 @@ def start_authentication():
             list()
         elif choice == '0':
            logout()
+           break
         else:
             print("Opsi tidak valid. Silakan coba lagi.")
 
-start_authentication()
+if __name__ == "__main__":
+    start_authentication()
