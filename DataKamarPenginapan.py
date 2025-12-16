@@ -8,17 +8,42 @@ next_id = 1  # next id yaitu untuk generate id kamar otomatis (jadi unik setiap 
 def generate_id():
     global next_id
     kamar_id = next_id
-    next_id = next_id + 1  # setiap kamar yang dibuat akan menghasilkan next id + 1
+    next_id = next_id + 1
     return kamar_id
+
+
+# Validasi sederhana: hanya huruf dan spasi, tidak boleh kosong
+def hanya_huruf_dan_spasi(teks):
+    teks = teks.strip()
+    if teks == "":
+        return False
+    return teks.replace(" ", "").isalpha()
 
 
 def tambah_kamar():
     print("\n=== TAMBAH KAMAR ===")
-    nama = input("Nama penginapan / villa : ")
-    tipe = input("Tipe kamar             : ")
-    harga = input("Harga per malam        : ")
-    kapasitas = input("Kapasitas orang        : ")
-    status = input("Status (tersedia/tidak): ")
+
+    nama = input("Nama penginapan / villa : ").strip()
+    if not hanya_huruf_dan_spasi(nama):
+        print("Input ditolak: Nama hanya boleh huruf dan spasi.\n")
+        return
+
+    tipe = input("Tipe kamar              : ").strip()
+    if not hanya_huruf_dan_spasi(tipe):
+        print("Input ditolak: Tipe kamar hanya boleh huruf dan spasi.\n")
+        return
+
+    try:
+        harga = int(input("Harga per malam(isi dengan angka): "))
+        kapasitas = int(input("Kapasitas orang(isi dengan angka): "))
+    except ValueError:
+        print("Input ditolak: Harga dan kapasitas harus angka.\n")
+        return
+
+    status = input("Status (tersedia/tidak): ").strip().lower()
+    if status not in ["tersedia", "tidak"]:
+        print("Input ditolak: Status harus 'tersedia' atau 'tidak'.\n")
+        return
 
     kamar = {
         "id": generate_id(),
@@ -70,11 +95,28 @@ def ubah_kamar():
         print("Kamar tidak ditemukan.\n")
     else:
         print("Isi data baru (yang lama diganti):")
-        nama = input("Nama penginapan / villa  : ")
-        tipe = input("Tipe kamar               : ")
-        harga = input("Harga per malam         : ")
-        kapasitas = input("Kapasitas orang     : ")
-        status = input("Status (tersedia/tidak): ")
+
+        nama = input("Nama penginapan / villa  : ").strip()
+        if not hanya_huruf_dan_spasi(nama):
+            print("Input ditolak: Nama hanya boleh huruf dan spasi.\n")
+            return
+
+        tipe = input("Tipe kamar               : ").strip()
+        if not hanya_huruf_dan_spasi(tipe):
+            print("Input ditolak: Tipe kamar hanya boleh huruf dan spasi.\n")
+            return
+
+        try:
+            harga = int(input("Harga per malam          : "))
+            kapasitas = int(input("Kapasitas orang          : "))
+        except ValueError:
+            print("Input ditolak: Harga dan kapasitas harus angka.\n")
+            return
+
+        status = input("Status (tersedia/tidak)  : ").strip().lower()
+        if status not in ["tersedia", "tidak"]:
+            print("Input ditolak: Status harus 'tersedia' atau 'tidak'.\n")
+            return
 
         kamar["nama"] = nama
         kamar["tipe"] = tipe
@@ -96,6 +138,7 @@ def hapus_kamar():
     kamar = cari_kamar_by_id(kamar_id)
 
     if kamar is None:
+        # sesuai test case ID tidak ada -> muncul pesan error / tidak ditemukan
         print("Kamar tidak ditemukan.\n")
     else:
         kamar_list.remove(kamar)
@@ -126,6 +169,6 @@ def menu():
         else:
             print("Pilihan tidak dikenal.\n")
 
+
 if __name__ == "__main__":
     menu()
-
