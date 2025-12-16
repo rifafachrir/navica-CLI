@@ -1,14 +1,50 @@
 data_pemilik = []
 
+def input_huruf(teks):
+    while True:
+        data = input(teks)
+        if data.isalpha():
+            return data
+        else:
+            print("Input harus huruf saja!")
+
+def input_angka(teks):
+    while True:
+        data = input(teks)
+        if data.isdigit():
+            return data
+        else:
+            print("Input harus angka saja!")
+
+def input_alnum(teks):
+    while True:
+        data = input(teks)
+        if data.replace(" ", "").isalnum():
+            return data
+        else:
+            print("Input tidak boleh simbol!")
+
+def cek_no_polisi(no_polisi):
+    for p in data_pemilik:
+        if p["no_kendaraan"] == no_polisi:
+            return True
+    return False
+
 def tambah_pemilik():
     print("\n=== Tambah Data Pemilik Kendaraan ===")
-    nama = input("Nama Pemilik: ")
+    nama = input_huruf("Nama Pemilik: ")
     alamat = input("Alamat: ")
-    no_hp = input("No. HP: ")
+    no_hp = input_angka("No. HP: ")
 
-    no_kendaraan = input("Nomor Polisi Kendaraan: ")
-    merek = input("Nama/Merek Kendaraan: ")
-    jenis = input("Jenis/Tipe Kendaraan: ")
+    while True:
+        no_kendaraan = input_alnum("Nomor Polisi Kendaraan : ")
+        if cek_no_polisi(no_kendaraan):
+            print("Nomor polisi sudah terdaftar!")
+        else:
+            break
+    
+    merek = input_huruf("Nama/Merek Kendaraan: ")
+    jenis = input_huruf("Jenis/Tipe Kendaraan: ")
 
     pemilik = {
         "nama": nama,
