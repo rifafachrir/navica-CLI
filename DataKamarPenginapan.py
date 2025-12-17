@@ -12,7 +12,7 @@ def generate_id():
     return kamar_id
 
 
-# Validasi sederhana: hanya huruf dan spasi, tidak boleh kosong
+# Validasi sederhana: hanya huruf, dan input harus ada isi(tidak boleh kosong)
 def hanya_huruf_dan_spasi(teks):
     teks = teks.strip()
     if teks == "":
@@ -25,12 +25,12 @@ def tambah_kamar():
 
     nama = input("Nama penginapan / villa : ").strip()
     if not hanya_huruf_dan_spasi(nama):
-        print("Input ditolak: Nama hanya boleh huruf dan spasi.\n")
+        print("Input ditolak: Nama hanya boleh huruf.\n")
         return
 
     tipe = input("Tipe kamar              : ").strip()
     if not hanya_huruf_dan_spasi(tipe):
-        print("Input ditolak: Tipe kamar hanya boleh huruf dan spasi.\n")
+        print("Input ditolak: Tipe kamar hanya boleh huruf.\n")
         return
 
     try:
@@ -98,12 +98,12 @@ def ubah_kamar():
 
         nama = input("Nama penginapan / villa  : ").strip()
         if not hanya_huruf_dan_spasi(nama):
-            print("Input ditolak: Nama hanya boleh huruf dan spasi.\n")
+            print("Input ditolak: Nama hanya boleh huruf.\n")
             return
 
         tipe = input("Tipe kamar               : ").strip()
         if not hanya_huruf_dan_spasi(tipe):
-            print("Input ditolak: Tipe kamar hanya boleh huruf dan spasi.\n")
+            print("Input ditolak: Tipe kamar hanya boleh huruf.\n")
             return
 
         try:
@@ -138,7 +138,6 @@ def hapus_kamar():
     kamar = cari_kamar_by_id(kamar_id)
 
     if kamar is None:
-        # sesuai test case ID tidak ada -> muncul pesan error / tidak ditemukan
         print("Kamar tidak ditemukan.\n")
     else:
         kamar_list.remove(kamar)
@@ -167,7 +166,7 @@ def menu():
             print("Program selesai.")
             break
         else:
-            print("Pilihan tidak dikenal.\n")
+            print("Masukkan pilihan yang benar.\n")
 
 
 if __name__ == "__main__":
