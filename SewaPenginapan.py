@@ -228,7 +228,7 @@ def sort_data(data):
 
 
 # Materi: Perulangan While
-def main():
+def menu_pemesanan_penginapan():
     data = load_data()
 
     while True:
@@ -262,4 +262,5 @@ def main():
             print("Pilihan tidak valid.\n")
 
 
-main()
+if __name__ == "__main__":
+    menu_pemesanan_penginapan()

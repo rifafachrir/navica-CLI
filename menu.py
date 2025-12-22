@@ -26,5 +26,5 @@ def mainMenu():
         else:
             print("Pilihan tidak dikenal.\n")
 
-
-mainMenu()
+if __name__ == "__main__":
+    mainMenu()

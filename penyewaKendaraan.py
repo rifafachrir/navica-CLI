@@ -73,27 +73,31 @@ def hapus_penyewa():
     print(">> Data berhasil dihapus!\n")
 
 
-# Menu utama
-while True:
-    print("=== MENU PENYEWA KENDARAAN ===")
-    print("1. Tambah Data")
-    print("2. Lihat Data")
-    print("3. Ubah Data")
-    print("4. Hapus Data")
-    print("5. Keluar")
+def menu_penyewa_kendaraan():
+    # Menu utama
+    while True:
+        print("=== MENU PENYEWA KENDARAAN ===")
+        print("1. Tambah Data")
+        print("2. Lihat Data")
+        print("3. Ubah Data")
+        print("4. Hapus Data")
+        print("5. Keluar")
 
-    pilihan = input("Pilih menu (1-5): ")
+        pilihan = input("Pilih menu (1-5): ")
 
-    if pilihan == "1":
-        tambah_penyewa()
-    elif pilihan == "2":
-        lihat_penyewa()
-    elif pilihan == "3":
-        ubah_penyewa()
-    elif pilihan == "4":
-        hapus_penyewa()
-    elif pilihan == "5":
-        print("Terima kasih! Program selesai.")
-        break
-    else:
-        print("Pilihan tidak valid, coba lagi!\n")
+        if pilihan == "1":
+            tambah_penyewa()
+        elif pilihan == "2":
+            lihat_penyewa()
+        elif pilihan == "3":
+            ubah_penyewa()
+        elif pilihan == "4":
+            hapus_penyewa()
+        elif pilihan == "5":
+            print("Terima kasih! Program selesai.")
+            break
+        else:
+            print("Pilihan tidak valid, coba lagi!\n")
+
+if __name__ == "__main__":
+    menu_penyewa_kendaraan()
