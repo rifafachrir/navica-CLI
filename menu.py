@@ -1,6 +1,6 @@
 import DataKamarPenginapan as dataKamar
 import komunitas as komunitas
-import authentication as auth
+import admin.authentication as auth
 
 def mainMenu():
     print("=== Selamat Datang di Navica (Alpha 1.0) ===")

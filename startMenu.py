@@ -1,5 +1,5 @@
 # Start Menu
-import authentication as auth
+import admin.authentication as auth
 import menu as main_menu
 
 def tampilkan_menu():
@@ -14,9 +14,7 @@ def tampilkan_menu():
             auth.login()
             main_menu.mainMenu()
         elif pilihan == "2":
-            username = input("Masukkan username baru: ")
-            password = input("Masukkan password baru: ")
-            auth.register(username, password)
+            auth.register_customer()
         elif pilihan == "0":
             print("Keluar dari program.")
             break
