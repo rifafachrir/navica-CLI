@@ -1,5 +1,8 @@
+import menu as adminMenu
 
-user = []
+user = [
+    {'username': 'admin', 'password': 'admin123', 'isLogin': False, 'role': 'admin'},
+]
 
 
 def authentication (username, password):
@@ -11,7 +14,7 @@ def authentication (username, password):
             if i['username'] == username :
                 if i['password'] == password:
                     print("Login berhasil!")
-                    i['status'] = True
+                    i['isLogin'] = True
                     return True
                 else:
                     print("Password salah!")
@@ -20,6 +23,8 @@ def authentication (username, password):
                 print("Username tidak ditemukan!")
                 return False
 
+
+
 def login():
     looping = True
     while looping:
@@ -27,11 +32,43 @@ def login():
         password = input("Masukkan password: ")
         if authentication(username, password):
             looping = False
-            return True
+            if( user['role'] == "admin"):
+                adminMenu.mainMenu()
+            elif( user['role'] == "user"):
+                print("Goes to User Menu")
+            elif( user['role'] == "pemilik_kendaraan"):
+                print("Goes to menu Pemilik kendaraan")
+            elif( user['role'] == "pemilik_penginapan"):
+                print("Goes to menu pemilik Penginapan")
+            
 
 def register(username, password):
-    user.append({'username': username, 'password': password, 'status': False})
+    user.append({'username': username, 'password': password, 'isLogin': False, 'role': 'user'})
     print("Registrasi berhasil!")
+
+def admin_register():
+    username = input("Masukkan username admin baru: ")
+    password = input("Masukkan password admin baru: ")
+    print("Pilih")
+    print("1. Admin")
+    print("2. User")
+    print("3.Pemilik Kendaraan")
+    print("4.Pemilik Penginapan")
+    role = input("Masukkan role: ")
+    if role == '1':
+        user.append({'username': username, 'password': password, 'isLogin': False, 'role': 'admin'})
+        print("Registrasi berhasil!")
+    elif role == '2':
+        user.append({'username': username, 'password': password, 'isLogin': False, 'role': 'user'})
+        print("Registrasi berhasil!")
+    elif role == '3':
+        user.append({'username': username, 'password': password, 'isLogin': False, 'role': 'pemilik_kendaraan'})
+        print("Registrasi berhasil!")
+    elif role == '4':
+        user.append({'username': username, 'password': password, 'isLogin': False, 'role': 'pemilik_penginapan'})
+        print("Registrasi berhasil!")
+    else:
+        print("Role tidak valid! Default ke admin.")
 
 def list():
     for i in user:
@@ -41,15 +78,15 @@ def logout():
     if user == []:
         print("Kembali ke menu utama.")
     for i in user:
-        if i['status'] == True:
-            i['status'] = False
+        if i['isLogin'] == True:
+            i['isLogin'] = False
             print("Logout Berhasil")
             print("Kembali ke menu Utama.")
         else:
             print("Kembali ke menu utama.")
 
 
-def start_authentication():
+def authentication_menu():
     while True:
         choice = input("Pilih opsi: 1. Login 2. Register 3. List  0. Logout\n")
         if choice == '1':
@@ -67,4 +104,4 @@ def start_authentication():
             print("Opsi tidak valid. Silakan coba lagi.")
 
 if __name__ == "__main__":
-    start_authentication()
+    authentication_menu()

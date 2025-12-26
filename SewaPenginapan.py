@@ -316,6 +316,7 @@ def sort_data(data):
 
 
 def main():
+# Materi: Perulangan While
     data = load_data()
     while True:
         print("\n====== NAVICA — PEMESANAN PENGINAPAN ======")
@@ -348,3 +349,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
