@@ -1,5 +1,6 @@
 import kendaraan.penyewaKendaraan as penyewa
 import penginapan.SewaPenginapan as sewaPenginapan
+import admin.komunitas.komunitas as komunitas
 
 def menu_user():
     while True:
@@ -12,9 +13,9 @@ def menu_user():
         if menu == "1":
             sewaPenginapan.main()
         elif menu == "2":
-            penyewa.menu_penyewa_kendaraan()
+            penyewa.menu_customer()
         elif menu == "3":
-            print("=== Komunitas ===")
+            komunitas.CommunityMenu()
         elif menu == "0":
             print("Keluar dari menu user.")
             break

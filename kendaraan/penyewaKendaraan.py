@@ -5,6 +5,7 @@ penyewa_list = []  # Menyimpan semua data penyewa
 customer_data = []
 kendaraan_data = []
 
+
 FILE_PENYEWA = "database/sewaData.txt"
 file = os.path.exists(FILE_PENYEWA)
 
@@ -123,7 +124,10 @@ def lihat_penyewa():
 
     print("-" * 30)
 
+# def search_penyewa_by_customer_name()
+
 def ubah_penyewa():
+    
     print("\n=== Ubah Data Penyewa ===")
     lihat_penyewa()
 
@@ -205,6 +209,27 @@ def menu_penyewa_kendaraan():
             break
         else:
             print("Pilihan tidak valid, coba lagi!\n")
+
+def menu_customer():
+    # Menu utama
+    while True:
+        print("=== MENU MENYEWA KENDARAAN ===")
+        print("1. Tambah Data")
+        print("2. Lihat Data")
+        print("0. Keluar")
+
+        pilihan = input("Pilih menu (0-2): ")
+
+        if pilihan == "1":
+            tambah_penyewa()
+        elif pilihan == "2":
+            lihat_penyewa()
+        elif pilihan == "0":
+            print("Terima kasih! Program selesai.")
+            break
+        else:
+            print("Pilihan tidak valid, coba lagi!\n")
+
 
 if __name__ == "__main__":
     load_data()

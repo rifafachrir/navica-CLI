@@ -1,15 +1,50 @@
+import os
+
 posts = []
 
+FILE_COMMENT = "database/comments.txt"
+FILE_POST = "database/posts.txt"
+file = os.path.exists(FILE_COMMENT) and os.path.exists(FILE_POST)
+
+def load_comments(postId):
+    if file: 
+        with open(FILE_COMMENT, "r") as f:
+            lines = f.readlines()
+            for line in lines:
+                bagian = line.strip().split("|")
+                if int(bagian[0]) == postId:
+                    for post in posts:
+                        if post['postId'] == postId:
+                            post['comments'].append(bagian[1])
+def load_data():
+    if file:
+        with open(FILE_POST, "r") as f:
+            lines = f.readlines()
+            for line in lines:
+                bagian = line.strip().split("|")
+                posts.append({
+                    'postId': int(bagian[0]),
+                    'content': bagian[1],
+                    'likes': int(bagian[2]),
+                    'comments': load_comments(int(bagian[0]))
+                })
+    else:
+        print("Tidak ditemukan file untuk menyimpan data")
+    
+
+
 def add_post():
-    contentId = len(posts) + 1
+    contentId = str(len(posts) + 1).zfill(1)
     content = input("Masukkan konten post: ")
     post = {
-        'id': contentId,
+        'postId': contentId,
         'content': content,
         'likes': 0,
         'comments': []
     }
     posts.append(post)
+    with open(FILE_POST, "a") as f:
+        f.write(f"{contentId}|{content}|0\n")
     print("Post berhasil diupload")
 
 def add_comment():
@@ -23,6 +58,8 @@ def add_comment():
         if post['id'] == post_id:
             comment = input("Masukkan komentar Anda: ")
             post['comments'].append(comment)
+            with open(FILE_COMMENT, "a") as f:
+                f.write(f"{post_id}|{comment}\n")
             print("Komentar berhasil ditambahkan.")
             return
     print("Post dengan ID tersebut tidak ditemukan.")
@@ -51,7 +88,12 @@ def like_post():
 
     for post in posts:
         if post['id'] == postId:
-            post['likes'] +=1
+            newLike = len(post['likes']) + 1
+            post['likes'] = newLike
+            with open(FILE_POST, "w") as f:
+                for p in posts:
+                    f.write(f"{p['postId']}|{p['content']}|{p['likes']}\n")
+
             print("Post telah di-like")
 
 
@@ -77,4 +119,5 @@ def CommunityMenu():
 
 
 if __name__ == "__main__":
+    load_data()
     CommunityMenu()
