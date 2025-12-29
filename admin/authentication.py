@@ -1,12 +1,12 @@
 # import menu as adminMenu
 import os
 
-file = os.path.exists("admin/userData.txt")
+file = os.path.exists("database/userData.txt")
 
 user = []
 def load_user_data():
     if file:
-        with open("admin/userData.txt", "r") as f:
+        with open("database/userData.txt", "r") as f:
             lines = f.readlines()
         
             for line in lines:

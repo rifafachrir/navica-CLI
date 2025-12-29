@@ -1,6 +1,6 @@
 # Start Menu
 import admin.authentication as auth
-import menu as main_menu
+import admin.menu as main_menu
 
 def tampilkan_menu():
     while True:
