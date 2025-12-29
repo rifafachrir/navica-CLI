@@ -1,4 +1,4 @@
-
+import pemilikKendaraan as pemilkKendaraan
 
 def menu_pemilik_kendaraan():
     while True: 
@@ -12,9 +12,9 @@ def menu_pemilik_kendaraan():
         if menu == "1":
             print("=== Lihat data peminjaman")
         elif menu == "2":
-            print("=== Lihat data kendaraan yang ada ")
+            pemilkKendaraan.lihat_kendaraan()
         elif menu == "3":
-            print("=== Tambah data kendaraan yang ingin dipinjam ===")
+            pemilkKendaraan.tambah_kendaraan()
         elif menu == "4":
             print("=== data pengajuan kendaraan ===")
         else:

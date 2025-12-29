@@ -1,9 +1,13 @@
 # import menu as adminMenu
 import os
+import customer.menuCustomer as customerMenu
+import penginapan.menuPemilikPenginapan as penginapanMenu
+import kendaraan.menuPemilikKendaraan as kendaraanMenu
 
 file = os.path.exists("database/userData.txt")
 
 user = []
+selected_user_id = ""
 def load_user_data():
     if file:
         with open("database/userData.txt", "r") as f:
@@ -36,14 +40,19 @@ def authentication(email, password):
             if i['email'] == email :
                 if i['password'] == password:
                     print("Login berhasil!")
+                    selected_user_id = i['userId']
                     if i['role'] == 'customer':
                         print("Selamat datang, Customer", i['username'])
+                        customerMenu.menu_user()
                     elif i['role'] == 'penginapan':
                         print("Selamat datang, Pemilik Penginapan", i['username'])
+                        penginapanMenu.menu_pemilik_penginapan()
                     elif i['role'] == 'kendaraan':
                         print("Selamat datang, Pemilik Rental Kendaraan", i['username'])
+                        kendaraanMenu.menu_pemilik_kendaraan()
                     elif i['role'] == 'hiburan':    
                         print("Selamat datang, Pemilik Tiket Hiburan", i['username'])
+                        
                 else:
                     print("Password salah!")
                     return False
