@@ -1,4 +1,5 @@
-
+import kendaraan.penyewaKendaraan as penyewa
+import penginapan.SewaPenginapan as sewaPenginapan
 
 def menu_user():
     while True:
@@ -9,9 +10,9 @@ def menu_user():
         print("0. Keluar")
         menu = input("Pilih menu (0-3): ")
         if menu == "1":
-            print("=== Booking Hotel ===")
+            sewaPenginapan.main()
         elif menu == "2":
-            print("=== Rental Kendaraan ===")
+            penyewa.menu_penyewa_kendaraan()
         elif menu == "3":
             print("=== Komunitas ===")
         elif menu == "0":
