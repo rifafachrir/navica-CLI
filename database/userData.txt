@@ -1,0 +1,5 @@
+01|rifa|rifafach@gmail.com|rifa123|penginapan
+02|gaithaS|gaithas@gmail.com|gaitha123|kendaraan
+03|cawa|salwa@gmail.com|salwa123@gmail.com|hiburan
+04|daus|firdaus@gmail.com|firdaus123@gmail.com|customer
+05|iky|rizky@gmail.com|rizky123@gmail.com|customer

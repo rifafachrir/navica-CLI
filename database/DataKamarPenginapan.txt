@@ -1,0 +1,2 @@
+1|Villa Batoe|deluxe|50000|20|tidak
+2|villa bandung|premium|5000000|20|tidak
