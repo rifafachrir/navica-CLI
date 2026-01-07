@@ -1,20 +1,24 @@
 import os
 
 # file database sewa
-file_name = "database/sewa_navica.txt"
+FILE_SEWA = "database/sewaPenginapan.txt"
 
 # file database kamar (harus sama dengan di DataKamarPenginapan.py)
-file_kamar = "database/DataKamarPenginapan.txt"
+FILE_KAMAR = "database/DataKamarPenginapan.txt"
+FILE_PENGINAPAN = "database/DataPenginapan.txt"
 
+kamar_list = []
+penginapan_list = []
+data_sewa = []
 
 # ===== UTILITAS KAMAR (baca & update status) =====
 def load_kamar_from_file():
     """Load daftar kamar dari file kamar (hanya untuk modul sewa)."""
-    kamar_list = []
-    if not os.path.exists(file_kamar):
+    
+    if not os.path.exists(FILE_KAMAR):
         return kamar_list
 
-    with open(file_kamar, "r", encoding="utf-8") as f:
+    with open(FILE_KAMAR, "r", encoding="utf-8") as f:
         for line in f:
             bagian = line.strip().split("|")
             if len(bagian) != 6:
@@ -37,12 +41,50 @@ def load_kamar_from_file():
                 "kapasitas": kapasitas,
                 "status": status,
             })
-    return kamar_list
+
+    if not os.path.exists(FILE_PENGINAPAN):
+        return penginapan_list
+
+    with open(FILE_PENGINAPAN, "r") as f:
+        for line in f:
+            bagian = line.strip().split("|")
+            if len(bagian) != 5:
+                penginapanId = int(bagian[0])
+                mitraId = int(bagian[1])
+                namaPenginapan = bagian[2]
+                alamat = bagian[3]
+                noTelp = bagian[4]
+
+            penginapan_list.append({
+                "penginapanId": penginapanId,
+                "mitraId": mitraId,
+                "namaPenginapan": namaPenginapan,
+                "alamat": alamat,
+                "noTelp": noTelp
+            })
+    
+    if not os.path.exists(FILE_SEWA):
+        return data_sewa
+    with open(FILE_SEWA, "r", encoding="utf-8") as file:
+        for line in file:
+            bagian = line.strip().split("|")
+            if len(bagian) == 9:
+                data_sewa.append({
+                    "id": bagian[0],
+                    "penyewa": bagian[1],
+                    "jenis": bagian[2],
+                    "nama_properti": bagian[3],
+                    "kode_kamar": bagian[4],
+                    "tanggal_mulai": bagian[5],
+                    "lama_menginap": bagian[6],
+                    "harga_permalam": bagian[7],
+                    "total": bagian[8],
+                    "status": bagian[9],
+                })
 
 
 def update_status_kamar(kamar_id, status_baru):
     """Update status kamar (tersedia/tidak) di file DataKamarPenginapan."""
-    kamar_list = load_kamar_from_file()
     changed = False
     for k in kamar_list:
         if k["id"] == kamar_id:
@@ -53,38 +95,17 @@ def update_status_kamar(kamar_id, status_baru):
     if not changed:
         return  # kamar tidak ditemukan
 
-    with open(file_kamar, "w", encoding="utf-8") as f:
+    with open(FILE_KAMAR, "w", encoding="utf-8") as f:
         for k in kamar_list:
             f.write(
                 f"{k['id']}|{k['nama']}|{k['tipe']}|{k['harga']}|{k['kapasitas']}|{k['status']}\n"
             )
+    print("Status kamar berhasil diupdate.")
 
-
-# ===== DATA SEWA (LOAD & SAVE) =====
-def load_data():
-    if not os.path.exists(file_name):
-        return []
-    data = []
-    with open(file_name, "r", encoding="utf-8") as file:
-        for line in file:
-            bagian = line.strip().split("|")
-            if len(bagian) == 9:
-                data.append({
-                    "id": bagian[0],
-                    "penyewa": bagian[1],
-                    "jenis": bagian[2],
-                    "nama_properti": bagian[3],
-                    "nomor_kamar": bagian[4],
-                    "lama_menginap": bagian[5],
-                    "harga_permalam": bagian[6],
-                    "total": bagian[7],
-                    "status": bagian[8],
-                })
-    return data
 
 
 def save_data(data):
-    with open(file_name, "w", encoding="utf-8") as file:
+    with open(FILE_SEWA, "w", encoding="utf-8") as file:
         for d in data:
             file.write(
                 f"{d['id']}|{d['penyewa']}|{d['jenis']}|{d['nama_properti']}|"
@@ -108,31 +129,38 @@ def create_data(data):
 
     penyewa = input("Nama Penyewa : ")
 
+    tanggal_menginap = input("Tanggal Menginap (YYYY-MM-DD) : ")
+
     # load kamar dari database
-    kamar_list = load_kamar_from_file()
+    # kamar_list = load_kamar_from_file()
     if not kamar_list:
         print("Belum ada data kamar. Silakan hubungi admin.\n")
         return
 
     # tampilkan kamar yang tersedia saja
     print("\n=== DAFTAR KAMAR TERSEDIA ===")
-    tersedia = [k for k in kamar_list if k["status"] == "tersedia"]
-    if not tersedia:
-        print("Tidak ada kamar yang tersedia saat ini.\n")
+    # tersedia = [k for k in kamar_list if k["status"] == "tersedia"]
+    tersedia = []
+    for k in kamar_list:
+        if k["status"] == "tersedia" and k["tanggal_mulai"] != tanggal_menginap:
+            tersedia.append(k)
+    if len(tersedia) == 0:
+        print(f"Tidak ada kamar yang tersedia untuk tanggal {tanggal_menginap}.\n")
         return
 
-    for k in tersedia:
-        print(f"ID        : {k['id']}")
-        print(f"Nama      : {k['nama']}")
-        print(f"Tipe      : {k['tipe']}")
-        print(f"Harga     : {k['harga']}")
-        print(f"Kapasitas : {k['kapasitas']}")
-        print(f"Status    : {k['status']}")
+    for i, k in enumerate(tersedia):
+        print(f"                {i+1}")
+        print(f"kode Kamar  : {k['id']}")
+        print(f"Nama        : {k['nama']}")
+        print(f"Tipe        : {k['tipe']}")
+        print(f"Harga       : {k['harga']}")
+        print(f"Kapasitas   : {k['kapasitas']}")
+        print(f"Status      : {k['status']}")
         print("------------------------")
 
     # pilih kamar
     try:
-        pilih_id = int(input("Masukkan ID kamar yang ingin dipesan: "))
+        pilih_id = int(input("Masukkan urutan kamar yang ingin dipesan: ")) - 1
     except ValueError:
         print("ID kamar harus angka.\n")
         return
@@ -144,7 +172,7 @@ def create_data(data):
             break
 
     if kamar_dipilih is None:
-        print("Kamar dengan ID tersebut tidak ditemukan.\n")
+        print("Kamar dengan urutan tersebut tidak ditemukan.\n")
         return
 
     if kamar_dipilih["status"] != "tersedia":
@@ -154,7 +182,7 @@ def create_data(data):
     # ambil data dari kamar
     nama_properti = kamar_dipilih["nama"]
     jenis = kamar_dipilih["tipe"]           # bisa kamu mapping ke 'Hotel'/'Vila' kalau mau
-    nomor_kamar = str(kamar_dipilih["id"])  # sementara pakai ID kamar sebagai nomor kamar
+    kode_kamar = str(kamar_dipilih["id"])  # sementara pakai ID kamar sebagai nomor kamar
 
     lama_menginap = input("Lama Menginap (hari) : ")
     while not lama_menginap.isdigit():
@@ -168,7 +196,8 @@ def create_data(data):
         "penyewa": penyewa,
         "jenis": jenis,
         "nama_properti": nama_properti,
-        "nomor_kamar": nomor_kamar,
+        "kode_kamar": kode_kamar,
+        "tanggal_mulai": tanggal_menginap,
         "lama_menginap": lama_menginap,
         "harga_permalam": harga_permalam,
         "total": str(total),
@@ -178,7 +207,7 @@ def create_data(data):
     save_data(data)
 
     # update status kamar jadi tidak
-    update_status_kamar(kamar_dipilih["id"], "tidak")
+    update_status_kamar(kamar_dipilih["id"], "booking")
 
     print("\nPemesanan berhasil dibuat!\n")
 
@@ -194,7 +223,8 @@ def read_data(data):
         print(f"Nama Penyewa   : {d['penyewa']}")
         print(f"Jenis          : {d['jenis']}")
         print(f"Nama Properti  : {d['nama_properti']}")
-        print(f"Nomor Kamar    : {d['nomor_kamar']}")
+        print(f"kodeKamar      : {d['kode_kamar']}")
+        print(f"Tanggal Mulai  : {d['tanggal_mulai']}")
         print(f"Lama Menginap  : {d['lama_menginap']} hari")
         print(f"Harga/Malam    : Rp {d['harga_permalam']}")
         print(f"Total Harga    : Rp {d['total']}")
@@ -317,7 +347,7 @@ def sort_data(data):
 
 def main():
 # Materi: Perulangan While
-    data = load_data()
+    data = data_sewa
     while True:
         print("\n====== NAVICA — PEMESANAN PENGINAPAN ======")
         print("1. Tambah Pemesanan")
@@ -348,5 +378,6 @@ def main():
 
 
 if __name__ == "__main__":
+    load_kamar_from_file()
     main()
 

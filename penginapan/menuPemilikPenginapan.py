@@ -4,6 +4,7 @@ def menu_pemilik_penginapan():
     print("=== Menu Pemilik Penginapan ===")
     print("1. Lihat Daftar menginap")
     print("2. Tambah daftar penginap Baru")
+    print("3. Liat data Kamar")
     print("0. Keluar")
 
     pilihan = input("Pilih opsi (0-2): ")

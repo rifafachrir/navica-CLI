@@ -19,16 +19,16 @@ def load_data():
                 penyewa_list.append({
                     "sewaId": bagian[0],
                     "namaCustomer": bagian[1],
-                    "kendaraanYangDisewa": bagian[3],
-                    "tanggal_booking": bagian[5],
-                    "total_harga": bagian[6],
-                    "tanggalMulai": bagian[7],
-                    "TanggalSelesai": bagian[8],
-                    "lama_sewa": int(bagian[8]) - int(bagian[7]),
-                    "statusSewa": bagian[9]
+                    "kendaraanYangDisewa": bagian[2],
+                    "tanggal_booking": bagian[3],
+                    "total_harga": bagian[4],
+                    "tanggalMulai": bagian[5],
+                    "TanggalSelesai": bagian[6],
+                    "lama_sewa": int(bagian[6]) - int(bagian[5]),
+                    "statusSewa": bagian[7]
                 })
-                if datetime.datetime.strptime(bagian[7], "%Y-%m-%d").date() <= today and bagian[9] == "booking":
-                    bagian[9] = "sedang disewa"
+                if datetime.datetime.strptime(bagian[5], "%Y-%m-%d").date() <= today and bagian[7] == "booking":
+                    bagian[7] = "sedang disewa"
 
 
         

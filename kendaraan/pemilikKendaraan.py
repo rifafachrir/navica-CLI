@@ -19,8 +19,8 @@ def load_data():
                 if len(bagian) == 5:
                     valid_mitra_ids.add(bagian[1])
                     kendaraan_data.append({
-                        "kendaraanId": bagian[0],
-                        "mitraId": bagian[1],
+                        "noKendaraan": bagian[0],
+                        "namaMitra": bagian[1],
                         "namaKendaraan": bagian[2],
                         "hargaSewaPerHari": bagian[3],
                         "status": bagian[4]
@@ -47,8 +47,8 @@ def load_data():
 
 def tambah_kendaraan():
     print("\n=== Tambah Data Kendaraan ===")
-    kendaraanId = str(len(kendaraan_data) + 1).zfill(1)
     print("Masukkan ID Mitra Pemilik Kendaraan: ")
+    noKendaraan = input("Masukkan no Polisi Kendaraan: ")
     for i, mitra in enumerate(data_pemilik):
         print(f"{i + 1}. {mitra['nama']} (ID: {mitra['mitraId']})")
     pilihan = int(input("Masukkan nomor mitra: ")) - 1
@@ -61,7 +61,7 @@ def tambah_kendaraan():
     harga_sewa = input("Harga Sewa per Hari: ")
 
     kendaraan = {
-        "kendaraanId": kendaraanId,
+        "noKendaraan": noKendaraan,
         "namaMitra": namaMitra,
         "namaKendaraan": nama_kendaraan,
         "hargaSewaPerHari": harga_sewa,
@@ -70,7 +70,7 @@ def tambah_kendaraan():
 
     kendaraan_data.append(kendaraan)
     with open(FILE_KENDARAAN, "a") as f:
-        f.write(f"{kendaraanId}|{mitra_id}|{nama_kendaraan}|{harga_sewa}|tersedia\n")
+        f.write(f"{noKendaraan}|{namaMitra}|{nama_kendaraan}|{harga_sewa}|tersedia\n")
     print("Data kendaraan berhasil ditambahkan!\n")
 
 
@@ -96,39 +96,48 @@ def edit_kendaraan():
         return
 
     index = int(input("Pilih nomor data yang ingin diedit: ")) - 1
-    if index < 0 or index >= len(data_pemilik):
+    if index < 0 or index >= len(kendaraan_data):
         print("Nomor tidak valid!")
         return
 
     print("\n--- Masukkan data baru (kosongkan jika tidak ingin mengubah) ---")
-    nama = input("Nama baru: ")
-    alamat = input("Alamat baru: ")
-    no_hp = input("No. HP baru: ")
-    no_kendaraan = input("Nomor Polisi baru: ")
-    merek = input("Nama/Merek Kendaraan baru: ")
-    jenis = input("Jenis/Tipe Kendaraan baru: ")
+    noKendaraan = input("Masukkan no Polisi Kendaraan baru: ")
+    for i, mitra in enumerate(data_pemilik):
+        print(f"{i + 1}. {mitra['nama']} (ID: {mitra['mitraId']})")
+    pilihan = int(input("Masukkan nomor mitra baru: ")) - 1
+    if 0 <= pilihan < len(data_pemilik):
+        namaMitra = data_pemilik[pilihan]['namaMitra']
+    else:
+        print("Pilihan tidak valid.")
+        return
+    nama_kendaraan = input("Nama Kendaraan baru: ")
+    harga_sewa = input("Harga Sewa per Hari baru: ")
 
-    if nama: data_pemilik[index]["nama"] = nama
-    if alamat: data_pemilik[index]["alamat"] = alamat
-    if no_hp: data_pemilik[index]["no_hp"] = no_hp
-    if no_kendaraan: data_pemilik[index]["no_kendaraan"] = no_kendaraan
-    if merek: data_pemilik[index]["merek"] = merek
-    if jenis: data_pemilik[index]["jenis"] = jenis
+    if noKendaraan: kendaraan_data[index]['noKendaraan'] = noKendaraan
+    if namaMitra: kendaraan_data[index]['namaMitra'] = namaMitra
+    if nama_kendaraan: kendaraan_data[index]['namaKendaraan'] = nama_kendaraan
+    if harga_sewa: kendaraan_data[index]['hargaSewaPerHari'] = harga_sewa
 
-    print("Data pemilik berhasil diperbarui!\n")
+    with open(FILE_KENDARAAN, "w") as f:
+        for k in kendaraan_data:
+            f.write(f"{k['noKendaraan']}|{k['namaMitra']}|{k['namaKendaraan']}|{k['hargaSewaPerHari']}|{k['status']}\n")
+    print("Data kendaraan berhasil diperbarui!\n")
 
 def hapus_kendaraan():
     lihat_kendaraan()
-    if len(data_pemilik) == 0:
+    if len(kendaraan_data) == 0:
         return
 
     index = int(input("Pilih nomor data yang ingin dihapus: ")) - 1
-    if index < 0 or index >= len(data_pemilik):
+    if index < 0 or index >= len(kendaraan_data):
         print("Nomor tidak valid!")
         return
 
-    data_pemilik.pop(index)
-    print("Data pemilik berhasil dihapus!\n")
+    kendaraan_data.pop(index)
+    with open(FILE_KENDARAAN, "w") as f:
+        for k in kendaraan_data:
+            f.write(f"{k['noKendaraan']}|{k['namaMitra']}|{k['namaKendaraan']}|{k['hargaSewaPerHari']}|{k['status']}\n")
+    print("Data kendaraan berhasil dihapus!\n")
 
 def menuAdmin():
     while True:
