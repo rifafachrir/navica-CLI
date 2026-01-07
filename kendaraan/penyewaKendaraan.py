@@ -31,6 +31,7 @@ def load_data():
                     bagian[7] = "sedang disewa"
 
 
+
         
         with open("database/dataCustomer.txt", "r") as f:
             lines = f.readlines()

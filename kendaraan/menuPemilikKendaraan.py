@@ -8,7 +8,7 @@ def menu_pemilik_kendaraan():
         print("3. Tambah data kendaraan yang ingin dipinjam")
         print("4. Pengajuan kendaraan")
         menu = input("Pilih menu (1-4)")
-# Lanjutin lagi setelah gaitha dah push authentication
+
         if menu == "1":
             print("=== Lihat data peminjaman")
         elif menu == "2":

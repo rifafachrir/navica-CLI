@@ -10,6 +10,8 @@ FILE_PENGINAPAN = "database/DataPenginapan.txt"
 kamar_list = []
 penginapan_list = []
 
+# Membuat fungsi tambah, lihat, ubah, dan hapus data Kamar penginapan / villa
+
 next_id = 1  # next id yaitu untuk generate id kamar otomatis (jadi unik setiap kamar)
 
 def load_kamar():
@@ -66,6 +68,7 @@ def load_kamar():
     #     next_id = 1
 
 
+
 def save_kamar():
     """Simpan kamar_list ke file."""
     with open(FILE_KAMAR, "w", encoding="utf-8") as f:
@@ -89,6 +92,7 @@ def generate_id(penginapanId):
     return inisial + "-" + str(cocok).zfill(2)
 
     
+
 
 
 
@@ -119,6 +123,7 @@ def tambah_kamar():
         return
     harga = int(input("Harga per malam(isi dengan angka): "))
     kapasitas = int(input("Kapasitas orang(isi dengan angka): "))
+
     status = input("Status (tersedia/tidak): ").strip().lower()
     if status not in ["tersedia", "tidak"]:
         print("Input ditolak: Status harus 'tersedia' atau 'tidak'.\n")
@@ -145,6 +150,7 @@ def lihat_kamar():
         for k in kamar_list:
             print(f"ID        : {k['id']}")
             print(f"Nama Penginapan      : {k['namaPenginapan']}")
+
             print(f"Tipe      : {k['tipe']}")
             print(f"Harga     : {k['harga']}")
             print(f"Kapasitas : {k['kapasitas']}")
@@ -170,6 +176,7 @@ def lihat_kamar_pemilik(penginapanId):
     else:
         print()
 
+
 def cari_kamar_by_id(kamar_id):
     for k in kamar_list:
         if k["id"] == kamar_id:
@@ -194,11 +201,14 @@ def ubah_kamar():
             return
         harga = int(input("Harga per malam(isi dengan angka): "))
         kapasitas = int(input("Kapasitas orang(isi dengan angka): "))
+
         status = input("Status (tersedia/tidak) : ").strip().lower()
         if status not in ["tersedia", "tidak"]:
             print("Input ditolak: Status harus 'tersedia' atau 'tidak'.\n")
             return
-        
+
+
+        # kamar["nama"] = nama
         kamar["tipe"] = tipe
         kamar["harga"] = harga
         kamar["kapasitas"] = kapasitas
@@ -211,6 +221,7 @@ def hapus_kamar():
     kodeKamar = input("Masukkan Kode Kamar yang akan dihapus: ").strip()
 
     kamar = cari_kamar_by_id(kodeKamar)
+
     if kamar is None:
         print("Kamar tidak ditemukan.\n")
     else:
@@ -246,4 +257,5 @@ def menu():
 if __name__ == "__main__":
     load_kamar()
     menu()
+
 
