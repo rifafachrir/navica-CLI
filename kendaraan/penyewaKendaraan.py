@@ -6,7 +6,7 @@ customer_data = []
 kendaraan_data = []
 
 
-FILE_PENYEWA = "database/sewaData.txt"
+FILE_PENYEWA = "database/sewaKendaraan.txt"
 file = os.path.exists(FILE_PENYEWA)
 
 def load_data():
@@ -211,7 +211,7 @@ def menu_penyewa_kendaraan():
         else:
             print("Pilihan tidak valid, coba lagi!\n")
 
-def menu_customer():
+def menu_customer(userId):
     # Menu utama
     while True:
         print("=== MENU MENYEWA KENDARAAN ===")

@@ -6,7 +6,7 @@ def menu_pemilik_kendaraan():
         print("1. lihat data peminjaman")
         print("2. Lihat data kendaraan yang ada")
         print("3. Tambah data kendaraan yang ingin dipinjam")
-        print("4. Pengajuan kendaraan")
+        # print("4. Pengajuan kendaraan")
         menu = input("Pilih menu (1-4)")
 
         if menu == "1":

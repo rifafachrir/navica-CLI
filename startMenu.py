@@ -14,7 +14,7 @@ def tampilkan_menu():
             auth.login()
             main_menu.mainMenu()
         elif pilihan == "2":
-            auth.register_customer()
+            auth.register()
         elif pilihan == "0":
             print("Keluar dari program.")
             break

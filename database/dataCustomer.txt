@@ -1,2 +1,3 @@
 01|firdaus123@gmail.com|firdaus|Bandung
 02|rizky123@gmail.com|rizky Fadhilah|Bandung
+idCustomer|idUser|nama|alamat|noTelepon
