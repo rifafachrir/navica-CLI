@@ -1,10 +1,14 @@
-import authentication as auth
+import admin.authentication as auth
 import komunitas.komunitas as komunitas
-import kendaraan.pemilikKendaraan as kendaraan
+import penginapan.DataPenginapan as dataPenginapan
+import penginapan.DataKamarPenginapan as dataKamar
+import penginapan.SewaPenginapan as sewa
+import kendaraan.menuPemilikKendaraan as kendaraan
 
 
 def mainMenu():
     print("=== Selamat Datang di Navica (Alpha 1.0) ===")
+
     while True:
         print("\n=== MENU UTAMA ===")
         print("1. menu User")
@@ -16,7 +20,8 @@ def mainMenu():
         print("0. Keluar")
         pilihan = input("Pilih menu (0-6): ")
         if pilihan == "1":
-           auth.start_authentication()
+            auth.start_authentication()
+
         elif pilihan == "2":
             print("Menu Customer")
         elif pilihan == "3":
@@ -31,6 +36,7 @@ def mainMenu():
             print("Program selesai.")
             print("Sampai Jumpa kembali!!!!")
             break
+
         else:
             print("Pilihan tidak dikenal.\n")
 
