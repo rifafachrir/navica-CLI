@@ -117,40 +117,37 @@ def register():
 
 
 def all_register():
-    user_id = str(len(user) + 1).zfill(1)
-    email = input("Masukkan email baru: ")
-    password = input("Masukkan password baru: ")
-    print("Pilih Role:")
-    print("1. Pemilik Penginapan")
-    print("2. Pemilik rental kendaraan")
-    print("3. Pemilik tiket hiburan")
-    print("4. Customer")
-    role_choice = input("Masukkan pilihan (1-4): ")
+    while True:
+        email = input("Masukkan email baru: ").strip()
+        if email == "":
+            print("Email tidak boleh kosong!")
+        else:
+            break
 
-    if(role_choice == '1'):
-        role = 'penginapan'
-        user.append({'userId': user_id, 'email': email, 'password': password, 'role': role})
-        with open("database/userData.txt", "a") as f:
-            f.write(f"{user_id}|{email}|{password}|{role}\n")
-        print("Registrasi berhasil!")
-    elif(role_choice == '2'):
-        role = 'kendaraan'
-        user.append({'userId': user_id, 'email': email, 'password': password, 'role': role})
-        with open("database/userData.txt", "a") as f:
-            f.write(f"{user_id}|{email}|{password}|{role}\n")
-        print("Registrasi berhasil!")
-    elif(role_choice == '3'):
-        role = 'hiburan'
-        user.append({'userId': user_id, 'email': email, 'password': password, 'role': role})
-        with open("database/userData.txt", "a") as f:
-            f.write(f"{user_id}|{email}|{password}|{role}\n")
-        print("Registrasi berhasil!")
-    elif(role_choice == '4'):
-        role = 'customer'
-        user.append({'userId': user_id, 'email': email, 'password': password, 'role': role})
-        with open("database/userData.txt", "a") as f:
-            f.write(f"{user_id}|{email}|{password}|{role}\n")
-        print("Registrasi berhasil!")
+    while True:
+        password = input("Masukkan password baru: ").strip()
+        if password == "":
+            print("Password tidak boleh kosong!")
+        else:
+            break
+
+    while True:
+        role_choice = input("Masukkan pilihan (1-4): ").strip()
+
+        if role_choice == '1':
+            role = 'penginapan'
+            break
+        elif role_choice == '2':
+            role = 'kendaraan'
+            break
+        elif role_choice == '3':
+            role = 'hiburan'
+            break
+        elif role_choice == '4':
+            role = 'customer'
+            break
+        else:
+            print("Pilihan tidak valid!")
 
 def listUser():
     with open("database/userData.txt", "r") as f:
