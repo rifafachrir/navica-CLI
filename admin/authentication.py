@@ -275,7 +275,6 @@ def start_authentication():
         else:
             print("Opsi tidak valid. Silakan coba lagi.")
 
-
+loadData()
 if __name__ == "__main__":
-    loadData()
     start_authentication()

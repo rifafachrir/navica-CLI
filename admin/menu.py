@@ -1,4 +1,4 @@
-import admin.authentication as auth
+import authentication as auth
 import komunitas.komunitas as komunitas
 import penginapan.DataPenginapan as dataPenginapan
 import penginapan.DataKamarPenginapan as dataKamar
@@ -23,11 +23,11 @@ def mainMenu():
             auth.start_authentication()
 
         elif pilihan == "2":
-            print("Menu Customer")
+            auth.m
         elif pilihan == "3":
              print("menu mitra")
         elif pilihan == "4":
-            print("menu penginapan")
+            dataPenginapan.menu()
         elif pilihan == "5":
             kendaraan.menuAdmin()
         elif pilihan == "6":

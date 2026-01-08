@@ -1,6 +1,7 @@
 import os
 
 DATA_FILE = "database/dataPenginapan.txt"
+DATA_MITRA = "database/dataMitra.txt"
 
 
 def ensure_file():
@@ -13,11 +14,22 @@ def ensure_file():
 def load_penginapan():
     ensure_file()
     penginapan_list = []
+    mitra_list = []
     with open(DATA_FILE, "r") as file:
         for line in file:
             data = line.strip().split("|")
             if len(data) == 4:
                 penginapan_list.append({
+                    "id": data[0],
+                    "nama": data[1],
+                    "alamat": data[2],
+                    "pemilik": data[3]
+                })
+    with open(DATA_MITRA, "r") as f:
+        for line in f:
+            data = line.strip().split("|")
+            if len(data) == 4:
+                mitra_list.append({
                     "id": data[0],
                     "nama": data[1],
                     "alamat": data[2],

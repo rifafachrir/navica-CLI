@@ -133,8 +133,11 @@ def cek_ketersediaan_kendaraan(kendaraan, tanggalMulai, TanggalSelesai):
             kendaraanYangAda = penyewa['kendaraanYangDisewa']
             tanggalMulaiYangAda = datetime.datetime.strptime(penyewa['tanggalMulai'], "%Y-%m-%d")
             tanggalSelesaiYangAda = datetime.datetime.strptime(penyewa['TanggalSelesai'], "%Y-%m-%d")
-            statusYangAda = penyewa['statusSewa']
-    
+
+    for s in penyewa_list:
+        if s["kendaraanYangDisewa"] == kendaraan:
+            statusYangAda = s["statusSewa"]
+                
     if tanggalMulaiBaru <= tanggalSelesaiYangAda and tanggalMulaiYangAda <= TanggalSelesaiBaru:
         if kendaraanYangAda == kendaraan and statusYangAda == "booking":
             return False
