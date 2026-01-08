@@ -232,7 +232,7 @@ def menu_penyewa_kendaraan():
         print(
             f"ID: {p['sewaId']} | User: {p['customerId']} | Status: {p['status']}")
 
+load_data()
 
 if __name__ == "__main__":
-    load_data()
     menu_penyewa_kendaraan()

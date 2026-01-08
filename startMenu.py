@@ -7,14 +7,17 @@ def tampilkan_menu():
         print("=== Selamat Datang di Navica ===")
         print("1. Login")
         print("2. Register")
+        print("3. Forget Password")
         print("0. Keluar")
-        pilihan = input("Pilih menu (0-2): ")
+        pilihan = input("Pilih menu (0-3): ")
 
         if pilihan == "1":
             auth.login()
             # main_menu.mainMenu()
         elif pilihan == "2":
             auth.register()
+        elif pilihan == "3":
+            auth.forget_password()
         elif pilihan == "0":
             print("Keluar dari program.")
             break

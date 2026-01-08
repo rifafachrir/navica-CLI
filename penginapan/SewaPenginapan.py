@@ -14,7 +14,7 @@ penginapan_list = []
 data_sewa = []
 customer = []
 
-
+# conflict 1
 def load_data():
     # Bersihkan list sebelum memuat data baru
     global kamar_list, penginapan_list, data_sewa, customer
@@ -322,6 +322,7 @@ def userMenu(customerId):
             break
         else:
             print("Pilihan salah.")
+
 
 
 def main():
