@@ -226,8 +226,9 @@ def create_data(data):
     # tersedia = [k for k in kamar_list if k["status"] == "tersedia"]
     tersedia = []
     for k in kamar_list:
-        if k["status"] == "tersedia" and k["tanggal_mulai"] != tanggal_menginap:
-            tersedia.append(k)
+        if k["status"] == "tersedia":
+            if not kamar_sudah_dibooking(k["id"], tanggal_menginap):
+                tersedia.append(k)
     if len(tersedia) == 0:
         print(f"Tidak ada kamar yang tersedia untuk tanggal {tanggal_menginap}.\n")
         return
@@ -333,8 +334,9 @@ def bookingCutomer(customerId):
     # tersedia = [k for k in list_kamar if k["status"] == "tersedia"]
     tersedia = []
     for k in list_kamar:
-        if k["status"] == "tersedia" and k["tanggal_mulai"] != tanggal_menginap:
-            tersedia.append(k)
+        if k["status"] == "tersedia":
+            if not kamar_sudah_dibooking(k["id"], tanggal_menginap):
+                tersedia.append(k)
     if len(tersedia) == 0:
         print(f"Tidak ada kamar yang tersedia untuk tanggal {tanggal_menginap}.\n")
         return
@@ -539,26 +541,45 @@ def sort_data(data):
 
     save_data(data)
     read_data(data)
+    
+    
+def konfirmasi_kedatangan(data):
+    print("\n=== KONFIRMASI KEDATANGAN (CHECK-IN) ===")
+    id_sewa = input("Masukkan ID Sewa: ").strip()
 
-def userMenu (customerId):
-    while True:
-        print("\n====== NAVICA — PEMESANAN PENGINAPAN ======")
-        print("1. Tambah Pemesanan")
-        print("2. Lihat Pemesanan")
-        print("3. Cari Pemesanan")
-        print("0. Keluar")
-        pilihan = input("Pilih menu: ")
-        if pilihan == "1":
-            create_data(customerId)
-        elif pilihan == "2":
-            read_data(data_sewa)
-        elif pilihan == "5":
-            search_data(data_sewa)
-        elif pilihan == "0":
-            print("Keluar dari menu pemesanan penginapan.")
-            break
-        else:
-            print("Pilihan tidak valid.\n")
+    for d in data:
+        if d["id"] == id_sewa:
+
+            if d["status"] != "Booking":
+                print(f"Tidak bisa check-in. Status saat ini: {d['status']}\n")
+                return
+
+            konfirmasi = input("Apakah penyewa sudah datang? (y/n): ").lower()
+            if konfirmasi == "y":
+                d["status"] = "Check-in"
+                save_data(data)
+                print("Check-in berhasil! Status diubah menjadi Check-in.\n")
+            else:
+                print("Check-in dibatalkan.\n")
+            return
+
+    print("ID Sewa tidak ditemukan.\n")
+
+
+def kamar_sudah_dibooking(kode_kamar, tanggal):
+    for sewa in data_sewa:
+        if (
+            sewa["kode_kamar"] == str(kode_kamar)
+            and sewa["tanggal_mulai"] == tanggal
+            and sewa["status"] in ["Booking", "Check-in"]
+        ):
+            return True
+    return False
+
+    if kamar_sudah_dibooking(kamar_dipilih["id"], tanggal_menginap):
+        print("❌ Kamar sudah dibooking pada tanggal tersebut.\n")
+        return
+
 
 def reschedule_data(data):
     print("\n=== RESCHEDULE PEMESANAN ===")
@@ -586,12 +607,38 @@ def reschedule_data(data):
             return
 
     print("ID sewa tidak ditemukan.\n")
+    
+    
+def userMenu (customerId):
+    while True:
+        print("\n====== NAVICA — PEMESANAN PENGINAPAN ======")
+        print("1. Tambah Pemesanan")
+        print("2. Lihat Pemesanan")
+        print("3. Cari Pemesanan")
+        print("4. Konfirmasi Kedatangan (Check-in)")
+        print("0. Keluar")
+        pilihan = input("Pilih menu: ")
+        if pilihan == "1":
+            create_data(customerId)
+        elif pilihan == "2":
+            read_data(data_sewa)
+        elif pilihan == "3":
+            search_data(data_sewa)
+        elif pilihan == "4":
+            konfirmasi_kedatangan(data_sewa)
+        elif pilihan == "0":
+            print("Keluar dari menu pemesanan penginapan.")
+            break
+        else:
+            print("Pilihan tidak valid.\n")
+
 
 def main():
 # Materi: Perulangan While
     
     data = data_sewa
     # data = load_data()
+    print(kamar_list)
     while True:
         print("\n====== NAVICA — PEMESANAN PENGINAPAN ======")
         print("1. Tambah Pemesanan")
@@ -601,7 +648,8 @@ def main():
         print("5. Cari Pemesanan")
         print("6. Urutkan Pemesanan")
         print("7. Reschedule Pemesanan")
-        print("8. Keluar")
+        print("8. Konfirmasi Kedatangan (Check-in)")
+        print("9. Keluar")
         pilihan = input("Pilih menu: ")
         if pilihan == "1":
             create_data(data)
@@ -618,6 +666,8 @@ def main():
         elif pilihan == "7":
             reschedule_data(data)
         elif pilihan == "8":
+            konfirmasi_kedatangan(data)
+        elif pilihan == "9":
             print("Terima kasih telah menggunakan Navica.")
             break
         else:
