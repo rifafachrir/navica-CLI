@@ -16,9 +16,10 @@ next_id = 1  # next id yaitu untuk generate id kamar otomatis (jadi unik setiap 
 
 def load_kamar():
     """Load data kamar dari file ke kamar_list dan set next_id."""
-    global kamar_list, next_id
+    global kamar_list, penginapan_list, next_id
 
     kamar_list = []
+    penginapan_list = []   
     if not os.path.exists(FILE_KAMAR):
         next_id = 1
         return
@@ -26,12 +27,12 @@ def load_kamar():
     with open(FILE_KAMAR, "r", encoding="utf-8") as f:
         for line in f:
             bagian = line.strip().split("|")
-            kodeKamar = int(bagian[0])
+            kodeKamar = bagian[0]
             namaPenginapan = bagian[1]
             tipe = bagian[2]
             harga = int(bagian[3])
             kapasitas = int(bagian[4])
-            status = bagian[6]
+            status = bagian[5]
 
             kamar_list.append({
                 "id": kodeKamar,
@@ -74,7 +75,7 @@ def save_kamar():
     with open(FILE_KAMAR, "w", encoding="utf-8") as f:
         for k in kamar_list:
             f.write(
-                f"{k['id']}|{k['penginapanId']}|{k['tipe']}|{k['harga']}|{k['kapasitas']}|{k['lokasi']}|{k['status']}\n"
+                f"{k['id']}|{k['namaPenginapan']}|{k['tipe']}|{k['harga']}|{k['kapasitas']}|{k['status']}\n"
             )
 
 
@@ -252,10 +253,10 @@ def menu():
             print("Program selesai.")
             break
         else:
-            print("Masukkan pilihan yang benar.\n")
+            continue
 
+load_kamar()
 if __name__ == "__main__":
-    load_kamar()
     menu()
 
 
