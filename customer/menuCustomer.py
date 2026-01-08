@@ -2,11 +2,11 @@ import os
 import sys
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-import kendaraan.penyewaKendaraan as penyewa
+import kendaraan.penyewaKendaraan as sewaKendaraan
 import penginapan.SewaPenginapan as sewaPenginapan
 import komunitas.komunitas as komunitas
 
-
+# TODO: buat fungsi untuk mempermudah user di modul tiket
 def menu_user(userId):
     with open("database/dataCustomer.txt", "r") as f:
         lines = f.readlines()
@@ -21,14 +21,17 @@ def menu_user(userId):
         print("1. Booking Hotel")
         print("2. Rental Kendaraan")
         print("3. Komunitas")
+        print("4. tiket")
         print("0. Keluar")
         menu = input("Pilih menu (0-3): ")
         if menu == "1":
             sewaPenginapan.userMenu(customerId)
         elif menu == "2":
-            penyewa.menu_customer(customerId)
+            sewaKendaraan.menu_customer(customerId)
         elif menu == "3":
             komunitas.CommunityMenu()
+        elif menu == "4":
+            print("tiket")
         elif menu == "0":
             print("Keluar dari menu user.")
             break

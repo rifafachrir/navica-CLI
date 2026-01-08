@@ -23,7 +23,7 @@ def load_data():
                     valid_mitra_ids.add(bagian[1])
                     kendaraan_data.append({
                         "noKendaraan": bagian[0],
-                        "namaMitra": bagian[1],
+                        "mitraId": bagian[1],
                         "namaKendaraan": bagian[2],
                         "hargaSewaPerHari": bagian[3],
                         "status": bagian[4]
@@ -56,7 +56,7 @@ def tambah_kendaraan():
         print(f"{i + 1}. {mitra['nama']} (ID: {mitra['mitraId']})")
     pilihan = int(input("Pilih mitra yang ingin menambahkan kendaraan: ")) - 1
     if 0 <= pilihan < len(data_pemilik):
-        namaMitra = data_pemilik[pilihan]['namaMitra']
+        mitraId = data_pemilik[pilihan]['mitraId']
     else:
         print("Pilihan tidak valid.")
         return
@@ -65,7 +65,7 @@ def tambah_kendaraan():
 
     kendaraan = {
         "noKendaraan": noKendaraan,
-        "namaMitra": namaMitra,
+        "mitraId": mitraId,
         "namaKendaraan": nama_kendaraan,
         "hargaSewaPerHari": harga_sewa,
         "status": "tersedia"
@@ -73,10 +73,28 @@ def tambah_kendaraan():
 
     kendaraan_data.append(kendaraan)
     with open(FILE_KENDARAAN, "a") as f:
-        f.write(f"{noKendaraan}|{namaMitra}|{nama_kendaraan}|{harga_sewa}|tersedia\n")
+        f.write(f"{noKendaraan}|{mitraId}|{nama_kendaraan}|{harga_sewa}|tersedia\n")
     print("Data kendaraan berhasil ditambahkan!\n")
 
+def tambah_kendaraan_by_mitraId(mitraId):
+    print("\n=== Tambah Data Kendaraan ===")
+    print("Masukkan ID Mitra Pemilik Kendaraan: ")
+    noKendaraan = input("Masukkan no Polisi Kendaraan: ")
+    nama_kendaraan = input("Nama Kendaraan: ")
+    harga_sewa = input("Harga Sewa per Hari: ")
 
+    kendaraan = {
+        "noKendaraan": noKendaraan,
+        "mitraId": mitraId,
+        "namaKendaraan": nama_kendaraan,
+        "hargaSewaPerHari": harga_sewa,
+        "status": "tersedia"
+    }
+
+    kendaraan_data.append(kendaraan)
+    with open(FILE_KENDARAAN, "a") as f:
+        f.write(f"{noKendaraan}|{mitraId}|{nama_kendaraan}|{harga_sewa}|tersedia\n")
+    print("Data kendaraan berhasil ditambahkan!\n")
 
 def lihat_kendaraan():
     print("\n=== Daftar Data Kendaraan ===")
@@ -85,12 +103,56 @@ def lihat_kendaraan():
         return
 
     for i, k in enumerate(kendaraan_data):
-        print(f"{1 + i}, kendaraanId: {k['kendaraanId']}, mitraId: {k['mitraId']}, Nama Kendaraan: {k['namaKendaraan']}, Harga Sewa per Hari: {k['hargaSewaPerHari']}, Status: {k['status']} \n")
+        print(f"{1+i}")
+        print(f"noPolisi: {k['noKendaraan']}")
+        for m in data_pemilik:
+            if m['mitraId'] == k['mitraId']:
+                print(f"Nama Mitra: {m['namaMitra']}")
+        print(f"namaKendaraan: {k['namaKendaraan']}")
+        print(f"hargaSewaPerHari: {k['hargaSewaPerHari']}")
+        print(f"status: {k['status']}")
 
     print("-" * 30)
 
-def lihat_data_peminjam():
-    penyewaKendaraan.lihat_penyewa()
+def lihat_kendaraan_by_mitraId(mitraId):
+    print("\n=== Daftar Data Kendaraan ===")
+    if len(kendaraan_data) == 0:
+        print("Belum ada data kendaraan.\n")
+        return
+
+    for i, k in enumerate(kendaraan_data):
+        if k['mitraId'] != mitraId:
+            print(f"{1+i}")
+            print(f"noPolisi: {k['noKendaraan']}")
+            for m in data_pemilik:
+                if m['mitraId'] == k['mitraId']:
+                    print(f"Nama Mitra: {m['namaMitra']}")
+            print(f"namaKendaraan: {k['namaKendaraan']}")
+            print(f"hargaSewaPerHari: {k['hargaSewaPerHari']}")
+            print(f"status: {k['status']}")
+
+    print("-" * 30)
+
+def lihat_kendaraan_by_mitraId(mitraId):
+    print("\n=== Daftar Data Kendaraan ===")
+    if len(kendaraan_data) == 0:
+        print("Belum ada data kendaraan.\n")
+        return
+
+    for i, k in enumerate(kendaraan_data):
+        if k['mitraId'] != mitraId:
+            print(f"{1+i}")
+            print(f"noPolisi: {k['noKendaraan']}")
+            for m in data_pemilik:
+                if m['mitraId'] == k['mitraId']:
+                    print(f"Nama Mitra: {m['namaMitra']}")
+            print(f"namaKendaraan: {k['namaKendaraan']}")
+            print(f"hargaSewaPerHari: {k['hargaSewaPerHari']}")
+            print(f"status: {k['status']}")
+
+    print("-" * 30)
+
+
 
 
 def edit_kendaraan():
@@ -109,7 +171,7 @@ def edit_kendaraan():
         print(f"{i + 1}. {mitra['nama']} (ID: {mitra['mitraId']})")
     pilihan = int(input("Masukkan nomor mitra baru: ")) - 1
     if 0 <= pilihan < len(data_pemilik):
-        namaMitra = data_pemilik[pilihan]['namaMitra']
+        mitraId = data_pemilik[pilihan]['mitraId']
     else:
         print("Pilihan tidak valid.")
         return
@@ -117,14 +179,18 @@ def edit_kendaraan():
     harga_sewa = input("Harga Sewa per Hari baru: ")
 
     if noKendaraan: kendaraan_data[index]['noKendaraan'] = noKendaraan
-    if namaMitra: kendaraan_data[index]['namaMitra'] = namaMitra
+    if mitraId: kendaraan_data[index]['mitraId'] = mitraId
     if nama_kendaraan: kendaraan_data[index]['namaKendaraan'] = nama_kendaraan
     if harga_sewa: kendaraan_data[index]['hargaSewaPerHari'] = harga_sewa
 
     with open(FILE_KENDARAAN, "w") as f:
         for k in kendaraan_data:
-            f.write(f"{k['noKendaraan']}|{k['namaMitra']}|{k['namaKendaraan']}|{k['hargaSewaPerHari']}|{k['status']}\n")
+            f.write(f"{k['noKendaraan']}|{k['mitraId']}|{k['namaKendaraan']}|{k['hargaSewaPerHari']}|{k['status']}\n")
+            
     print("Data kendaraan berhasil diperbarui!\n")
+
+
+
 
 def hapus_kendaraan():
     lihat_kendaraan()
@@ -139,7 +205,7 @@ def hapus_kendaraan():
     kendaraan_data.pop(index)
     with open(FILE_KENDARAAN, "w") as f:
         for k in kendaraan_data:
-            f.write(f"{k['noKendaraan']}|{k['namaMitra']}|{k['namaKendaraan']}|{k['hargaSewaPerHari']}|{k['status']}\n")
+            f.write(f"{k['noKendaraan']}|{k['mitraId']}|{k['namaKendaraan']}|{k['hargaSewaPerHari']}|{k['status']}\n")
     print("Data kendaraan berhasil dihapus!\n")
 
 def menuAdmin():
@@ -162,7 +228,7 @@ def menuAdmin():
             break
         else:
             print("Pilihan tidak valid!\n")
+load_data()
 
 if __name__ == "__main__":
-    load_data()
     menuAdmin()

@@ -78,7 +78,7 @@ def load_data():
                     "id": bagian[0],
                     "penyewa": bagian[1],
                     "jenis": bagian[2],
-                    "nama_properti": bagian[3],
+                    "penginapanId": bagian[3],
                     "kode_kamar": bagian[4],
                     "tanggal_mulai": bagian[5],
                     "lama_menginap": bagian[6],
@@ -163,7 +163,7 @@ def save_data(data):
     with open(FILE_SEWA, "w", encoding="utf-8") as file:
         for d in data:
             file.write(
-                f"{d['id']}|{d['penyewa']}|{d['jenis']}|{d['nama_properti']}|"
+                f"{d['id']}|{d['penyewa']}|{d['jenis']}|{d['penginapanId']}|"
                 f"{d['nomor_kamar']}|{d['lama_menginap']}|{d['harga_permalam']}|"
                 f"{d['total']}|{d['status']}\n"
             )
@@ -245,7 +245,7 @@ def create_data(data):
         return
 
     # ambil data dari kamar
-    nama_properti = kamar_dipilih["nama"]
+    penginapanId = kamar_dipilih["nama"]
     jenis = kamar_dipilih["tipe"]           # bisa kamu mapping ke 'Hotel'/'Vila' kalau mau
     kode_kamar = str(kamar_dipilih["id"])  # sementara pakai ID kamar sebagai nomor kamar
 
@@ -261,7 +261,7 @@ def create_data(data):
         "id": id_sewa,
         "penyewa": penyewa,
         "jenis": jenis,
-        "nama_properti": nama_properti,
+        "penginapanId": penginapanId,
         "kode_kamar": kode_kamar,
         "tanggal_mulai": tanggal_menginap,
         "lama_menginap": lama_menginap,
@@ -352,7 +352,7 @@ def bookingCutomer(customerId):
         return
 
     # ambil data dari kamar
-    nama_properti = kamar_dipilih["nama"]
+    penginapanId = kamar_dipilih["nama"]
     jenis = kamar_dipilih["tipe"]           # bisa kamu mapping ke 'Hotel'/'Vila' kalau mau
     kode_kamar = str(kamar_dipilih["id"])  # sementara pakai ID kamar sebagai nomor kamar
 
@@ -368,7 +368,7 @@ def bookingCutomer(customerId):
         "id": id_sewa,
         "penyewa": penyewa,
         "jenis": jenis,
-        "nama_properti": nama_properti,
+        "penginapanId": penginapanId,
         "kode_kamar": kode_kamar,
         "tanggal_mulai": tanggal_menginap,
         "lama_menginap": lama_menginap,
@@ -379,7 +379,6 @@ def bookingCutomer(customerId):
 
     save_data(data_sewa)
 
-    # update status kamar jadi tidak
     update_status_kamar(kamar_dipilih["id"], "booking")
 
 
@@ -393,10 +392,16 @@ def read_data(data):
         return
 
     for d in data:
+        customerId = d['penyewa']
+        penginapanId = d['penginapanId']
         print(f"ID Sewa        : {d['id']}")
-        print(f"Nama Penyewa   : {d['penyewa']}")
+        for c in customer:
+            if c['id'] == customerId:
+                print(f"Nama Penyewa   : {c['nama']}")
         print(f"Jenis          : {d['jenis']}")
-        print(f"Nama Properti  : {d['nama_properti']}")
+        for p in penginapan_list:
+            if p['id'] == penginapanId:
+                print(f"Nama Properti  : {p['namaPenginapan']}")
         print(f"kodeKamar      : {d['kode_kamar']}")
         print(f"Tanggal Mulai  : {d['tanggal_mulai']}")
         # print(f"Nomor Kamar    : {d['nomor_kamar']}")
@@ -405,14 +410,81 @@ def read_data(data):
         print(f"Total Harga    : Rp {d['total']}")
         print(f"Status         : {d['status']}")
         print("-" * 30)
+       
+
+       
+            
+
+def read_data_for_customer(customerId):
+    print("\n === DAFTAR PEMESANAN PENGINAPAN ANDA ===")
+
+    priority = {"booking", "check-in", "check-out"}
 
 
-def update_data(data):
+
+    data_sewa.sort(key=lambda x: x["status"] in priority)
+
+    for d in data_sewa:
+        if d['penyewa'] == customerId:
+            customerId = d['penyewa']
+            penginapanId = d['penginapanId']
+            print(f"ID Sewa        : {d['id']}")
+            for c in customer:
+                if c['id'] == customerId:
+                    print(f"Nama Penyewa   : {c['nama']}")
+            print(f"Jenis          : {d['jenis']}")
+            for p in penginapan_list:
+                if p['id'] == penginapanId:
+                    print(f"Nama Properti  : {p['namaPenginapan']}")
+            print(f"kodeKamar      : {d['kode_kamar']}")
+            print(f"Tanggal Mulai  : {d['tanggal_mulai']}")
+            # print(f"Nomor Kamar    : {d['nomor_kamar']}")
+            print(f"Lama Menginap  : {d['lama_menginap']} hari")
+            print(f"Harga/Malam    : Rp {d['harga_permalam']}")
+            print(f"Total Harga    : Rp {d['total']}")
+            print(f"Status         : {d['status']}")
+            print("-" * 30)
+def read_data_by_id(idSewa):
+    for d in data_sewa:
+        if d['id'] == idSewa:
+            customerId = d['penyewa']
+            penginapanId = d['penginapanId']
+            print(f"ID Sewa        : {d['id']}")
+            for c in customer:
+                if c['id'] == customerId:
+                    print(f"Nama Penyewa   : {c['nama']}")
+            print(f"Jenis          : {d['jenis']}")
+            for p in penginapan_list:
+                if p['id'] == penginapanId:
+                    print(f"Nama Properti  : {p['namaPenginapan']}")
+            print(f"kodeKamar      : {d['kode_kamar']}")
+            print(f"Tanggal Mulai  : {d['tanggal_mulai']}")
+            # print(f"Nomor Kamar    : {d['nomor_kamar']}")
+            print(f"Lama Menginap  : {d['lama_menginap']} hari")
+            print(f"Harga/Malam    : Rp {d['harga_permalam']}")
+            print(f"Total Harga    : Rp {d['total']}")
+            print(f"Status         : {d['status']}")
+
+def update_status():
     print("\n=== UPDATE STATUS ===")
-    target = input("Masukkan ID sewa: ")
+    # for i, s in enumerate(data_sewa):
 
-    for d in data:
-        if d["id"] == target:
+    while True:
+        idSewa = input("Masukkan no id customer: ")
+        for d in data_sewa:
+            read_data_by_id(idSewa)
+        question = input("apakah data customer sudah benar? (y/n): ").lower()
+        if question == "y":
+            break
+        elif question == "n":
+            print("silahkan masukkan kembali no id customer")
+        else:
+            print("opsi tidak valid silahkan ulangi dari masukkan id customer")
+        
+
+
+    for d in data_sewa:
+        if d["id"] == idSewa:
             print("\nStatus saat ini:", d["status"])
             print("1. Booking")
             print("2. Check-in")
@@ -430,7 +502,7 @@ def update_data(data):
             else:
                 d["status"] = "Check-out"
 
-            save_data(data)
+            save_data(data_sewa)
 
             # jika dari Booking/Check-in menjadi Check-out -> buka kamar lagi
             if status_lama != "Check-out" and d["status"] == "Check-out":
@@ -491,7 +563,7 @@ def search_data(data):
         print(f"ID Sewa        : {d['id']}")
         print(f"Nama Penyewa   : {d['penyewa']}")
         print(f"Jenis          : {d['jenis']}")
-        print(f"Nama Properti  : {d['nama_properti']}")
+        print(f"Nama Properti  : {d['penginapanId']}")
         print(f"Nomor Kamar    : {d['nomor_kamar']}")
         print(f"Lama Menginap  : {d['lama_menginap']} hari")
         print(f"Harga/Malam    : Rp {d['harga_permalam']}")
@@ -524,15 +596,12 @@ def userMenu (customerId):
         print("\n====== NAVICA — PEMESANAN PENGINAPAN ======")
         print("1. Tambah Pemesanan")
         print("2. Lihat Pemesanan")
-        print("5. Cari Pemesanan")
         print("0. Keluar")
         pilihan = input("Pilih menu: ")
         if pilihan == "1":
-            create_data(customerId)
+            bookingCutomer(customerId)
         elif pilihan == "2":
-            read_data(data_sewa)
-        elif pilihan == "5":
-            search_data(data_sewa)
+            read_data_for_customer(data_sewa)
         elif pilihan == "0":
             print("Keluar dari menu pemesanan penginapan.")
             break
@@ -559,7 +628,7 @@ def main():
         elif pilihan == "2":
             read_data(data)
         elif pilihan == "3":
-            update_data(data)
+            update_status(data)
         elif pilihan == "4":
             delete_data(data)
         elif pilihan == "5":
