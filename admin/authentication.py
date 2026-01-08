@@ -1,6 +1,7 @@
 # import menu as adminMenu
 import os
 import sys
+import re
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import customer.menuCustomer as customerMenu
@@ -117,37 +118,56 @@ def register():
 
 
 def all_register():
-    while True:
-        email = input("Masukkan email baru: ").strip()
-        if email == "":
-            print("Email tidak boleh kosong!")
-        else:
-            break
+    user_id = str(len(user) + 1)
 
-    while True:
-        password = input("Masukkan password baru: ").strip()
-        if password == "":
-            print("Password tidak boleh kosong!")
-        else:
-            break
+    email = input("Masukkan email baru: ").strip()
+    if email == "":
+        print("Email tidak boleh kosong!")
+        return
+    if is_email_exists(email):
+        print("Email sudah terdaftar. Silakan gunakan email lain.")
+        return
+    if not is_email_valid(email):
+        print("Format email tidak valid! Contoh: nama@email.com")
+        return
 
-    while True:
-        role_choice = input("Masukkan pilihan (1-4): ").strip()
+    password = input("Masukkan password baru: ").strip()
+    if password == "":
+        print("Password tidak boleh kosong!")
+        return
 
-        if role_choice == '1':
-            role = 'penginapan'
-            break
-        elif role_choice == '2':
-            role = 'kendaraan'
-            break
-        elif role_choice == '3':
-            role = 'hiburan'
-            break
-        elif role_choice == '4':
-            role = 'customer'
-            break
-        else:
-            print("Pilihan tidak valid!")
+    print("\nPilih Role:")
+    print("1. Pemilik Penginapan")
+    print("2. Pemilik Rental Kendaraan")
+    print("3. Pemilik Tiket Hiburan")
+    print("4. Customer")
+
+    role_choice = input("Masukkan pilihan (1-4): ").strip()
+
+    if role_choice == '1':
+        role = 'penginapan'
+    elif role_choice == '2':
+        role = 'kendaraan'
+    elif role_choice == '3':
+        role = 'hiburan'
+    elif role_choice == '4':
+        role = 'customer'
+    else:
+        print("Pilihan role tidak valid!")
+        return
+    
+    user.append({
+        'userId': user_id,
+        'email': email,
+        'password': password,
+        'role': role
+    })
+
+    with open("database/userData.txt", "a") as f:
+        f.write(f"{user_id}|{email}|{password}|{role}\n")
+
+    print("Registrasi berhasil!")
+
 
 def listUser():
     with open("database/userData.txt", "r") as f:
@@ -164,18 +184,28 @@ def searchUserByEmail(email):
     print("User dengan email tersebut tidak ditemukan.")
     return None
 
-def lupa_password():
+def is_email_exists(email):
+    for u in user:
+        if u['email'] == email:
+            return True
+    return False
+
+def is_email_valid(email):
+    pola = r'^[\w\.-]+@[\w\.-]+\.\w+$'
+    return re.match(pola, email)
+
+def forget_password():
     email = input("Masukkan email Anda: ")
-    ditemukan = False
+    found = False
 
     for i in user:
         if i['email'] == email:
             password_baru = input("Masukkan password baru: ")
             i['password'] = password_baru
-            ditemukan = True
+            found = True
             break
 
-    if not ditemukan:
+    if not found:
         print("Email tidak ditemukan!")
         return
 
@@ -194,7 +224,7 @@ def start_authentication():
     "2. Register\n"
     "3. List User\n"
     "4. Search User by Email\n"
-    "5. Lupa Password\n"
+    "5. Forget Password\n"
     "0. Exit\n"
     "Pilih: "
 )
@@ -209,7 +239,7 @@ def start_authentication():
             email = input("Masukkan email yang ingin dicari: ")
             searchUserByEmail(email)
         elif choice == '5':
-            lupa_password()
+            forget_password()
             loadData()   
         elif choice == '0':
             break

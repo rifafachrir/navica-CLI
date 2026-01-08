@@ -1,2 +1,2 @@
-1|tata|123|customer
-2|akusiapa|000|customer
+1|hambaAllah@yahoo.com|delapankali|customer
+2|hambaAllah@gmail.com|allahuakbar|penginapan

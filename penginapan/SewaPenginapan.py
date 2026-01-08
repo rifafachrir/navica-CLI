@@ -524,7 +524,7 @@ def userMenu (customerId):
         print("\n====== NAVICA — PEMESANAN PENGINAPAN ======")
         print("1. Tambah Pemesanan")
         print("2. Lihat Pemesanan")
-        print("5. Cari Pemesanan")
+        print("3. Cari Pemesanan")
         print("0. Keluar")
         pilihan = input("Pilih menu: ")
         if pilihan == "1":
