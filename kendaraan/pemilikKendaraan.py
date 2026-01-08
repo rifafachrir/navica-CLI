@@ -1,5 +1,8 @@
 import os
-import penyewaKendaraan as penyewaKendaraan
+import sys
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import kendaraan.penyewaKendaraan as penyewaKendaraan
 
 data_pemilik = [] #data mitra
 kendaraan_data = []
@@ -51,7 +54,7 @@ def tambah_kendaraan():
     noKendaraan = input("Masukkan no Polisi Kendaraan: ")
     for i, mitra in enumerate(data_pemilik):
         print(f"{i + 1}. {mitra['nama']} (ID: {mitra['mitraId']})")
-    pilihan = int(input("Masukkan nomor mitra: ")) - 1
+    pilihan = int(input("Pilih mitra yang ingin menambahkan kendaraan: ")) - 1
     if 0 <= pilihan < len(data_pemilik):
         namaMitra = data_pemilik[pilihan]['namaMitra']
     else:

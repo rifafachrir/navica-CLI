@@ -1,6 +1,6 @@
 # Start Menu
 import admin.authentication as auth
-import admin.menu as main_menu
+# import admin.menu as main_menu
 
 def tampilkan_menu():
     while True:
@@ -12,7 +12,7 @@ def tampilkan_menu():
 
         if pilihan == "1":
             auth.login()
-            main_menu.mainMenu()
+            # main_menu.mainMenu()
         elif pilihan == "2":
             auth.register()
         elif pilihan == "0":

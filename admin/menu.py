@@ -1,6 +1,6 @@
 import penginapan.DataKamarPenginapan as dataKamar
-import admin.komunitas.komunitas as komunitas
-import admin.authentication as auth
+import authentication as auth
+import komunitas.komunitas as komunitas
 import penginapan.SewaPenginapan as sewa
 
 

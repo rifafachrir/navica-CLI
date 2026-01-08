@@ -1,5 +1,8 @@
 # import menu as adminMenu
 import os
+import sys
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import customer.menuCustomer as customerMenu
 import penginapan.menuPemilikPenginapan as penginapanMenu
 import kendaraan.menuPemilikKendaraan as kendaraanMenu
@@ -13,11 +16,11 @@ selected_user_id = ""
 def loadData():
     user.clear()
     customer.clear()
-    if file:
+    
+    # ===== LOAD USER =====
+    if os.path.exists("database/userData.txt"):
         with open("database/userData.txt", "r") as f:
-            lines = f.readlines()
-        
-            for line in lines:
+            for line in f:
                 bagian = line.strip().split("|")
                 if len(bagian) == 4:
                     user.append({
@@ -27,27 +30,26 @@ def loadData():
                         'role': bagian[3]
                     })
                 else:
-                    print("Format data user tidak valid:", line)
-                    continue
+                    print("Format data user tidak valid:", line.strip)
+    
     else:
         print("Tidak ditemukan file untuk menyimpan data")
     
+    # ===== LOAD CUSTOMER =====
     if os.path.exists(FILE_CUSTOMER):
         with open(FILE_CUSTOMER, "r") as f:
-            lines = f.readlines()
-        for line in lines:
-            bagian = line.strip().split("|")
-            if len(bagian) == 5:
-                customer.append({
-                    "idCustomer": bagian[0],
-                    "idUser": bagian[1],
-                    "nama": bagian[2],
-                    "alamat": bagian[3],
-                    "noTelepon": bagian[4]
-                })
-            else:
-                print("Format data user tidak valid: ", line)
-                continue
+            for line in f:
+                bagian = line.strip().split("|")
+                if len(bagian) == 5:
+                    customer.append({
+                        "idCustomer": bagian[0],
+                        "idUser": bagian[1],
+                        "nama": bagian[2],
+                        "alamat": bagian[3],
+                        "noTelepon": bagian[4]
+                    })
+                else:
+                    print("Format data vudyomrt tidak valid: ", line.strip())
 
 
 
@@ -91,8 +93,8 @@ def login():
 
 def register():
     user_id = str(len(user) + 1).zfill(1)
-    password = input("Masukkan password baru: ")
     email = input("Masukkan email baru: ")
+    password = input("Masukkan password baru: ")
     user.append({'userId': user_id, 'email': email, 'password': password, 'role': 'customer'})
     with open("database/userData.txt", "a") as f:
         f.write(f"{user_id}|{email}|{password}|customer\n")
@@ -112,8 +114,8 @@ def register():
 
 def all_register():
     user_id = str(len(user) + 1).zfill(1)
-    password = input("Masukkan password baru: ")
     email = input("Masukkan email baru: ")
+    password = input("Masukkan password baru: ")
     print("Pilih Role:")
     print("1.Pemilik Penginapan")
     print("2. Pemilik rental kendaraan")
@@ -186,18 +188,20 @@ def lupa_password():
 def start_authentication():
     while True:
         choice = input(
-    "Pilih opsi:\n"
+    "\nPilih opsi:\n"
     "1. Login\n"
     "2. Register\n"
     "3. List User\n"
     "4. Search User by Email\n"
     "5. Lupa Password\n"
     "0. Exit\n"
+    "Pilih: "
 )
         if choice == '1':
             login()
         elif choice == '2':
             all_register()
+            loadData()   
         elif choice == '3':
             listUser()
         elif choice == '4':
@@ -205,6 +209,7 @@ def start_authentication():
             searchUserByEmail(email)
         elif choice == '5':
             lupa_password()
+            loadData()   
         elif choice == '0':
             break
         else:
