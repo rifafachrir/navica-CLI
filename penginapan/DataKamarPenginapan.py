@@ -11,27 +11,67 @@ def ensure_file():
 
 
 def load_kamar():
-    ensure_file()
+    """Load data kamar dari file ke kamar_list dan set next_id."""
+    global kamar_list, penginapan_list, next_id
+
     kamar_list = []
-    with open(DATA_FILE, "r") as file:
-        for line in file:
-            data = line.strip().split("|")
-            if len(data) == 5:
-                kamar_list.append({
-                    "id": data[0],
-                    "tipe": data[1],
-                    "harga": data[2],
-                    "status": data[3],
-                    "id_penginapan": data[4]
-                })
-    return kamar_list
+    penginapan_list = []   
+    if not os.path.exists(FILE_KAMAR):
+        next_id = 1
+        return
+
+    with open(FILE_KAMAR, "r", encoding="utf-8") as f:
+        for line in f:
+            bagian = line.strip().split("|")
+            kodeKamar = bagian[0]
+            namaPenginapan = bagian[1]
+            tipe = bagian[2]
+            harga = int(bagian[3])
+            kapasitas = int(bagian[4])
+            status = bagian[5]
+
+            kamar_list.append({
+                "id": kodeKamar,
+                "namaPenginapan": namaPenginapan,
+                "tipe": tipe,
+                "harga": harga,
+                "kapasitas": kapasitas,
+                "status": status
+            })
+    
+    with open(FILE_PENGINAPAN, "r") as f:
+        for line in f:
+            bagian = line.strip().split("|")
+            penginapanId = int(bagian[0])
+            mitraId = int(bagian[1])
+            namaPenginapan = bagian[2]
+            alamat = bagian[3]
+            noTelp = bagian[4]
+
+            penginapan_list.append({
+                "penginapanId": penginapanId,
+                "mitraId": mitraId,
+                "namaPenginapan": namaPenginapan,
+                "alamat": alamat,
+                "noTelp": noTelp
+            })
 
 
-def save_kamar(kamar_list):
-    with open(DATA_FILE, "w") as file:
+    # atur next_id supaya lanjut dari id terakhir
+    # if kamar_list:
+    #     max_id = max(k["id"] for k in kamar_list)
+    #     next_id = max_id + 1
+    # else:
+    #     next_id = 1
+
+
+
+def save_kamar():
+    """Simpan kamar_list ke file."""
+    with open(FILE_KAMAR, "w", encoding="utf-8") as f:
         for k in kamar_list:
-            file.write(
-                f"{k['id']}|{k['tipe']}|{k['harga']}|{k['status']}|{k['id_penginapan']}\n"
+            f.write(
+                f"{k['id']}|{k['namaPenginapan']}|{k['tipe']}|{k['harga']}|{k['kapasitas']}|{k['status']}\n"
             )
 
 
@@ -175,3 +215,10 @@ def menu():
             break
         else:
             print("Pilihan tidak valid.")
+            continue
+
+load_kamar()
+if __name__ == "__main__":
+    menu()
+
+

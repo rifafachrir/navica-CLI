@@ -8,6 +8,12 @@ import komunitas.komunitas as komunitas
 
 
 def menu_user(userId):
+    customerId = None
+    
+    if not os.path.exists("database/dataCustomer.txt"):
+        print("Data customer belum tersedia.")
+        return
+
     with open("database/dataCustomer.txt", "r") as f:
         lines = f.readlines()
         for line in lines:
@@ -15,6 +21,11 @@ def menu_user(userId):
             if bagian[1] == userId:
                 print(f"SELAMAT DATANG, {bagian[2]} !!!")
                 customerId = bagian[0]
+                break
+
+    if not os.path.exists("database/dataCustomer.txt"):
+        print("Data customer belum tersedia.")
+        return
 
     while True:
         print("=== Selamat Datang ===")
@@ -35,6 +46,5 @@ def menu_user(userId):
         else:
             print("Pilihan tidak dikenal silahkan coba lagi.")
 
-if "__main__" == __name__:
-    menu_user()
-
+if __name__ == "__main__":
+    menu_user("1")
