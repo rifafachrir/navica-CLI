@@ -1,5 +1,8 @@
 # import menu as adminMenu
 import os
+import sys
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import customer.menuCustomer as customerMenu
 import penginapan.menuPemilikPenginapan as penginapanMenu
 import kendaraan.menuPemilikKendaraan as kendaraanMenu
@@ -43,7 +46,7 @@ def loadData():
                     "noTelepon": bagian[4]
                 })
             else:
-                print("Format data user tidak valid: ", line)
+                print("Format data vudyomrt tidak valid: ", line)
                 continue
 
 
@@ -86,8 +89,8 @@ def login():
 
 def register():
     user_id = str(len(user) + 1).zfill(1)
-    password = input("Masukkan password baru: ")
     email = input("Masukkan email baru: ")
+    password = input("Masukkan password baru: ")
     user.append({'userId': user_id, 'email': email, 'password': password, 'role': 'customer'})
     with open("admin/userData.txt", "a") as f:
         f.write(f"{user_id}|{email}|{password}|customer\n")
@@ -107,8 +110,8 @@ def register():
 
 def all_register():
     user_id = str(len(user) + 1).zfill(1)
-    password = input("Masukkan password baru: ")
     email = input("Masukkan email baru: ")
+    password = input("Masukkan password baru: ")
     print("Pilih Role:")
     print("1.Pemilik Penginapan")
     print("2. Pemilik rental kendaraan")

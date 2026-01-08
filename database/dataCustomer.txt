@@ -1,3 +1,2 @@
-01|firdaus123@gmail.com|firdaus|Bandung
-02|rizky123@gmail.com|rizky Fadhilah|Bandung
-idCustomer|idUser|nama|alamat|noTelepon
+01|04|firdaus123@gmail.com|firdaus|Bandung|08546553286
+02|05|rizky123@gmail.com|rizky Fadhilah|Bandung|085684332

@@ -1,7 +1,11 @@
+import os
+import sys
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import kendaraan.penyewaKendaraan as penyewa
 import penginapan.SewaPenginapan as sewaPenginapan
-import admin.komunitas.komunitas as komunitas
-import os
+import komunitas.komunitas as komunitas
+
 
 def menu_user(userId):
     with open("database/dataCustomer.txt", "r") as f:
