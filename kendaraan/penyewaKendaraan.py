@@ -234,7 +234,7 @@ def menu_customer(userId):
         else:
             print("Pilihan tidak valid, coba lagi!\n")
 
+load_data()
 
 if __name__ == "__main__":
-    load_data()
     menu_penyewa_kendaraan()
