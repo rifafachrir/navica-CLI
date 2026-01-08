@@ -54,11 +54,15 @@ def load_data():
         for line in f:
             bagian = line.strip().split("|")
             if len(bagian) != 5:
+                continue
+            try:
                 penginapanId = int(bagian[0])
                 mitraId = int(bagian[1])
                 namaPenginapan = bagian[2]
                 alamat = bagian[3]
                 noTelp = bagian[4]
+            except ValueError:
+                continue
 
             penginapan_list.append({
                 "penginapanId": penginapanId,
@@ -73,7 +77,7 @@ def load_data():
     with open(FILE_SEWA, "r", encoding="utf-8") as file:
         for line in file:
             bagian = line.strip().split("|")
-            if len(bagian) == 9:
+            if len(bagian) == 10:
                 data_sewa.append({
                     "id": bagian[0],
                     "penyewa": bagian[1],
@@ -114,13 +118,14 @@ def load_kamar_by_penginapan(penginapan_id):
         for line in f:
             bagian = line.strip().split("|")
             if bagian[1] == str(penginapan_id):
-                kamar_id = int(bagian[0])
-                penginapan_id = int(bagian[1])
-                nama = bagian[2]
-                tipe = bagian[3]
-                harga = int(bagian[4])
-                kapasitas = int(bagian[5])
-                status = bagian[6]
+                continue
+            kamar_id = int(bagian[0])
+            penginapan_id = int(bagian[1])
+            nama = bagian[2]
+            tipe = bagian[3]
+            harga = int(bagian[4])
+            kapasitas = int(bagian[5])
+            status = bagian[6]
 
             selected_penginapan.append({
                 "id": kamar_id,
@@ -163,9 +168,8 @@ def save_data(data):
     with open(FILE_SEWA, "w", encoding="utf-8") as file:
         for d in data:
             file.write(
-                f"{d['id']}|{d['penyewa']}|{d['jenis']}|{d['nama_properti']}|"
-                f"{d['nomor_kamar']}|{d['lama_menginap']}|{d['harga_permalam']}|"
-                f"{d['total']}|{d['status']}\n"
+                f"{k['id']}|{k['penginapan_id']}|{k['nama']}|{k['tipe']}|"
+                f"{k['harga']}|{k['kapasitas']}|{k['status']}\n"
             )
 
 
@@ -185,10 +189,27 @@ def create_data(data):
     # penyewa = input("Nama Penyewa : ")
     for i, cust in enumerate(customer):
         print(f"{i+1}. {cust['nama']}")
-    select = int(input("Pilih Penyewa : ")) - 1
-    penyewa = customer[select]["nama"]
-    
-    
+    while True:
+        pilihan = input("Pilih Penyewa (nomor): ")
+
+        if not pilihan.isdigit():
+            print("Input harus berupa angka.")
+            continue
+
+        select = int(pilihan) - 1
+
+        if select < 0 or select >= len(customer):
+            print("Pilihan tidak tersedia.")
+            continue
+
+        penyewa = customer[select]["nama"]
+        break
+
+        if not customer:
+            print("Belum ada data customer.")
+            print("Silakan registrasi customer terlebih dahulu.\n")
+            return
+
 
     tanggal_menginap = input("Tanggal Menginap (YYYY-MM-DD) : ")
 
@@ -539,6 +560,33 @@ def userMenu (customerId):
         else:
             print("Pilihan tidak valid.\n")
 
+def reschedule_data(data):
+    print("\n=== RESCHEDULE PEMESANAN ===")
+    target = input("Masukkan ID Sewa: ")
+
+    for d in data:
+        if d["id"] == target:
+
+            if d["status"] != "Booking":
+                print("Reschedule hanya bisa dilakukan saat status Booking.\n")
+                return
+
+            print("Tanggal lama :", d["tanggal_mulai"])
+            tanggal_baru = input("Masukkan tanggal baru (YYYY-MM-DD): ")
+
+            if tanggal_baru == d["tanggal_mulai"]:
+                print("Tanggal baru tidak boleh sama dengan tanggal lama.\n")
+                return
+
+            # update tanggal
+            d["tanggal_mulai"] = tanggal_baru
+            save_data(data)
+
+            print("Reschedule berhasil!\n")
+            return
+
+    print("ID sewa tidak ditemukan.\n")
+
 def main():
 # Materi: Perulangan While
     
@@ -552,7 +600,8 @@ def main():
         print("4. Hapus Pemesanan")
         print("5. Cari Pemesanan")
         print("6. Urutkan Pemesanan")
-        print("7. Keluar")
+        print("7. Reschedule Pemesanan")
+        print("8. Keluar")
         pilihan = input("Pilih menu: ")
         if pilihan == "1":
             create_data(data)
@@ -567,6 +616,8 @@ def main():
         elif pilihan == "6":
             sort_data(data)
         elif pilihan == "7":
+            reschedule_data(data)
+        elif pilihan == "8":
             print("Terima kasih telah menggunakan Navica.")
             break
         else:
