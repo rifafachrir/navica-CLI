@@ -2,6 +2,7 @@
 import os
 import sys
 import re
+import getpass
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import customer.menuCustomer as customerMenu
@@ -91,15 +92,23 @@ def login():
 
     while True:
         email = input("Masukkan email: ")
-        password = input("Masukkan password: ")
+        password = input_password()
 
         if authentication(email, password):
             break
+        else:
+            print("Email atau password salah.")
 
 def register():
     user_id = str(len(user) + 1).zfill(1)
     email = input("Masukkan email baru: ")
-    password = input("Masukkan password baru: ")
+    password = input_password()
+    confirm = input_password()
+
+    if password != confirm:
+        print("Password tidak sama!")
+        return
+
     user.append({'userId': user_id, 'email': email, 'password': password, 'role': 'customer'})
     with open("database/userData.txt", "a") as f:
         f.write(f"{user_id}|{email}|{password}|customer\n")
@@ -193,6 +202,26 @@ def is_email_exists(email):
 def is_email_valid(email):
     pola = r'^[\w\.-]+@[\w\.-]+\.\w+$'
     return re.match(pola, email)
+
+def input_password():
+    while True:
+        print("Tampilkan password?")
+        print("1. Tidak (disembunyikan)")
+        print("2. Ya (ditampilkan)")
+        pilihan = input("Pilih (1/2): ")
+
+        if pilihan == "1":
+            password = getpass.getpass("Masukkan password: ")
+            return password
+        elif pilihan == "2":
+            password = input("Masukkan password: ")
+            return password
+        else:
+            print("Pilihan tidak valid.\n")
+    
+    while not password:
+        print("Password tidak boleh kosong!")
+        password = input_password()
 
 def forget_password():
     email = input("Masukkan email Anda: ")

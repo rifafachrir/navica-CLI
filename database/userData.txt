@@ -2,3 +2,5 @@
 2|hambaAllah@gmail.com|allahuakbar|penginapan
 3|hai@gmail.com|halo|customer
 1|hai@gmail.com|halo|customer
+5|akusiapa@email.com|aku12345|penginapan
+6|aku@adalah.pokonya|akulucu|customer
