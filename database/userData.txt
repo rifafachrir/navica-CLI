@@ -1,0 +1,2 @@
+1|tata|123|customer
+2|akusiapa|000|customer

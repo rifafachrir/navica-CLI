@@ -84,12 +84,16 @@ def authentication(email, password):
         return False
 
 def login():
-    looping = True
-    while looping:
+    if len(user) == 0:
+        print("Belum ada user. Silakan register dulu.")
+        return
+
+    while True:
         email = input("Masukkan email: ")
         password = input("Masukkan password: ")
+
         if authentication(email, password):
-            looping = False
+            break
 
 def register():
     user_id = str(len(user) + 1).zfill(1)
@@ -117,7 +121,7 @@ def all_register():
     email = input("Masukkan email baru: ")
     password = input("Masukkan password baru: ")
     print("Pilih Role:")
-    print("1.Pemilik Penginapan")
+    print("1. Pemilik Penginapan")
     print("2. Pemilik rental kendaraan")
     print("3. Pemilik tiket hiburan")
     print("4. Customer")
