@@ -1,6 +1,6 @@
 import os
 
-DATA_FILE = "penginapan/penginapan.txt"
+DATA_FILE = "database/dataPenginapan.txt"
 
 
 def ensure_file():

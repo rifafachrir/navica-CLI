@@ -1,2 +1,0 @@
-K001|deluxe|50000|Tersedia|P001
-K002|jelek|1000000|Tersedia|P001

@@ -1,8 +1,7 @@
 import os
 from penginapan.DataPenginapan import load_penginapan
 
-DATA_FILE = "penginapan/kamar.txt"
-
+DATA_FILE = "database/dataKamar.txt"
 
 def ensure_file():
     if not os.path.exists("penginapan"):

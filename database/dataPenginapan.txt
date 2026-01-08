@@ -1,2 +1,2 @@
-01|01|Villa Batoe|bandung|0854684685
-02|01|villa Bandung|bandung|12345678
+P001|villa bandung|jalan cibiru hilir|firdaus
+P002|kosan rifa|jalan rifa|rifa
