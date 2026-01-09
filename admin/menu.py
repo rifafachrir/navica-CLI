@@ -17,7 +17,7 @@ def mainMenu():
     while True:
         # Tampilan Menu
         print("\n=== MENU UTAMA ===")
-        print("1. menu User")
+        print("1. menu authentication")
         print("2. menu Customer")  # <--- Ini nanti masuk ke RUD Customer
         print("3. Menu Mitra")
         print("4. Menu Penginapan")
