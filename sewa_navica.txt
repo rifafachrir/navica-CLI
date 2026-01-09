@@ -1,3 +1,0 @@
-NAV01|1|Hotel|1|1|1|1|1|Booking
-NAV02|1|Hotel|1|11|2|1000000|2000000|Booking
-NAV03|king catur|Vila|lembang|-|4|20000000|80000000|Booking

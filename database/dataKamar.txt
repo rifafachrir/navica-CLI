@@ -1,0 +1,5 @@
+HTA-01|Hotel Tidur Abadi|50000|tersedia
+HTA-02|Hotel Tidur Abadi|50000|tersedia
+HTA-03|Hotel Tidur Abadi|50000|tersedia
+HTA-04|Hotel Tidur Abadi|50000|tersedia
+HTA-05|Hotel Tidur Abadi|50000|tersedia

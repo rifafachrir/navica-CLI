@@ -1,0 +1,1 @@
+sewaId|customerId|kodeKamar|kendaraanId|TiketId|Tanggal_booking|total_harga|tanggalMulai|TanggalSelesai|statusSewa
