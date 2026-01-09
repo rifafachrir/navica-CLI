@@ -5,3 +5,6 @@
 5|akusiapa@email.com|aku12345|penginapan
 6|aku@adalah.pokonya|akulucu|customer
 7|rifafach@gmail.com|rifa123|customer
+8|pemilikKendaraan@gmail.com|123|kendaraan
+9|pemilikPenginapan@gmail.com|123|penginapan
+10|pemilikTiket@gmail.com|123|hiburan

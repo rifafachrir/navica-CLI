@@ -38,10 +38,10 @@ def input_email():
 
 def input_jenis_mitra():
     while True:
-        jenis = input("Jenis Mitra (Transportasi/Hiburan): ").strip().lower()
-        if jenis in ['transportasi', 'hiburan']:
+        jenis = input("Jenis Mitra ('transportasi', 'hiburan', 'rental', 'penginapan): ").strip().lower()
+        if jenis in ['transportasi', 'hiburan', 'rental', 'penginapan']:
             return jenis.capitalize()
-        print("❌ Jenis Mitra hanya boleh 'Transportasi' atau 'Hiburan'!")
+        print("❌ Jenis Mitra hanya boleh 'Transportasi', 'Hiburan', 'Rental', atau 'Penginapan'!")
 
 def is_header(line):
     return line.strip() == "ID|Nama|Jenis|Alamat|Telepon|Email|Status"

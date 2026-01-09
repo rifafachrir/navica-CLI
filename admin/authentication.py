@@ -9,6 +9,7 @@ import customer.menuCustomer as customerMenu
 import penginapan.menuPemilikPenginapan as penginapanMenu
 import kendaraan.menuPemilikKendaraan as kendaraanMenu
 import tiket.menuTiket as tiketMenu
+import mitra.dataMitra as mitra
 
 file = os.path.exists("database/userData.txt")
 FILE_CUSTOMER = "database/dataCustomer.txt"
@@ -77,6 +78,8 @@ def authentication(email, password):
                         # print("Selamat datang, Pemilik Rental Kendaraan", i['username'])
                         kendaraanMenu.menu_pemilik_kendaraan(selected_user_id)
                     elif i['role'] == 'hiburan':    
+                        tiketMenu.menu_tiket(selected_user_id)
+                    elif i['role'] == 'admin':
                         tiketMenu.menu_tiket(selected_user_id)
                     return True
 
@@ -151,17 +154,23 @@ def all_register():
     print("2. Pemilik Rental Kendaraan")
     print("3. Pemilik Tiket Hiburan")
     print("4. Customer")
+    print("5. Admin")
 
     role_choice = input("Masukkan pilihan (1-4): ").strip()
 
     if role_choice == '1':
         role = 'penginapan'
+        mitra.tambah_mitra()
     elif role_choice == '2':
         role = 'kendaraan'
+        mitra.tambah_mitra()
     elif role_choice == '3':
         role = 'hiburan'
+        mitra.tambah_mitra()
     elif role_choice == '4':
         role = 'customer'
+    elif role_choice == '5':
+        role = 'admin'
     else:
         print("Pilihan role tidak valid!")
         return
