@@ -6,12 +6,19 @@ import kendaraan.pemilikKendaraan as pemilkKendaraan
 import kendaraan.penyewaKendaraan as penyewa
 
 def menu_pemilik_kendaraan(userId):
+    mitraId = None
+    
     with open ("database/dataMitra.txt", 'r') as f:
-        lines = f.readlines()
-        for line in lines:
+        for line in f:
             bagian = line.strip().split("|")
-            if bagian[1] == userId:
+            if len(bagian) >= 2 and bagian[1] == userId:
                 mitraId = bagian[0]
+                break
+            
+    if mitraId is None:
+        print("Data mitra tidak ditemukan untuk user ini.")
+        return
+
     while True: 
         print("=== Selamat Datang pemilik kendaraan ===")
         print("1. lihat data peminjaman")
@@ -21,7 +28,10 @@ def menu_pemilik_kendaraan(userId):
         print("5. ganti kendaraan")
         print("6. Konfirmasi Pengembalian")
         print("0. Keluar")
-        menu = input("Pilih menu (1-6)")
+        menu = input("Pilih menu (1-6): ").strip()
+        if menu == "":
+            print("Menu tidak boleh kosong.")
+            continue
 
         if menu == "1":
             penyewa.lihat_penyewa_by_mitraId(mitraId)
@@ -40,5 +50,5 @@ def menu_pemilik_kendaraan(userId):
         else:
             print("Pilihan tidak dikenal silahkan coba lagi.")
 
-if "__main__" == __name__:
-    menu_pemilik_kendaraan()
+if __name__ == "__main__":
+    menu_pemilik_kendaraan("U001")

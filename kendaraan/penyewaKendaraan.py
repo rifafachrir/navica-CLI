@@ -13,6 +13,36 @@ customer_data = []
 kendaraan_data = []
 pembayaran_data = []
 
+def input_tanggal(prompt):
+    while True:
+        tgl = input(prompt).strip()
+
+        if tgl == "":
+            print("Tanggal tidak boleh kosong!")
+            continue
+
+        # cek format dasar YYYY-MM-DD
+        bagian = tgl.split("-")
+        if len(bagian) != 3:
+            print("Format tanggal salah! Gunakan YYYY-MM-DD")
+            continue
+
+        if not (bagian[0].isdigit() and bagian[1].isdigit() and bagian[2].isdigit()):
+            print("Tanggal harus angka! (YYYY-MM-DD)")
+            continue
+
+        tahun, bulan, hari = int(bagian[0]), int(bagian[1]), int(bagian[2])
+
+        if not (1 <= bulan <= 12):
+            print("Bulan harus 1-12!")
+            continue
+
+        if not (1 <= hari <= 31):
+            print("Hari harus 1-31!")
+            continue
+
+        # VALID → return
+        return tgl
 
 def load_data():
     # Bersihkan list sebelum memuat data baru
@@ -28,25 +58,29 @@ def load_data():
             lines = f.readlines()
             for line in lines:
                 bagian = line.strip().split("|")
-                if len(bagian) >= 9:
+                tgl_mulai = datetime.datetime.strptime(bagian[5], "%Y-%m-%d")
+                tgl_selesai = datetime.datetime.strptime(bagian[6], "%Y-%m-%d")
+
+                lama_sewa = (tgl_selesai - tgl_mulai).days
+
+                if len(bagian) >= 8:
                     data = {
                     "sewaId": bagian[0],
                     "customerId": bagian[1],
                     "kendaraanYangDisewa": bagian[2],
                     "tanggal_booking": bagian[3],
-                    "total_harga": bagian[4],
+                    "total_harga": int(bagian[4]),
                     "tanggalMulai": bagian[5],
                     "TanggalSelesai": bagian[6],
-                    "lama_sewa": int(bagian[6]) - int(bagian[5]),
+                    "lama_sewa": lama_sewa,
                     "statusSewa": bagian[7],
                     }
                     penyewa_list.append(data)
 
     # 2. Load Data Mobil
-    if os.path.exists(FILE_KENDARAAN):
-        with open(FILE_KENDARAAN, "r") as f:
-            lines = f.readlines()
-            for line in lines:
+    if os.path.exists(FILE_CUSTOMER):
+        with open(FILE_CUSTOMER, "r") as f:
+            for line in f:
                 bagian = line.strip().split("|")
                 if len(bagian) == 5:
                     customer_data.append({
@@ -60,9 +94,9 @@ def load_data():
                     print("Format data customer tidak valid:", line)
                     continue
         
+    if os.path.exists(FILE_KENDARAAN):
         with open("database/dataKendaraan.txt", "r") as f:
-            lines = f.readlines()
-            for line in lines:
+            for line in f:
                 bagian = line.strip().split("|")
                 if len(bagian) == 5:
                     kendaraan_data.append({
@@ -100,15 +134,28 @@ def load_data():
 def simpan_file_sewa():
     with open(FILE_PENYEWA, "w") as f:
         for p in penyewa_list:
-            line = f"{p['sewaId']}|{p['customerId']}|{p['kendaraanYangDisewa']}|{p['tanggal_booking']}|{p['total_harga']}|{p['tanggalMulai']}|{p['tanggalSelesai']}|{p['statusSewa']}|\n"
+            line = f"{p['sewaId']}|{p['customerId']}|{p['kendaraanYangDisewa']}|{p['tanggal_booking']}|{p['total_harga']}|{p['tanggalMulai']}|{p['TanggalSelesai']}|{p['statusSewa']}|\n"
             f.write(line)
 def pick_customer():
     print("=== Pilih Customer ===")
     for i, customer in enumerate(customer_data):
         print(f"{i + 1}. {customer['nama']} (ID: {customer['customerId']})")
-    pilihan = int(input("Masukkan nomor customer: ")) - 1
+    pilihan = input("Masukkan nomor customer: ").strip()
+    if pilihan == "":
+        return None
+    if not pilihan.isdigit():
+        print("Input harus angka!")
+        return None
+
+    pilihan = int(pilihan) - 1
     if 0 <= pilihan < len(customer_data):
-        return customer_data[pilihan]['id']
+        return customer_data[pilihan]['customerId']
+    else:
+        print("Pilihan tidak valid.")
+        return None
+
+    if 0 <= pilihan < len(customer_data):
+        return customer_data[pilihan]['customerId']
     else:
         print("Pilihan tidak valid.")
         return None
@@ -117,7 +164,15 @@ def pick_kendaraan():
     print("=== Pilih Kendaraan ===")
     for i, kendaraan in enumerate(kendaraan_data):
         print(f"{i + 1}. {kendaraan['namaKendaraan']} , Rp. {kendaraan['hargaSewaPerHari']}/hari")
-    pilihan = int(input("Masukkan nomor kendaraan: ")) - 1
+    pilihan = input("Masukkan nomor kendaraan: ").strip()
+    if pilihan == "":
+        return None, None
+    if not pilihan.isdigit():
+        print("Input harus angka!")
+        return None, None
+
+    pilihan = int(pilihan) - 1
+
     if 0 <= pilihan < len(kendaraan_data):
         return kendaraan_data[pilihan]['noKendaraan'], kendaraan_data[pilihan]['hargaSewaPerHari']
     else:
@@ -129,17 +184,11 @@ def cek_ketersediaan_kendaraan(kendaraan, tanggalMulai, TanggalSelesai):
     TanggalSelesaiBaru = datetime.datetime.strptime(TanggalSelesai, "%Y-%m-%d")
     
     for penyewa in penyewa_list:
-        if penyewa['kendaraanYangDisewa'] == kendaraan:
-            kendaraanYangAda = penyewa['kendaraanYangDisewa']
+        if penyewa['kendaraanYangDisewa'] == kendaraan and penyewa["statusSewa"] != "selesai":
             tanggalMulaiYangAda = datetime.datetime.strptime(penyewa['tanggalMulai'], "%Y-%m-%d")
             tanggalSelesaiYangAda = datetime.datetime.strptime(penyewa['TanggalSelesai'], "%Y-%m-%d")
-
-    for s in penyewa_list:
-        if s["kendaraanYangDisewa"] == kendaraan:
-            statusYangAda = s["statusSewa"]
                 
     if tanggalMulaiBaru <= tanggalSelesaiYangAda and tanggalMulaiYangAda <= TanggalSelesaiBaru:
-        if kendaraanYangAda == kendaraan and statusYangAda == "booking":
             return False
     return True
 
@@ -338,12 +387,12 @@ def bayar_sewa_user(idBayar):
 # TODO: perlihatkan data penyewa berdasarkan tanggal
 def tambah_penyewa():
     print("\n=== Tambah Data Penyewa ===")
-    sewaId = str(len(penyewa_list) + 1).zfill(2)
+    sewaId = "p" + str(len(penyewa_list) + 1).zfill(3)
     customerId = pick_customer()
     kendaraan, harga_per_hari = pick_kendaraan()
     tanggal_booking = datetime.date.today().strftime("%Y-%m-%d")
-    tanggalMulai = input("Tanggal Mulai Sewa (YYYY-MM-DD): ")
-    TanggalSelesai = input("Tanggal Selesai Sewa (YYYY-MM-DD): ")
+    tanggalMulai = input_tanggal("Tanggal Mulai Sewa (YYYY-MM-DD): ")
+    TanggalSelesai = input_tanggal("Tanggal Selesai Sewa (YYYY-MM-DD): ")
     if cek_ketersediaan_kendaraan(kendaraan, tanggalMulai, TanggalSelesai):
         print(" Kendaraan tersedia!")
     else:
@@ -375,11 +424,11 @@ def tambah_penyewa():
 
 def tambah_penyewa_customer(customerId):
     print("\n=== Tambah Data Penyewa ===")
-    sewaId = str(len(penyewa_list) + 1).zfill(2)
+    sewaId = "p" + str(len(penyewa_list) + 1).zfill(3)
     kendaraan, harga_per_hari = pick_kendaraan()
     tanggal_booking = datetime.date.today().strftime("%Y-%m-%d")
-    tanggalMulai = input("Tanggal Mulai Sewa (YYYY-MM-DD): ")
-    TanggalSelesai = input("Tanggal Selesai Sewa (YYYY-MM-DD): ")
+    tanggalMulai = input_tanggal("Tanggal Mulai Sewa (YYYY-MM-DD): ")
+    TanggalSelesai = input_tanggal("Tanggal Selesai Sewa (YYYY-MM-DD): ")
     if cek_ketersediaan_kendaraan(kendaraan, tanggalMulai, TanggalSelesai):
         print(" Kendaraan tersedia!")
     else:
@@ -419,10 +468,9 @@ def lihat_penyewa():
         print(f"{1+i}")
         print(f"id sewa : {p['sewaId']}")
         for c in customer_data:
-            if c['id'] == p['customerId']:
-                print(f"Nama Penyewa: {c['nama']}")
+            if c['customerId'] == p['customerId']:                print(f"Nama Penyewa: {c['nama']}")
         for k in kendaraan_data:
-            if k['id'] == p['kendaraanYangDisewa']:
+            if k['noKendaraan'] == p['kendaraanYangDisewa']:
                 print(f"Nama Kendaraan: {k['namaKendaraan']}")
         print(f"Tanggal Booking: {p['tanggal_booking']}")
         print(f"Total Harga: {p['total_harga']}")
@@ -445,10 +493,9 @@ def lihat_riwayat(customerId):
             print(f"{1+i}")
             print(f"id sewa : {p['sewaId']}")
             for c in customer_data:
-                if c['id'] == p['customerId']:
-                    print(f"Nama Penyewa: {c['nama']}")
+                if c['customerId'] == p['customerId']:                    print(f"Nama Penyewa: {c['nama']}")
             for k in kendaraan_data:
-                if k['id'] == p['kendaraanYangDisewa']:
+                if k['noKendaraan'] == p['kendaraanYangDisewa']:
                     print(f"Nama Kendaraan: {k['namaKendaraan']}")
             print(f"Tanggal Booking: {p['tanggal_booking']}")
             print(f"Total Harga: {p['total_harga']}")
@@ -473,10 +520,9 @@ def lihat_penyewa_by_customer_id(customerId):
             print(f"{1+i}")
             print(f"id sewa : {p['sewaId']}")
             for c in customer_data:
-                if c['id'] == p['customerId']:
-                    print(f"Nama Penyewa: {c['nama']}")
+                if c['customerId'] == p['customerId']:                    print(f"Nama Penyewa: {c['nama']}")
             for k in kendaraan_data:
-                if k['id'] == p['kendaraanYangDisewa']:
+                if k['noKendaraan'] == p['kendaraanYangDisewa']:
                     print(f"Nama Kendaraan: {k['namaKendaraan']}")
             print(f"Tanggal Booking: {p['tanggal_booking']}")
             print(f"Total Harga: {p['total_harga']}")
@@ -500,10 +546,9 @@ def lihat_penyewa_by_mitraId(mitraId):
             print(f"{1+i}")
             print(f"id sewa : {p['sewaId']}")
             for c in customer_data:
-                if c['id'] == p['customerId']:
-                    print(f"Nama Penyewa: {c['nama']}")
+                if c['customerId'] == p['customerId']:                    print(f"Nama Penyewa: {c['nama']}")
             for k in kendaraan_data:
-                if k['id'] == p['kendaraanYangDisewa']:
+                if k['noKendaraan'] == p['kendaraanYangDisewa']:
                     print(f"Nama Kendaraan: {k['namaKendaraan']}")
             print(f"Tanggal Booking: {p['tanggal_booking']}")
             print(f"Total Harga: {p['total_harga']}")
@@ -524,23 +569,23 @@ def ubah_data_penyewa():
     if not penyewa_list:
         return
 
-    nomor = input("Masukkan id penyewa yang ingin diubah: ")
-    if nomor < 1 or nomor > len(penyewa_list):
-        print("Nomor tidak valid!\n")
+    nomor = input("Masukkan nomor penyewa: ").strip()
+    if not nomor.isdigit():
+        print("Input harus angka!")
         return
 
-    index = nomor - 1
+    nomor = int(nomor)
     print("Biarkan kosong jika tidak ingin mengubah.")
 
     customerId = pick_customer()
     kendaraan, harga_per_hari = pick_kendaraan()
     tanggal_booking = datetime.date.today().strftime("%Y-%m-%d")
-    tanggalMulai = input("Tanggal Mulai Sewa (YYYY-MM-DD): ")
-    TanggalSelesai = input("Tanggal Selesai Sewa (YYYY-MM-DD): ")
+    tanggalMulai = input_tanggal("Tanggal Mulai Sewa (YYYY-MM-DD): ")
+    TanggalSelesai = input_tanggal("Tanggal Selesai Sewa (YYYY-MM-DD): ")
     lama_sewa = (datetime.datetime.strptime(TanggalSelesai, "%Y-%m-%d") - datetime.datetime.strptime(tanggalMulai, "%Y-%m-%d")).days
     total_harga = int(harga_per_hari) * lama_sewa
 
-    penyewa_list[index]['customerId'] = customerId
+    index = nomor - 1
     penyewa_list[index]['kendaraanYangDisewa'] = kendaraan
     penyewa_list[index]['tanggal_booking'] = tanggal_booking
     penyewa_list[index]['tanggalMulai'] = tanggalMulai
@@ -564,8 +609,8 @@ def ubah_peminjaman(mitraId):
     sewaId = input("Masukkan id penyewa yang ingin diubah: ")
 
     kendaraan, harga_per_hari = pick_kendaraan()
-    tanggalMulai = input("Tanggal Mulai Sewa (YYYY-MM-DD): ")
-    TanggalSelesai = input("Tanggal Selesai Sewa (YYYY-MM-DD): ")
+    tanggalMulai = input_tanggal("Tanggal Mulai Sewa (YYYY-MM-DD): ")
+    TanggalSelesai = input_tanggal("Tanggal Selesai Sewa (YYYY-MM-DD): ")
     lama_sewa = (datetime.datetime.strptime(TanggalSelesai, "%Y-%m-%d") - datetime.datetime.strptime(tanggalMulai, "%Y-%m-%d")).days
     total_harga = int(harga_per_hari) * lama_sewa
     for p in penyewa_list:
@@ -584,7 +629,7 @@ def ubah_peminjaman(mitraId):
 def konfirmasi_peminjaman(mitraId):
     print("\n==== konfirmasi peminjaman ====")
     lihat_penyewa_by_mitraId(mitraId)
-    print("=")*30
+    print("=" * 30)    
     sewaId = input("pilih Id sewanya: ")
     for p in penyewa_list:
         if p['sewaId'] == sewaId:
@@ -598,7 +643,7 @@ def konfirmasi_peminjaman(mitraId):
 def konfirmasi_pengembalian(mitraId):
     print("\n==== konfirmasi peminjaman ====")
     lihat_penyewa_by_mitraId(mitraId)
-    print("=")*30
+    print("=" * 30)    
     sewaId = input("pilih Id sewanya: ")
     for p in penyewa_list:
         if p['sewaId'] == sewaId:
@@ -616,7 +661,12 @@ def hapus_penyewa():
     if not penyewa_list:
         return
 
-    nomor = int(input("Masukkan nomor penyewa yang akan dihapus: "))
+    nomor = input("Masukkan nomor penyewa yang akan dihapus: ").strip()
+    if not nomor.isdigit():
+        print("Input harus angka!")
+        return
+
+    nomor = int(nomor)
     if nomor < 1 or nomor > len(penyewa_list):
         print("Nomor tidak valid!\n")
         return
@@ -661,7 +711,11 @@ def menu_penyewa_kendaraan():
         print("4. Hapus Data")
         print("5. Keluar")
 
-        pilihan = input("Pilih menu (1-5): ")
+        pilihan = input("Pilih menu (1-5): ").strip()
+
+        if pilihan == "":
+            print("Input tidak boleh kosong!")
+            continue
 
         if pilihan == "1":
             tambah_penyewa()
