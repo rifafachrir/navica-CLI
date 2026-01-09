@@ -4,3 +4,4 @@
 1|hai@gmail.com|halo|customer
 5|akusiapa@email.com|aku12345|penginapan
 6|aku@adalah.pokonya|akulucu|customer
+7|rifafach@gmail.com|rifa123|customer

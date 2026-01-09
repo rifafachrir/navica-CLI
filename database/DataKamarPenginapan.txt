@@ -1,4 +1,2 @@
-1|Villa Batoe|deluxe|50000|20|tidak
-2|villa bandung|premium|5000000|20|tidak
 vb-01|villa Bandung|luxury|10000000|2|tersedia
 vb-01|Villa Batoe|luxury|2000000|1|tidak

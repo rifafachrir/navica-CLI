@@ -1,12 +1,17 @@
 import os
 import datetime
 
-# Konfigurasi file database
-FILE_SEWA = "database/sewaPenginapan.txt"
-FILE_PEMBAYARAN = "database/dataPembayaran.txt"
+
+
 FILE_KAMAR = "database/DataKamarPenginapan.txt"
-FILE_PENGINAPAN = "database/DataPenginapan.txt"
 FILE_CUSTOMER = "database/dataCustomer.txt"
+FILE_PEMBAYARAN = "database/dataPembayaran.txt"
+FILE_SEWA = "database/SewaPenginapan.txt"
+FILE_PENGINAPAN ="database/dataPenginapan.txt"
+
+
+# Konfigurasi file database
+
 
 # List Global untuk menampung data
 kamar_list = []
@@ -43,32 +48,23 @@ def load_data():
                     kamar_list.append(kamar)
 
     # 2. Load Data Penginapan
-    if not os.path.exists(FILE_PENGINAPAN):
-        return penginapan_list
 
     with open(FILE_PENGINAPAN, "r") as f:
-        for line in f:
+        lines = f.readlines()
+        for line in lines:
             bagian = line.strip().split("|")
-            if len(bagian) != 5:
-                # penginapanId = bagian[0]
-                # mitraId = bagian[1]
-                # namaPenginapan = bagian[2]
-                # alamat = bagian[3]
-                # noTelp = bagian[4]
-
-                penginapan_list.append({
-                    "penginapanId": bagian[0],
-                    "mitraId": bagian[1],
-                    "namaPenginapan": bagian[2],
-                    "alamat": bagian[3],
-                    "noTelp": bagian[4]
-                })
+            penginapan_list.append({
+                "penginapanId": bagian[0],
+                "mitraId": bagian[1],
+                "namaPenginapan": bagian[2],
+                "alamat": bagian[3],
+                "noTelp": bagian[4]
+            })
     
     # 3. Load Data Sewa
-    if not os.path.exists(FILE_SEWA):
-        return data_sewa
-    with open(FILE_SEWA, "r", encoding="utf-8") as file:
-        for line in file:
+    with open(FILE_SEWA, "r", encoding="utf-8") as f:
+        lines = f.readlines()
+        for line in lines:
             bagian = line.strip().split("|")
             if len(bagian) == 9:
                 data_sewa.append({
@@ -84,10 +80,10 @@ def load_data():
                     "status": bagian[9],
                 })
 
-    if not os.path.exists(FILE_CUSTOMER):
-        return customer
+
 
     with open(FILE_CUSTOMER, "r")as f:
+        lines = f.readlines()
         for line in f:
             bagian = line.strip().split("|")
             if len(bagian) == 5:
@@ -99,10 +95,9 @@ def load_data():
                     "email": bagian[4],
                 })
 
-    if not os.path.exists(FILE_PEMBAYARAN):
-        return pembayaran_data
 
     with open(FILE_PEMBAYARAN, "r") as f:
+        lines = f.readlines()
         for line in f:
             bagian = line.strip().split("|")
             if len(bagian) == 6:
@@ -1168,6 +1163,6 @@ def main():
         print(d)
 
 load_data()
-
+print("penginapan_list:", penginapan_list)
 if __name__ == "__main__":
     main()
