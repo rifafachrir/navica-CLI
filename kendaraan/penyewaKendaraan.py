@@ -629,7 +629,7 @@ def ubah_peminjaman(mitraId):
 def konfirmasi_peminjaman(mitraId):
     print("\n==== konfirmasi peminjaman ====")
     lihat_penyewa_by_mitraId(mitraId)
-    print("=" * 30)    
+    print("=" * 30)
     sewaId = input("pilih Id sewanya: ")
     for p in penyewa_list:
         if p['sewaId'] == sewaId:
@@ -643,7 +643,7 @@ def konfirmasi_peminjaman(mitraId):
 def konfirmasi_pengembalian(mitraId):
     print("\n==== konfirmasi peminjaman ====")
     lihat_penyewa_by_mitraId(mitraId)
-    print("=" * 30)    
+    print("=" * 30)
     sewaId = input("pilih Id sewanya: ")
     for p in penyewa_list:
         if p['sewaId'] == sewaId:

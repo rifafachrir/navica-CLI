@@ -37,8 +37,8 @@ def load_data():
                 bagian = line.strip().split("|")
                 if len(bagian) == 7:
                     kamar = {
-                        "id": int(bagian[0]),
-                        "penginapan_id": int(bagian[1]),
+                        "id": (bagian[0]),
+                        "penginapan_id": (bagian[1]),
                         "nama": bagian[2],
                         "tipe": bagian[3],
                         "harga": int(bagian[4]),
@@ -66,7 +66,7 @@ def load_data():
         lines = f.readlines()
         for line in lines:
             bagian = line.strip().split("|")
-            if len(bagian) == 9:
+            if len(bagian) == 10:
                 data_sewa.append({
                     "id": bagian[0],
                     "penyewa": bagian[1],
@@ -1163,6 +1163,5 @@ def main():
         print(d)
 
 load_data()
-print("penginapan_list:", penginapan_list)
 if __name__ == "__main__":
     main()

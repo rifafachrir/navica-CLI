@@ -1,31 +1,43 @@
+import kendaraan.penyewaKendaraan as penyewa
+import kendaraan.pemilikKendaraan as pemilkKendaraan
 import os
 import sys
 
+# Setup path agar bisa import modul lain
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-import kendaraan.pemilikKendaraan as pemilkKendaraan
-import kendaraan.penyewaKendaraan as penyewa
+
+# Import modul yang dibutuhkan untuk menu
+
 
 def menu_pemilik_kendaraan(userId):
     mitraId = None
-    
-    with open ("database/dataMitra.txt", 'r') as f:
-        for line in f:
-            bagian = line.strip().split("|")
-            if len(bagian) >= 2 and bagian[1] == userId:
-                mitraId = bagian[0]
-                break
-            
+
+    # Cek apakah file dataMitra ada
+    if os.path.exists("database/dataMitra.txt"):
+        with open("database/dataMitra.txt", 'r') as f:
+            lines = f.readlines()
+            for line in lines:
+                bagian = line.strip().split("|")
+                # Format: mitraId|userId|nama|alamat|...
+                if len(bagian) >= 2 and bagian[1] == userId:
+                    mitraId = bagian[0]
+                    break
+
     if mitraId is None:
-        print("Data mitra tidak ditemukan untuk user ini.")
+        print("\n[ERROR] Akun ini belum terdaftar di dataMitra.txt!")
+        print(f"User ID Anda: {userId}")
+        print("Pastikan User ID ini ada di file database/dataMitra.txt kolom ke-2.")
         return
 
-    while True: 
-        print("=== Selamat Datang pemilik kendaraan ===")
-        print("1. lihat data peminjaman")
+    # Masuk ke menu jika mitraId sudah aman
+    while True:
+        print("\n=== Selamat Datang pemilik kendaraan ===")
+        print(f"Mitra ID: {mitraId}")
+        print("1. Lihat data peminjaman")
         print("2. Lihat data kendaraan yang ada")
         print("3. Tambah data kendaraan yang ingin dipinjam")
-        print("4. konfirmasi peminjaman")
-        print("5. ganti kendaraan")
+        print("4. Konfirmasi peminjaman")
+        print("5. Ganti kendaraan")
         print("6. Konfirmasi Pengembalian")
         print("0. Keluar")
         menu = input("Pilih menu (1-6): ").strip()
@@ -49,6 +61,3 @@ def menu_pemilik_kendaraan(userId):
             break
         else:
             print("Pilihan tidak dikenal silahkan coba lagi.")
-
-if __name__ == "__main__":
-    menu_pemilik_kendaraan("U001")

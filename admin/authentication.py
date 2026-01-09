@@ -1,4 +1,7 @@
 # import menu as adminMenu
+import kendaraan.menuPemilikKendaraan as kendaraanMenu
+import penginapan.menuPemilikPenginapan as penginapanMenu
+import customer.menuCustomer as customerMenu
 import os
 import sys
 import re
@@ -17,10 +20,12 @@ FILE_CUSTOMER = "database/dataCustomer.txt"
 user = []
 customer = []
 selected_user_id = ""
+
+
 def loadData():
     user.clear()
     customer.clear()
-    
+
     # ===== LOAD USER =====
     if os.path.exists("database/userData.txt"):
         with open("database/userData.txt", "r") as f:
@@ -34,11 +39,11 @@ def loadData():
                         'role': bagian[3]
                     })
                 else:
-                    print("Format data user tidak valid:", line.strip)
-    
+                    print("Format data user tidak valid:", line.strip())
+
     else:
         print("Tidak ditemukan file untuk menyimpan data")
-    
+
     # ===== LOAD CUSTOMER =====
     if os.path.exists(FILE_CUSTOMER):
         with open(FILE_CUSTOMER, "r") as f:
@@ -56,7 +61,6 @@ def loadData():
                     print("Format data vudyomrt tidak valid: ", line.strip())
 
 
-
 def authentication(email, password):
     global selected_user_id
     if len(user) == 0:
@@ -64,7 +68,7 @@ def authentication(email, password):
         return False
     else:
         for i in user:
-            if i['email'] == email :
+            if i['email'] == email:
                 if i['password'] == password:
                     print("Login berhasil!")
                     selected_user_id = i['userId']
@@ -73,7 +77,8 @@ def authentication(email, password):
                         customerMenu.menu_user(selected_user_id)
                     elif i['role'] == 'penginapan':
                         # print("Selamat datang, Pemilik Penginapan", i['username'])
-                        penginapanMenu.menu_pemilik_penginapan(selected_user_id)
+                        penginapanMenu.menu_pemilik_penginapan(
+                            selected_user_id)
                     elif i['role'] == 'kendaraan':
                         # print("Selamat datang, Pemilik Rental Kendaraan", i['username'])
                         kendaraanMenu.menu_pemilik_kendaraan(selected_user_id)
@@ -89,6 +94,7 @@ def authentication(email, password):
         print("email tidak ditemukan!")
         return False
 
+
 def login():
     if len(user) == 0:
         print("Belum ada user. Silakan register dulu.")
@@ -103,6 +109,7 @@ def login():
         else:
             print("Email atau password salah.")
 
+
 def register():
     user_id = str(len(user) + 1).zfill(1)
     email = input("Masukkan email baru: ")
@@ -113,7 +120,8 @@ def register():
         print("Password tidak sama!")
         return
 
-    user.append({'userId': user_id, 'email': email, 'password': password, 'role': 'customer'})
+    user.append({'userId': user_id, 'email': email,
+                'password': password, 'role': 'customer'})
     with open("database/userData.txt", "a") as f:
         f.write(f"{user_id}|{email}|{password}|customer\n")
     print("Registrasi berhasil!")
@@ -124,7 +132,8 @@ def register():
     nama = input("Masukkan nama anda: ")
     alamat = input("Masukkan alamat anda: ")
     noTelepon = input("Masukkan nomor telepon anda: ")
-    customer.append({"idCustomer": idCustomer, "idUser": user_id, "nama": nama, "alamat": alamat, "noTelepon": noTelepon})
+    customer.append({"idCustomer": idCustomer, "idUser": user_id,
+                    "nama": nama, "alamat": alamat, "noTelepon": noTelepon})
     with open(FILE_CUSTOMER, "a") as f:
         f.write(f"{idCustomer}|{user_id}|{nama}|{alamat}|{noTelepon}\n")
     print("ISI BIODATA SELESAI!")
@@ -174,7 +183,7 @@ def all_register():
     else:
         print("Pilihan role tidak valid!")
         return
-    
+
     user.append({
         'userId': user_id,
         'email': email,
@@ -194,6 +203,7 @@ def listUser():
         for line in lines:
             print(line.strip())
 
+
 def searchUserByEmail(email):
     for i in user:
         if i['email'] == email:
@@ -203,15 +213,18 @@ def searchUserByEmail(email):
     print("User dengan email tersebut tidak ditemukan.")
     return None
 
+
 def is_email_exists(email):
     for u in user:
         if u['email'] == email:
             return True
     return False
 
+
 def is_email_valid(email):
     pola = r'^[\w\.-]+@[\w\.-]+\.\w+$'
     return re.match(pola, email)
+
 
 def input_password():
     while True:
@@ -228,10 +241,11 @@ def input_password():
             return password
         else:
             print("Pilihan tidak valid.\n")
-    
+
     while not password:
         print("Password tidak boleh kosong!")
         password = input_password()
+
 
 def forget_password():
     email = input("Masukkan email Anda: ")
@@ -255,23 +269,24 @@ def forget_password():
 
     print("Password berhasil diubah! Silakan login kembali.")
 
+
 def start_authentication():
     while True:
         choice = input(
-    "\nPilih opsi:\n"
-    "1. Login\n"
-    "2. Register\n"
-    "3. List User\n"
-    "4. Search User by Email\n"
-    "5. Forget Password\n"
-    "0. Exit\n"
-    "Pilih: "
-)
+            "\nPilih opsi:\n"
+            "1. Login\n"
+            "2. Register\n"
+            "3. List User\n"
+            "4. Search User by Email\n"
+            "5. Forget Password\n"
+            "0. Exit\n"
+            "Pilih: "
+        )
         if choice == '1':
             login()
         elif choice == '2':
             all_register()
-            loadData()   
+            loadData()
         elif choice == '3':
             listUser()
         elif choice == '4':
@@ -279,11 +294,12 @@ def start_authentication():
             searchUserByEmail(email)
         elif choice == '5':
             forget_password()
-            loadData()   
+            loadData()
         elif choice == '0':
             break
         else:
             print("Opsi tidak valid. Silakan coba lagi.")
+
 
 loadData()
 if __name__ == "__main__":
