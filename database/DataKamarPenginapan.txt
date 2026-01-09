@@ -1,2 +1,8 @@
-vb-01|villa Bandung|luxury|10000000|2|tersedia
-vb-01|Villa Batoe|luxury|2000000|1|tidak
+vb-001|P001|LUXURY|200000|4|booking
+vb-002|P001|LUXURY|200000|4|booking
+vb-003|P001|LUXURY|200000|4|booking
+vb-004|P001|LUXURY|200000|4|tersedia
+kr-001|P002|biasa|100000|2|tersedia
+kr-002|P002|biasa|100000|2|tersedia
+kr-003|P002|biasa|100000|2|tersedia
+kr-004|P002|biasa|100000|2|tersedia

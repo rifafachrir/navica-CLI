@@ -42,11 +42,18 @@ def generateId():
     jumlah = len(data_tiket) + 1
     return  "T"+str(jumlah).zfill(3)
 
+def input_jenis():
+    while True:
+        jenis = input("Jenis (Transportasi/Hiburan): ").strip().lower()
+        if jenis in ['transportasi', 'hiburan']:
+            return jenis.capitalize()
+        print("❌ Jenis hanya boleh 'Transportasi' atau 'Hiburan'!")
+
 def create_tiket(mitraId):
     id_tiket = generateId()
     nama_tiket = input("Nama Tiket: ").strip()
     harga = input("Harga: ").strip()
-    jenis = input("Jenis: ").strip()
+    jenis = input_jenis()
     asal = input("Asal: ").strip()
     tujuan = input("Tujuan: ").strip()
 

@@ -97,23 +97,22 @@ def input_harga():
             return harga
         print("❌ Harga hanya boleh ANGKA dan harus lebih dari 0!")
 
-def input_jenis():
-    while True:
-        jenis = input("Jenis (Transportasi/Hiburan): ").strip().lower()
-        if jenis in ['transportasi', 'hiburan']:
-            return jenis.capitalize()
-        print("❌ Jenis hanya boleh 'Transportasi' atau 'Hiburan'!")
+
 
 def input_id(mitraId):
-    for i, t in enumerate(tiket):
-        if t['mitraId'] == mitraId:
-            print(f"{i+1} - {t['idTiket']} - {t['jenis']} - {t['asal']} - {t['tujuan']} - {t['harga']}")
+    if not tiket:
+        print("❌ Data tiket masih kosong!")
+        return
+    else:
+        for i, t in enumerate(tiket):
+            if t['mitraId'] == mitraId:
+                print(f"{i+1} - {t['idTiket']} - {t['jenis']} - {t['asal']} - {t['tujuan']} - {t['harga']}")
 
-    while True:
-        id_tiket = input("ID Tiket: ").strip()
-        if any(t['idTiket'] == id_tiket for t in tiket):
-            return id_tiket
-        print("❌ ID Tiket tidak valid!")
+        while True:
+            id_tiket = input("ID Tiket: ").strip()
+            if any(t['idTiket'] == id_tiket for t in tiket):
+                return id_tiket
+            print("❌ ID Tiket tidak valid!")
 
 
 def generateId():
@@ -128,11 +127,15 @@ def input_customer():
     return customers[selected]
 
 def input_tiket():
-    for i, t in enumerate(tiket):
-        print(f"{i+1} - {t['idTiket']} - {t['jenis']} - {t['asal']} - {t['tujuan']} - {t['harga']}")
+    if not tiket:
+        print("❌ Data tiket masih kosong!")
+        return False
+    else:
+        for i, t in enumerate(tiket):
+            print(f"{i+1} - {t['idTiket']} - {t['jenis']} - {t['asal']} - {t['tujuan']} - {t['harga']}")
 
-    selected = int(input("Pilih tiket: ")) - 1
-    return tiket[selected]
+        selected = int(input("Pilih tiket: ")) - 1
+        return tiket[selected]
     
 
 def input_text(prompt):
@@ -242,6 +245,9 @@ def pesan_tiket_by_customer(customerId):
 
     # nama = input_text("Nama: ")
     tiket = input_tiket()
+    if tiket == False:
+        print("tidak ada tiket yang tersedia")
+        return      
     tanggal = input_tanggal()
 
     for t in tiket:
@@ -672,7 +678,7 @@ def menu_customer(customerId):
         print("0. Keluar")
         pilihan = input("Pilih menu (0-2): ")
         if pilihan == "1":
-            pesan_tiket(customerId)
+            pesan_tiket_by_customer(customerId)
         elif pilihan == "2":
             lihat_tiket_by_customerId(customerId)
         elif pilihan == '3':

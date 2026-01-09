@@ -1,0 +1,2 @@
+idTiket|mitraId|namaTiket|harga|jenis|asal|tujuan
+T-0001|MTR002|hiburanABC|50000|hiburan

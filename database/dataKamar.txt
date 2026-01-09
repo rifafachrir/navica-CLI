@@ -1,2 +1,0 @@
-K001|kamar vip|500000|Tersedia|P001
-K002|VVIP|1000000|Tersedia|P001
