@@ -35,7 +35,8 @@ def menu_pemilik_penginapan(userId):
             sewa.check_in(mitraId)
         elif pilihan == "4":
             sewa.check_out(mitraId)
-        # elif pilihan == "5":
+        elif pilihan == "5":
+            sewa.pindah_ruangan()
         elif pilihan == "6":
             kamar.tambah_kamar_with_mitraId(mitraId)
         elif pilihan == "7":
