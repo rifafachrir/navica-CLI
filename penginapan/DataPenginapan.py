@@ -9,21 +9,22 @@ def ensure_file():
         os.makedirs("penginapan")
     if not os.path.exists(DATA_FILE):
         open(DATA_FILE, "w").close()
-
+penginapan_list = []
+mitra_list = []
 
 def load_penginapan():
     ensure_file()
-    penginapan_list = []
-    mitra_list = []
+    
     with open(DATA_FILE, "r") as file:
         for line in file:
             data = line.strip().split("|")
             if len(data) == 4:
                 penginapan_list.append({
-                    "id": data[0],
-                    "nama": data[1],
-                    "alamat": data[2],
-                    "pemilik": data[3]
+                    "penginapan_id": data[0],
+                    "mitraId": data[1],
+                    "namaPenginapan": data[2],
+                    "alamat": data[3],
+                    "noTelp": data[4]
                 })
     with open(DATA_MITRA, "r") as f:
         for line in f:
@@ -57,13 +58,16 @@ def tambah_penginapan():
     print("\n=== TAMBAH PENGINAPAN ===")
     nama = input("Nama Penginapan: ")
     alamat = input("Alamat Penginapan: ")
-    pemilik = input("Nama Pemilik: ")
-
+    for i, m in enumerate(mitra_list):
+        print(f"{1+i}. {m['id']} - {m['nama']}")
+    pemilik = input("Masukkan Id pemilik: ")
+    noTelp = input("Nomor Telepon: ")
     new_penginapan = {
-        "id": generate_id(penginapan_list),
-        "nama": nama,
+        "penginapnaId": generate_id(penginapan_list),
+        "mitraId": pemilik,
+        "namaPenginapan": nama,
         "alamat": alamat,
-        "pemilik": pemilik
+        "noTelp": noTelp
     }
 
     penginapan_list.append(new_penginapan)
@@ -82,9 +86,12 @@ def tampilkan_penginapan():
 
     for p in penginapan_list:
         print(f"ID       : {p['id']}")
-        print(f"Nama     : {p['nama']}")
+        for m in mitra_list:
+            if m["id"] == p["mitraId"]:
+                print(f"Pemilik  : {m['nama']}")
+        print(f"Nama     : {p['namaPenginapan']}")
         print(f"Alamat   : {p['alamat']}")
-        print(f"Pemilik  : {p['pemilik']}")
+        print(f"no Telepon: {p['noTelp']}")
         print("-" * 30)
 
 
@@ -99,16 +106,20 @@ def edit_penginapan():
             print("Kosongkan jika tidak ingin mengubah.")
             nama = input(f"Nama ({p['nama']}): ") or p["nama"]
             alamat = input(f"Alamat ({p['alamat']}): ") or p["alamat"]
-            pemilik = input(f"Pemilik ({p['pemilik']}): ") or p["pemilik"]
+            for i, m in enumerate(mitra_list):
+                print(f"{1+i}. {m['id']} - {m['nama']}")
+                pemilik = input("Masukkan Id pemilik: ") or p['pemilik']
+            noTelp = input(f"Nomor Telepon ({p['noTelp']}): ") or p["noTelp"]
+            
 
             p["nama"] = nama
             p["alamat"] = alamat
             p["pemilik"] = pemilik
+            p["noTelp"] = noTelp
 
             save_penginapan(penginapan_list)
             print("Data penginapan berhasil diperbarui.\n")
             return
-
     print("ID penginapan tidak ditemukan.\n")
 
 
@@ -151,3 +162,6 @@ def menu():
             break
         else:
             print("Pilihan tidak valid.")
+
+if __name__ == "__main__":
+    menu()

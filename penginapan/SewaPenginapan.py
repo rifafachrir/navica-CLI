@@ -50,19 +50,19 @@ def load_data():
         for line in f:
             bagian = line.strip().split("|")
             if len(bagian) != 5:
-                penginapanId = bagian[0]
-                mitraId = int(bagian[1])
-                namaPenginapan = bagian[2]
-                alamat = bagian[3]
-                noTelp = int(bagian[4]) 
+                # penginapanId = bagian[0]
+                # mitraId = bagian[1]
+                # namaPenginapan = bagian[2]
+                # alamat = bagian[3]
+                # noTelp = bagian[4]
 
-            penginapan_list.append({
-                "penginapanId": penginapanId,
-                "mitraId": mitraId,
-                "namaPenginapan": namaPenginapan,
-                "alamat": alamat,
-                "noTelp": noTelp
-            })
+                penginapan_list.append({
+                    "penginapanId": bagian[0],
+                    "mitraId": bagian[1],
+                    "namaPenginapan": bagian[2],
+                    "alamat": bagian[3],
+                    "noTelp": bagian[4]
+                })
     
     # 3. Load Data Sewa
     if not os.path.exists(FILE_SEWA):

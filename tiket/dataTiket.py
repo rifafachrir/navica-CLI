@@ -353,7 +353,7 @@ while True:
     elif pilih == "6":
         bersihkan_data()
     elif pilih == "7":
-        print("\n✨ Terima kasih telah menggunakan aplikasi!")
+        print("\nTerima kasih telah menggunakan aplikasi!")
         break
     else:
         print("❌ Pilihan tidak valid! Pilih angka 1-7")
