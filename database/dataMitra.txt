@@ -1,0 +1,5 @@
+ID|Nama|Jenis|Alamat|Telepon|Email|Status
+MTR001|PT Kereta Cepat|Transportasi|Jakarta Pusat|08123456789|info@kereta.com|Aktif
+MTR002|Taman Hiburan ABC|Hiburan|Bandung|08567891234|contact@tamanABC.com|Nonaktif
+M003|7|Rental Jaya|Bandung|08123456789|admin@navica.com|Aktif
+M004|8|Rental Jaya|Bandung|08123456789|rental@gmail.com|Aktif

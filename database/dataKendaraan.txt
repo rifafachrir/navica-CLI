@@ -1,0 +1,8 @@
+01|02|fortuner|3000000|tersedia
+D 1234 ABC|M001|Avanza Veloz|300000|tersedia
+B 4567 XYZ|M001|Innova Reborn|500000|tersedia
+D 123 XX|M004|GTR|200000|tersedia
+|M004|||tersedia
+A 123 BC|M004|F30|2000000|tersedia
+D 123 SS|M004|911|200000|tersedia
+S 123 DD|M004|supra|10000|tersedia
