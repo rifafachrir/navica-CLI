@@ -8,6 +8,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import customer.menuCustomer as customerMenu
 import penginapan.menuPemilikPenginapan as penginapanMenu
 import kendaraan.menuPemilikKendaraan as kendaraanMenu
+import tiket.menuTiket as tiketMenu
 
 file = os.path.exists("database/userData.txt")
 FILE_CUSTOMER = "database/dataCustomer.txt"
@@ -76,7 +77,7 @@ def authentication(email, password):
                         # print("Selamat datang, Pemilik Rental Kendaraan", i['username'])
                         kendaraanMenu.menu_pemilik_kendaraan(selected_user_id)
                     elif i['role'] == 'hiburan':    
-                        print("Selamat datang, Pemilik Tiket Hiburan")
+                        tiketMenu.menu_tiket(selected_user_id)
                     return True
 
                 else:

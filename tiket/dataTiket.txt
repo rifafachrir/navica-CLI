@@ -1,5 +1,0 @@
-ID|Jenis|Nama|Asal|Tujuan|Tanggal|Harga|Status
-hediewh|Hotel|ahsi|jasid|-|2026-01-29|20000|
-ahdiew|Hotel|afdjewi|jhd|-|2026-01-02|30000000
-tdtd|Hiburan|kgu|jj|yfy|2026-01-28|12333|
-dww2|Hiburan|salwa|bandung|-|2027-01-01|12793942|Sudah Terpakai

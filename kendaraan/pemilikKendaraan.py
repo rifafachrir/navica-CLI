@@ -7,8 +7,8 @@ import kendaraan.penyewaKendaraan as penyewaKendaraan
 data_pemilik = [] #data mitra
 kendaraan_data = []
 
-FILE_KENDARAAN = "database/dataKendaraan.txt"
-FILE_MITRA = "database/dataMitra.txt"
+FILE_KENDARAAN = "../database/dataKendaraan.txt"
+FILE_MITRA = "../database/dataMitra.txt"
 file = os.path.exists(FILE_KENDARAAN) and os.path.exists(FILE_MITRA)
 
 def input_angka(prompt):
