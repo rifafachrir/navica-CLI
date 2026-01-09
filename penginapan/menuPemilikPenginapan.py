@@ -1,32 +1,43 @@
 import os
 import sys
-import DataKamarPenginapan as kamar
-import SewaPenginapan as sewa
+
+import penginapan.DataKamarPenginapan as kamar
+import penginapan.SewaPenginapan as sewa
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+
 def menu_pemilik_penginapan(userId):
-    with open("database/dataMitra.txt", "r") as f:
-        lines = f.readlines()
-        for line in lines:
-            bagian = line.strip().split("|")
-            if bagian[1] == userId:
-                mitraId = bagian[0]
-    print("=== Menu Pemilik Penginapan ===")
-    print("1. Lihat Daftar menginap")
-    print("2. Tambah daftar penginap Baru")
-    print("3. check-in")
-    print("4. check-out")
-    print("5. pindah kamar")
-    print("6. Tambah data Kamar")
-    print("7. Liat data Kamar")
-    print("8. Ubah data Kamar ")
+    mitraId = None
+    # Cek Mitra ID
+    if os.path.exists("database/dataMitra.txt"):
+        with open("database/dataMitra.txt", "r") as f:
+            lines = f.readlines()
+            for line in lines:
+                bagian = line.strip().split("|")
+                if len(bagian) > 1 and bagian[1] == userId:
+                    mitraId = bagian[0]
+                    break
 
-    print("0. Keluar")
-
-    pilihan = input("Pilih opsi (0-4): ")
+    if mitraId is None:
+        print("Error: User ini tidak terdaftar sebagai Mitra Penginapan.")
+        return
 
     while True:
+        print("\n=== Menu Pemilik Penginapan ===")
+        print("1. Lihat Daftar menginap")
+        print("2. Tambah daftar penginap Baru")
+        print("3. Check-in")
+        print("4. Check-out")
+        print("5. Pindah kamar")
+        print("6. Tambah data Kamar")
+        print("7. Lihat data Kamar")
+        print("8. Ubah data Kamar")
+        print("0. Keluar")
+
+        # Input di DALAM loop
+        pilihan = input("Pilih opsi: ")
+
         if pilihan == "1":
             sewa.read_data_by_mitraId(mitraId)
         elif pilihan == "2":
@@ -41,7 +52,7 @@ def menu_pemilik_penginapan(userId):
             kamar.tambah_kamar_with_mitraId(mitraId)
         elif pilihan == "7":
             kamar.liat_kamar_with_mitraId(mitraId)
-        elif pilihan == "9":
+        elif pilihan == "8":
             kamar.ubah_kamar_by_mitraId(mitraId)
         elif pilihan == "0":
             print("Keluar dari menu pemilik penginapan.")

@@ -36,8 +36,8 @@ def load_kamar():
     with open(FILE_PENGINAPAN, "r") as f:
         for line in f:
             bagian = line.strip().split("|")
-            penginapanId = int(bagian[0])
-            mitraId = int(bagian[1])
+            penginapanId = (bagian[0])
+            mitraId = (bagian[1])
             namaPenginapan = bagian[2]
             alamat = bagian[3]
             noTelp = bagian[4]
@@ -328,8 +328,9 @@ def menu():
             print("Pilihan tidak valid.")
             continue
 
-load_kamar()
+
 if __name__ == "__main__":
+    load_kamar()
     menu()
 
 

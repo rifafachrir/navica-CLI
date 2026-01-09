@@ -10,3 +10,6 @@
 03|salwa@gmail.com|salwa123@gmail.com|hiburan
 04|firdaus@gmail.com|firdaus123@gmail.com|customer
 05|rizky@gmail.com|rizky123@gmail.com|customer
+
+7|admin@navica.com|admin123|admin
+8|rental@gmail.com|1234|kendaraan

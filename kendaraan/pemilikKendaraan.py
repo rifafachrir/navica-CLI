@@ -1,20 +1,27 @@
+import kendaraan.penyewaKendaraan as penyewaKendaraan
 import os
 import sys
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-import kendaraan.penyewaKendaraan as penyewaKendaraan
 
-data_pemilik = [] #data mitra
+data_pemilik = []
 kendaraan_data = []
 
 FILE_KENDARAAN = "database/dataKendaraan.txt"
 FILE_MITRA = "database/dataMitra.txt"
-file = os.path.exists(FILE_KENDARAAN) and os.path.exists(FILE_MITRA)
+
+file_exists = os.path.exists(FILE_KENDARAAN) and os.path.exists(FILE_MITRA)
+
 
 def load_data():
-    
-    if file:
+    global kendaraan_data, data_pemilik
+    kendaraan_data.clear()
+    data_pemilik.clear()
+
+    if os.path.exists(FILE_KENDARAAN) and os.path.exists(FILE_MITRA):
         valid_mitra_ids = set()
+
+        # Load Data Kendaraan
         with open(FILE_KENDARAAN, "r") as f:
             lines = f.readlines()
             for line in lines:
@@ -29,14 +36,16 @@ def load_data():
                         "status": bagian[4]
                     })
                 else:
-                    print("Format data kendaraan tidak valid:", line)
+                    # print("Format data kendaraan tidak valid:", line) # Optional: uncomment for debug
                     continue
-                
+
+        # Load Data Mitra
         with open(FILE_MITRA, "r") as f:
             lines = f.readlines()
             for line in lines:
                 bagian = line.strip().split("|")
-                if bagian[0] in valid_mitra_ids:
+                # Ambil semua mitra agar admin bisa lihat, nanti difilter jika perlu
+                if len(bagian) >= 4:
                     data_pemilik.append({
                         "mitraId": bagian[0],
                         "userId": bagian[1],
@@ -44,22 +53,38 @@ def load_data():
                         "alamat": bagian[3],
                     })
                 else:
-                    print("Tidak ada mitra untuk pemilik kendaraan")
+                    # print("Format data mitra tidak valid:", line) # Optional: uncomment for debug
                     continue
-        
+    else:
+        print("File database tidak ditemukan.")
+
 
 def tambah_kendaraan():
+    load_data()  # Reload data terbaru
     print("\n=== Tambah Data Kendaraan ===")
-    print("Masukkan ID Mitra Pemilik Kendaraan: ")
+
     noKendaraan = input("Masukkan no Polisi Kendaraan: ")
-    for i, mitra in enumerate(data_pemilik):
-        print(f"{i + 1}. {mitra['nama']} (ID: {mitra['mitraId']})")
-    pilihan = int(input("Pilih mitra yang ingin menambahkan kendaraan: ")) - 1
-    if 0 <= pilihan < len(data_pemilik):
-        mitraId = data_pemilik[pilihan]['mitraId']
-    else:
-        print("Pilihan tidak valid.")
+
+    # Tampilkan mitra untuk dipilih
+    if not data_pemilik:
+        print("Data mitra kosong.")
         return
+
+    for i, mitra in enumerate(data_pemilik):
+        print(f"{i + 1}. {mitra['namaMitra']} (ID: {mitra['mitraId']})")
+
+    try:
+        pilihan = int(
+            input("Pilih mitra yang ingin menambahkan kendaraan: ")) - 1
+        if 0 <= pilihan < len(data_pemilik):
+            mitraId = data_pemilik[pilihan]['mitraId']
+        else:
+            print("Pilihan tidak valid.")
+            return
+    except ValueError:
+        print("Input harus angka.")
+        return
+
     nama_kendaraan = input("Nama Kendaraan: ")
     harga_sewa = input("Harga Sewa per Hari: ")
 
@@ -72,13 +97,15 @@ def tambah_kendaraan():
     }
 
     kendaraan_data.append(kendaraan)
+
     with open(FILE_KENDARAAN, "a") as f:
         f.write(f"{noKendaraan}|{mitraId}|{nama_kendaraan}|{harga_sewa}|tersedia\n")
+
     print("Data kendaraan berhasil ditambahkan!\n")
+
 
 def tambah_kendaraan_by_mitraId(mitraId):
     print("\n=== Tambah Data Kendaraan ===")
-    print("Masukkan ID Mitra Pemilik Kendaraan: ")
     noKendaraan = input("Masukkan no Polisi Kendaraan: ")
     nama_kendaraan = input("Nama Kendaraan: ")
     harga_sewa = input("Harga Sewa per Hari: ")
@@ -92,12 +119,16 @@ def tambah_kendaraan_by_mitraId(mitraId):
     }
 
     kendaraan_data.append(kendaraan)
+
     with open(FILE_KENDARAAN, "a") as f:
         f.write(f"{noKendaraan}|{mitraId}|{nama_kendaraan}|{harga_sewa}|tersedia\n")
+
     print("Data kendaraan berhasil ditambahkan!\n")
 
+
 def lihat_kendaraan():
-    print("\n=== Daftar Data Kendaraan ===")
+    load_data()
+    print("\n=== Daftar Data Kendaraan (Semua) ===")
     if len(kendaraan_data) == 0:
         print("Belum ada data kendaraan.\n")
         return
@@ -105,130 +136,150 @@ def lihat_kendaraan():
     for i, k in enumerate(kendaraan_data):
         print(f"{1+i}")
         print(f"noPolisi: {k['noKendaraan']}")
+
+        # Cari nama mitra pemilik kendaraan ini
+        nama_mitra = "Tidak Diketahui"
         for m in data_pemilik:
             if m['mitraId'] == k['mitraId']:
-                print(f"Nama Mitra: {m['namaMitra']}")
+                nama_mitra = m['namaMitra']
+                break
+
+        print(f"Nama Mitra: {nama_mitra}")
         print(f"namaKendaraan: {k['namaKendaraan']}")
         print(f"hargaSewaPerHari: {k['hargaSewaPerHari']}")
         print(f"status: {k['status']}")
+        print("-" * 30)
 
-    print("-" * 30)
 
 def lihat_kendaraan_by_mitraId(mitraId):
-    print("\n=== Daftar Data Kendaraan ===")
-    if len(kendaraan_data) == 0:
+    load_data()
+    print("\n=== Daftar Data Kendaraan Anda ===")
+
+    kendaraan_saya = [k for k in kendaraan_data if k['mitraId'] == mitraId]
+
+    if not kendaraan_saya:
         print("Belum ada data kendaraan.\n")
         return
 
-    for i, k in enumerate(kendaraan_data):
-        if k['mitraId'] != mitraId:
-            print(f"{1+i}")
-            print(f"noPolisi: {k['noKendaraan']}")
-            for m in data_pemilik:
-                if m['mitraId'] == k['mitraId']:
-                    print(f"Nama Mitra: {m['namaMitra']}")
-            print(f"namaKendaraan: {k['namaKendaraan']}")
-            print(f"hargaSewaPerHari: {k['hargaSewaPerHari']}")
-            print(f"status: {k['status']}")
-
-    print("-" * 30)
-
-def lihat_kendaraan_by_mitraId(mitraId):
-    print("\n=== Daftar Data Kendaraan ===")
-    if len(kendaraan_data) == 0:
-        print("Belum ada data kendaraan.\n")
-        return
-
-    for i, k in enumerate(kendaraan_data):
-        if k['mitraId'] != mitraId:
-            print(f"{1+i}")
-            print(f"noPolisi: {k['noKendaraan']}")
-            for m in data_pemilik:
-                if m['mitraId'] == k['mitraId']:
-                    print(f"Nama Mitra: {m['namaMitra']}")
-            print(f"namaKendaraan: {k['namaKendaraan']}")
-            print(f"hargaSewaPerHari: {k['hargaSewaPerHari']}")
-            print(f"status: {k['status']}")
-
-    print("-" * 30)
-
-
+    for i, k in enumerate(kendaraan_saya):
+        print(f"{i+1}")
+        print(f"noPolisi: {k['noKendaraan']}")
+        print(f"namaKendaraan: {k['namaKendaraan']}")
+        print(f"hargaSewaPerHari: {k['hargaSewaPerHari']}")
+        print(f"status: {k['status']}")
+        print("-" * 30)
 
 
 def edit_kendaraan():
+    load_data()
     lihat_kendaraan()
-    if len(data_pemilik) == 0:
+    if not kendaraan_data:
         return
 
-    index = int(input("Pilih nomor data yang ingin diedit: ")) - 1
-    if index < 0 or index >= len(kendaraan_data):
-        print("Nomor tidak valid!")
+    try:
+        index = int(input("Pilih nomor data yang ingin diedit: ")) - 1
+        if index < 0 or index >= len(kendaraan_data):
+            print("Nomor tidak valid!")
+            return
+    except ValueError:
+        print("Input harus angka.")
         return
 
-    print("\n--- Masukkan data baru (kosongkan jika tidak ingin mengubah) ---")
-    noKendaraan = input("Masukkan no Polisi Kendaraan baru: ")
-    for i, mitra in enumerate(data_pemilik):
-        print(f"{i + 1}. {mitra['nama']} (ID: {mitra['mitraId']})")
-    pilihan = int(input("Masukkan nomor mitra baru: ")) - 1
-    if 0 <= pilihan < len(data_pemilik):
-        mitraId = data_pemilik[pilihan]['mitraId']
-    else:
-        print("Pilihan tidak valid.")
-        return
-    nama_kendaraan = input("Nama Kendaraan baru: ")
-    harga_sewa = input("Harga Sewa per Hari baru: ")
+    k = kendaraan_data[index]
+    print(
+        f"\n--- Ubah data: {k['namaKendaraan']} (Enter jika tidak ingin mengubah) ---")
 
-    if noKendaraan: kendaraan_data[index]['noKendaraan'] = noKendaraan
-    if mitraId: kendaraan_data[index]['mitraId'] = mitraId
-    if nama_kendaraan: kendaraan_data[index]['namaKendaraan'] = nama_kendaraan
-    if harga_sewa: kendaraan_data[index]['hargaSewaPerHari'] = harga_sewa
+    noKendaraan = input(f"No Polisi ({k['noKendaraan']}): ")
+
+    # Tampilkan mitra untuk dipilih
+    mitraId_baru = None
+    print(f"Mitra saat ini ID: {k['mitraId']}")
+    ubah_mitra = input("Ubah mitra? (y/n): ").lower()
+    if ubah_mitra == 'y':
+        for i, mitra in enumerate(data_pemilik):
+            print(f"{i + 1}. {mitra['namaMitra']} (ID: {mitra['mitraId']})")
+        try:
+            pilihan = int(input("Pilih mitra baru: ")) - 1
+            if 0 <= pilihan < len(data_pemilik):
+                mitraId_baru = data_pemilik[pilihan]['mitraId']
+            else:
+                print("Pilihan tidak valid.")
+        except ValueError:
+            print("Input harus angka.")
+
+    nama_kendaraan = input(f"Nama Kendaraan ({k['namaKendaraan']}): ")
+    harga_sewa = input(f"Harga Sewa ({k['hargaSewaPerHari']}): ")
+
+    # Update data di list memory
+    if noKendaraan:
+        k['noKendaraan'] = noKendaraan
+    if mitraId_baru:
+        k['mitraId'] = mitraId_baru
+    if nama_kendaraan:
+        k['namaKendaraan'] = nama_kendaraan
+    if harga_sewa:
+        k['hargaSewaPerHari'] = harga_sewa
 
     with open(FILE_KENDARAAN, "w") as f:
-        for k in kendaraan_data:
-            f.write(f"{k['noKendaraan']}|{k['mitraId']}|{k['namaKendaraan']}|{k['hargaSewaPerHari']}|{k['status']}\n")
-            
+        for item in kendaraan_data:
+            f.write(
+                f"{item['noKendaraan']}|{item['mitraId']}|{item['namaKendaraan']}|{item['hargaSewaPerHari']}|{item['status']}\n")
+
     print("Data kendaraan berhasil diperbarui!\n")
 
 
-
-
 def hapus_kendaraan():
+    load_data()
     lihat_kendaraan()
-    if len(kendaraan_data) == 0:
+    if not kendaraan_data:
         return
 
-    index = int(input("Pilih nomor data yang ingin dihapus: ")) - 1
-    if index < 0 or index >= len(kendaraan_data):
-        print("Nomor tidak valid!")
+    try:
+        index = int(input("Pilih nomor data yang ingin dihapus: ")) - 1
+        if index < 0 or index >= len(kendaraan_data):
+            print("Nomor tidak valid!")
+            return
+    except ValueError:
+        print("Input harus angka.")
         return
 
     kendaraan_data.pop(index)
+
     with open(FILE_KENDARAAN, "w") as f:
         for k in kendaraan_data:
-            f.write(f"{k['noKendaraan']}|{k['mitraId']}|{k['namaKendaraan']}|{k['hargaSewaPerHari']}|{k['status']}\n")
+            f.write(
+                f"{k['noKendaraan']}|{k['mitraId']}|{k['namaKendaraan']}|{k['hargaSewaPerHari']}|{k['status']}\n")
     print("Data kendaraan berhasil dihapus!\n")
 
+
 def menuAdmin():
+    load_data()
     while True:
-        print("=== MENU PEMILIK KENDARAAN ===")
+        print("\n=== MENU ADMIN KENDARAAN ===")
         print("1. Tambah Kendaraan")
-        print("2. Lihat Pemilik")
-        print("3. Edit Pemilik")
-        print("4. Hapus Pemilik")
+        print("2. Lihat Semua Kendaraan")
+        print("3. Edit Kendaraan")
+        print("4. Hapus Kendaraan")
         print("5. Keluar")
 
         pilih = input("Pilih menu: ")
 
-        if pilih == "1": tambah_kendaraan()
-        elif pilih == "2": lihat_kendaraan()
-        elif pilih == "3": edit_kendaraan()
-        elif pilih == "4": hapus_kendaraan()
+        if pilih == "1":
+            tambah_kendaraan()
+        elif pilih == "2":
+            lihat_kendaraan()
+        elif pilih == "3":
+            edit_kendaraan()
+        elif pilih == "4":
+            hapus_kendaraan()
         elif pilih == "5":
             print("Terima kasih!")
             break
         else:
             print("Pilihan tidak valid!\n")
-load_data()
+
 
 if __name__ == "__main__":
     menuAdmin()
+else:
+    load_data()
