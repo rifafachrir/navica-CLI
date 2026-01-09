@@ -270,11 +270,10 @@ def generate_id_sewa():
 #         print("Nomor pilihan salah.")
 
 def create_pembayaran(sewaId, total):
-    print("\n=== PEMBAYARAN RENTAL KENDARAAN ===")
     jumlah = 0
     with open(FILE_PEMBAYARAN, "r") as f:
         jumlah = len(f.readlines())
-    idBayar = "PAY-K" + str(jumlah + 1).zfill(3)
+    idBayar = "PAY-P" + str(jumlah + 1).zfill(3)
     status = "belum bayar"
 
     with open(FILE_PEMBAYARAN, "a") as f:
@@ -328,6 +327,7 @@ def bayar_pesanan_user(idBayar):
 
                 else:
                     print("Pembayaran dibatalkan.")
+                    break
 
 
             else: 
@@ -701,6 +701,7 @@ def read_data(data):
         print(f"Status         : {d['status']}")
         for b in pembayaran_data:
             if b['sewaId'] == d["id"]:
+                print("kode pembayaran : ", b["idBayar"])
                 print("Status Pembayaran : ", b["status"])
         print("-" * 30)
        

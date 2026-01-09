@@ -5,6 +5,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import kendaraan.penyewaKendaraan as sewaKendaraan
 import penginapan.SewaPenginapan as sewaPenginapan
 import komunitas.komunitas as komunitas
+import tiket.dataTiket as tiket
 
 # TODO: buat fungsi untuk mempermudah user di modul tiket
 def menu_user(userId):
@@ -42,12 +43,9 @@ def menu_user(userId):
         elif menu == "3":
             komunitas.CommunityMenu()
         elif menu == "4":
-            print("tiket")
+            tiket.menu_customer(customerId)
         elif menu == "0":
             print("Keluar dari menu user.")
             break
         else:
             print("Pilihan tidak dikenal silahkan coba lagi.")
-
-if __name__ == "__main__":
-    menu_user("1")
