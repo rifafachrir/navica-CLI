@@ -575,91 +575,91 @@ def hapus_tiket():
     
     input("\nTekan Enter untuk melanjutkan...")
 
-def bersihkan_data():
-    print("\n=== BERSIHKAN DATA RUSAK ===")
-    try:
-        with open("dataTiket.txt", "r") as file:
-            lines = file.readlines()
+# def bersihkan_data():
+#     print("\n=== BERSIHKAN DATA RUSAK ===")
+#     try:
+#         with open("dataTiket.txt", "r") as file:
+#             lines = file.readlines()
         
-        data_valid = []
-        data_rusak = 0
-        has_header = False
+#         data_valid = []
+#         data_rusak = 0
+#         has_header = False
         
-        for line in lines:
-            line_stripped = line.strip()
+#         for line in lines:
+#             line_stripped = line.strip()
             
-            # Simpan header jika ada
-            if is_header(line_stripped):
-                has_header = True
-                continue
+#             # Simpan header jika ada
+#             if is_header(line_stripped):
+#                 has_header = True
+#                 continue
                 
-            if line_stripped and '|' in line_stripped:
-                data = line_stripped.split("|")
-                if len(data) == 8:  # Update: sekarang harus 8 kolom
-                    try:
-                        int(data[6])  # Validasi harga
-                        # Validasi status
-                        if data[7] in ["Belum Terpakai", "Sudah Terpakai"]:
-                            data_valid.append(line)
-                        else:
-                            data_rusak += 1
-                    except ValueError:
-                        data_rusak += 1
-                else:
-                    data_rusak += 1
+#             if line_stripped and '|' in line_stripped:
+#                 data = line_stripped.split("|")
+#                 if len(data) == 8:  # Update: sekarang harus 8 kolom
+#                     try:
+#                         int(data[6])  # Validasi harga
+#                         # Validasi status
+#                         if data[7] in ["Belum Terpakai", "Sudah Terpakai"]:
+#                             data_valid.append(line)
+#                         else:
+#                             data_rusak += 1
+#                     except ValueError:
+#                         data_rusak += 1
+#                 else:
+#                     data_rusak += 1
         
-        # Tulis ulang tanpa header
-        with open("dataTiket.txt", "w") as file:
-            file.writelines(data_valid)
+#         # Tulis ulang tanpa header
+#         with open("dataTiket.txt", "w") as file:
+#             file.writelines(data_valid)
         
-        print(f"✅ Pembersihan selesai!")
-        if has_header:
-            print(f"   Header dihapus: 1")
-        print(f"   Data valid: {len(data_valid)}")
-        print(f"   Data rusak dihapus: {data_rusak}")
+#         print(f"✅ Pembersihan selesai!")
+#         if has_header:
+#             print(f"   Header dihapus: 1")
+#         print(f"   Data valid: {len(data_valid)}")
+#         print(f"   Data rusak dihapus: {data_rusak}")
         
-    except FileNotFoundError:
-        print("❌ File data tidak ditemukan")
+#     except FileNotFoundError:
+#         print("❌ File data tidak ditemukan")
     
-    input("\nTekan Enter untuk melanjutkan...")
+#     input("\nTekan Enter untuk melanjutkan...")
 
-# Program Utama
-while True:
-    clear_screen()
-    print("""
-╔══════════════════════════════════╗
-║  APLIKASI PEMESANAN TIKET        ║
-╚══════════════════════════════════╝
+# # Program Utama
+# while True:
+#     clear_screen()
+#     print("""
+# ╔══════════════════════════════════╗
+# ║  APLIKASI PEMESANAN TIKET        ║
+# ╚══════════════════════════════════╝
 
-1. 📝 Tambah Tiket
-2. 📋 Lihat Tiket
-3. ✏️  Update Tiket
-4. ✅ Verifikasi Tiket
-5. 🗑️  Hapus Tiket
-6. 🧹 Bersihkan Data Rusak
-7. 🚪 Keluar
-""")
+# 1. 📝 Tambah Tiket
+# 2. 📋 Lihat Tiket
+# 3. ✏️  Update Tiket
+# 4. ✅ Verifikasi Tiket
+# 5. 🗑️  Hapus Tiket
+# 6. 🧹 Bersihkan Data Rusak
+# 7. 🚪 Keluar
+# """)
 
-    pilih = input("Pilih menu (1-7): ").strip()
+#     pilih = input("Pilih menu (1-7): ").strip()
 
-    if pilih == "1":
-        pesan_tiket()
-    elif pilih == "2":
-        lihat_tiket()
-    elif pilih == "3":
-        update_tiket()
-    elif pilih == "4":
-        verifikasi_tiket()
-    elif pilih == "5":
-        hapus_tiket()
-    elif pilih == "6":
-        bersihkan_data()
-    elif pilih == "7":
-        print("\nTerima kasih telah menggunakan aplikasi!")
-        break
-    else:
-        print("❌ Pilihan tidak valid! Pilih angka 1-7")
-        input("\nTekan Enter untuk melanjutkan...")
+#     if pilih == "1":
+#         pesan_tiket()
+#     elif pilih == "2":
+#         lihat_tiket()
+#     elif pilih == "3":
+#         update_tiket()
+#     elif pilih == "4":
+#         verifikasi_tiket()
+#     elif pilih == "5":
+#         hapus_tiket()
+#     elif pilih == "6":
+#         bersihkan_data()
+#     elif pilih == "7":
+#         print("\nTerima kasih telah menggunakan aplikasi!")
+#         break
+#     else:
+#         print("❌ Pilihan tidak valid! Pilih angka 1-7")
+#         input("\nTekan Enter untuk melanjutkan...")
 
 load_data()
 

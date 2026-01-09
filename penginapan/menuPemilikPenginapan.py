@@ -1,7 +1,7 @@
 import os
 import sys
-import DataKamarPenginapan as kamar
-import SewaPenginapan as sewa
+import penginapan.DataKamarPenginapan as kamar
+import penginapan.SewaPenginapan as sewa
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 

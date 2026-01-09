@@ -1,5 +1,9 @@
 import os
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from penginapan.DataPenginapan import load_penginapan
+
 
 FILE_KAMAR = "database/DataKamarPenginapan.txt"
 FILE_PENGINAPAN = "database/DataPenginapan.txt"
@@ -36,8 +40,8 @@ def load_kamar():
     with open(FILE_PENGINAPAN, "r") as f:
         for line in f:
             bagian = line.strip().split("|")
-            penginapanId = int(bagian[0])
-            mitraId = int(bagian[1])
+            penginapanId = bagian[0]
+            mitraId = bagian[1]
             namaPenginapan = bagian[2]
             alamat = bagian[3]
             noTelp = bagian[4]

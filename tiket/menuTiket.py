@@ -1,6 +1,6 @@
 import os
 import sys
-import dataTiket as pembelian
+import tiket.dataTiket as pembelian
 
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -48,4 +48,5 @@ def menu_tiket(userId):
             input("\nTekan Enter untuk melanjutkan...")
 
 
-    
+if __name__ == "__main__":
+    menu_tiket()
