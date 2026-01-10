@@ -18,24 +18,22 @@ def load_penginapan():
     with open(DATA_FILE, "r") as file:
         for line in file:
             data = line.strip().split("|")
-            if len(data) == 4:
-                penginapan_list.append({
-                    "penginapan_id": data[0],
-                    "mitraId": data[1],
-                    "namaPenginapan": data[2],
-                    "alamat": data[3],
-                    "noTelp": data[4]
-                })
+            penginapan_list.append({
+                "penginapan_id": data[0],
+                "mitraId": data[1],
+                "namaPenginapan": data[2],
+                "alamat": data[3],
+                "noTelp": data[4]
+            })
     with open(DATA_MITRA, "r") as f:
         for line in f:
             data = line.strip().split("|")
-            if len(data) == 4:
-                mitra_list.append({
-                    "id": data[0],
-                    "nama": data[1],
-                    "alamat": data[2],
-                    "pemilik": data[3]
-                })
+            mitra_list.append({
+                "id": data[0],
+                "nama": data[1],
+                "alamat": data[2],
+                "pemilik": data[3]
+            })
     return penginapan_list
 
 

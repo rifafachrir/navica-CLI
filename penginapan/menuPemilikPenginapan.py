@@ -27,33 +27,30 @@ def menu_pemilik_penginapan(userId):
         print("\n=== Menu Pemilik Penginapan ===")
         print("1. Lihat Daftar menginap")
         print("2. Tambah daftar penginap Baru")
-        print("3. Check-in")
-        print("4. Check-out")
-        print("5. Pindah kamar")
-        print("6. Tambah data Kamar")
-        print("7. Lihat data Kamar")
-        print("8. Ubah data Kamar")
+        print("3. ubah status penginap")
+        print("4. Pindah kamar")
+        print("5. Tambah data Kamar")
+        print("6. Lihat data Kamar")
+        print("7. Ubah data Kamar")
         print("0. Keluar")
 
         # Input di DALAM loop
-        pilihan = input("Pilih opsi: ")
+        pilihan = input("Pilih opsi (0-7): ")
 
         if pilihan == "1":
             sewa.read_data_by_mitraId(mitraId)
         elif pilihan == "2":
             sewa.booking_with_mitraId(mitraId)
         elif pilihan == "3":
-            sewa.check_in(mitraId)
+            sewa.update_status()
         elif pilihan == "4":
-            sewa.check_out(mitraId)
-        elif pilihan == "5":
             sewa.pindah_ruangan()
-        elif pilihan == "6":
+        elif pilihan == "5":
             kamar.tambah_kamar_with_mitraId(mitraId)
-        elif pilihan == "7":
+        elif pilihan == "6":
             kamar.liat_kamar_with_mitraId(mitraId)
-        elif pilihan == "8":
-            kamar.ubah_kamar_by_mitraId(mitraId)
+        elif pilihan == "7":
+            kamar.ubah_kamar_by_mitraId(mitraId)            
         elif pilihan == "0":
             print("Keluar dari menu pemilik penginapan.")
             break

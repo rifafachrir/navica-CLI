@@ -460,9 +460,9 @@ def lihat_penyewa_by_mitraId(mitraId):
                     i += 1
                     for c in customer_data:
                         if c['customerId'] == p['customerId']:
-                                print(f"Nama Penyewa: {c['nama']}")
-                        if k['noKendaraan'] == p['kendaraanYangDisewa']:
-                            print(f"Nama Kendaraan: {k['namaKendaraan']}")
+                            print(f"Nama Penyewa: {c['nama']}")
+                    if k['noKendaraan'] == p['kendaraanYangDisewa']:
+                        print(f"Nama Kendaraan: {k['namaKendaraan']}")
                     print(f"Tanggal Booking: {p['tanggal_booking']}")
                     print(f"Total Harga: {p['total_harga']}")
                     print(f"Tanggal Mulai: {p['tanggalMulai']}")
@@ -534,10 +534,11 @@ def konfirmasi_peminjaman(mitraId):
             if b['status'] == "belum lunas":
                 print("konfirmasi ditolak: customer belum bayar !!!\n")
                 return
-            for p in penyewa_list:
-                if p['sewaId'] == sewaId:
-                    p['statusSewa'] = "sedang digunakan"
-                    break
+            else:
+                for p in penyewa_list:
+                    if p['sewaId'] == sewaId:
+                        p['statusSewa'] = "sedang digunakan"
+                        break
             with open(FILE_PENYEWA, "w") as f:
                 for p in penyewa_list:
                     f.write(f"{p['sewaId']}|{p['customerId']}|{p['kendaraanYangDisewa']}|{p['tanggal_booking']}|{p['total_harga']}|{p['tanggalMulai']}|{p['TanggalSelesai']}|{p['statusSewa']}\n")

@@ -7,19 +7,21 @@ from penginapan.DataPenginapan import load_penginapan
 
 FILE_KAMAR = "database/DataKamarPenginapan.txt"
 FILE_PENGINAPAN = "database/DataPenginapan.txt"
-
+kamar_list = []
+penginapan_list = []
 def load_kamar():
     """Load data kamar dari file ke kamar_list dan set next_id."""
     global kamar_list, penginapan_list, next_id
-
-    kamar_list = []
-    penginapan_list = []   
+    kamar_list.clear()
+    penginapan_list.clear()
+       
     if not os.path.exists(FILE_KAMAR):
         next_id = 1
         return
 
     with open(FILE_KAMAR, "r", encoding="utf-8") as f:
-        for line in f:
+        lines = f.readlines()
+        for line in lines:
             bagian = line.strip().split("|")
             kodeKamar = bagian[0]
             penginapanId = bagian[1]
@@ -38,10 +40,11 @@ def load_kamar():
             })
     
     with open(FILE_PENGINAPAN, "r") as f:
-        for line in f:
+        lines = f.readlines()
+        for line in lines:
             bagian = line.strip().split("|")
-            penginapanId = int(bagian[0])
-            mitraId = int(bagian[1])
+            penginapanId = bagian[0]
+            mitraId = bagian[1]
             namaPenginapan = bagian[2]
             alamat = bagian[3]
             noTelp = bagian[4]
@@ -84,7 +87,7 @@ def generate_id(penginapanId):
     for i in inisials: 
         if i == inisial:
             cocok += 1
-    return inisial + "-" + str(cocok).zfill(2)
+    return inisial + "-" + str(cocok).zfill(3)
 
 
 def pilih_penginapan():
@@ -150,6 +153,7 @@ def tambah_kamar():
     print("Kamar berhasil ditambahkan.\n")
 
 def tambah_kamar_with_mitraId(mitraId):
+    load_kamar()
     print("\n=== TAMBAH KAMAR ===")
     print("Pilih Penginapan / Villa untuk kamar ini: ")
     for p in penginapan_list:
@@ -180,24 +184,26 @@ def tambah_kamar_with_mitraId(mitraId):
 
 
 def liat_kamar_with_mitraId(mitraId):
+    load_kamar()
     print("\n=== TAMBAH KAMAR ===")
-
-    for k in kamar_list:
-        if k["mitraId"] == mitraId:
-            print(f"ID Kamar      : {k['id']}")
-            print(f"Tipe          : {k['tipe']}")
-            print(f"Harga         : {k['harga']}")
-            print(f"Status        : {k['status']}")
-            print(f"kapasitas     : {k['kapasitas']}")
-            for p in penginapan_list:
-                if p["mitraId"] == mitraId:
+    print("kamar List: ", kamar_list)
+    for p in penginapan_list:
+        if p['mitraId'] == mitraId:
+            for k in kamar_list:
+                if k['penginapanId'] == p['penginapanId']:
+                    print(f"ID Kamar      : {k['id']}")
+                    print(f"Tipe          : {k['tipe']}")
+                    print(f"Harga         : {k['harga']}")
+                    print(f"Status        : {k['status']}")
+                    print(f"kapasitas     : {k['kapasitas']}")
                     print(f"Penginapan    : {p['namaPenginapan']}")
-            print("-" * 30)
+                    print("-" * 30)
+    input("tekan Enter untuk melanjutkan")
         
 
 
 def tampilkan_kamar():
-
+    load_kamar()
     print("\n=== DATA KAMAR ===")
     if not kamar_list:
         print("Belum ada data kamar.")
@@ -221,6 +227,7 @@ def cari_kamar_by_id_and_penginapanId(penginapnanId,kamar_id):
     return None
 
 def ubah_kamar():
+    load_kamar()
     print("\n=== UBAH KAMAR ===")
     print("List Penginapan: ")
     for i, p in enumerate(penginapan_list):
@@ -230,69 +237,90 @@ def ubah_kamar():
     print("Pilih Kode Kamar yang akan diubah: ")
     for i, k in enumerate(kamar_list):
         if k["penginapanId"] == penginapanId:
-            print(f"{i + 1}. (ID: {k['id']}) {k['namaPenginapan']} - {k['tipe']}")
-    kamarId = int(input("Masukkan nomor kamar: ")) - 1
-    kamar = cari_kamar_by_id_and_penginapanId(penginapanId, kamar_list[kamarId]['id'])
+            print(f"{i + 1}")
+            print(f"No Kamar: {k['id']}")
+            for p in penginapan_list:
+                if p["penginapanId"] == penginapanId:
+                    print("nama Penginapan: ", p["namaPenginapan"])
+            print(f"tipe: {k['tipe']}")
+            print(f"harga per malam: {k['harga']}")
+            print(f"kapasitas: {k['kapasitas']}")
+            print(f"status: {k['status']}")
+
+    kamarId = input("Masukkan nomor kamar: ")
+    kamar = cari_kamar_by_id_and_penginapanId(penginapanId, kamarId)
     if kamar is None:
         print("Data kamar tidak ditemukan.\n")
-        return
+        return ubah_kamar()
     else:
-        print("Isi Semua data baru (yang lama diganti):")
-        tipe = input("Tipe kamar : ").strip()
-        harga = int(input("Harga per malam(isi dengan angka): "))
-        kapasitas = int(input("Kapasitas orang(isi dengan angka): "))
+        for k in kamar_list:
+            if k['id'] == kamarId:
+                tipe = input(f"tipe Kamar: ({k['tipe']}): ") or k["tipe"]
+                harga = int(input("Harga kamar per malam: {k['harga']}): ") or k["harga"])
+                kapasitas = int(input("kapasitas kamar: {k['kapasitas']}): ") or k["kapasitas"])
+                status = input(f"status kamar (tersedia/tidak/perbaikan): ({k['status']}): ") or k["status"]
+                if status not in ["tersedia", "tidak", "perbaikan"]:
+                    print("Input ditolak: Status harus 'tersedia' atau 'tidak'.\n")
+                    return
+                p['tipe'] = tipe
+                p['harga'] = harga
+                p['kapasitas'] = kapasitas
+                p['status'] = status
+        # print("Isi Semua data baru (yang lama diganti):")
+        # tipe = input("Tipe kamar : ").strip()
+        # harga = int(input("Harga per malam(isi dengan angka): "))
+        # kapasitas = int(input("Kapasitas orang(isi dengan angka): "))
 
-        status = input("Status (tersedia/tidak) : ").strip().lower()
-        if status not in ["tersedia", "tidak"]:
-            print("Input ditolak: Status harus 'tersedia' atau 'tidak'.\n")
-            return
-
-
-        kamar["penginapanId"] = penginapanId
-        kamar["tipe"] = tipe
-        kamar["harga"] = harga
-        kamar["kapasitas"] = kapasitas
-        kamar["status"] = status
+        # status = input("Status (tersedia/tidak/perbaikan) : ").strip().lower()
         save_kamar()
         print("Data kamar berhasil diubah.\n")
 
 def ubah_kamar_by_mitraId(mitraId):
+    load_kamar()
     print("\n=== UBAH KAMAR ===")
     print("List Penginapan: ")
     for p in penginapan_list:
         if p['mitraId'] == mitraId:
             penginapanId = p["penginapanId"] 
-    print("Pilih Kode Kamar yang akan diubah: ")
+    
     for i, k in enumerate(kamar_list):
-        if k['penginapanId'] == penginapanId:
-            print(f"{i + 1}. (ID: {k['id']}) {k['namaPenginapan']} - {k['tipe']}")
-    kamarId = int(input("Masukkan nomor kamar: ")) - 1
-    kamar = cari_kamar_by_id_and_penginapanId(penginapanId, kamar_list[kamarId]['id'])
+        if k["penginapanId"] == penginapanId:
+            print(f"{i + 1}")
+            print(f"No Kamar: {k['id']}")
+            for p in penginapan_list:
+                if p["penginapanId"] == penginapanId:
+                    print("nama Penginapan: ", p["namaPenginapan"])
+            print(f"tipe: {k['tipe']}")
+            print(f"harga per malam: {k['harga']}")
+            print(f"kapasitas: {k['kapasitas']}")
+            print(f"status: {k['status']}")
+
+    kamarId = input("Masukkan nomor kamar: ")
+    kamar = cari_kamar_by_id_and_penginapanId(penginapanId, kamarId)
     if kamar is None:
         print("Data kamar tidak ditemukan.\n")
-        return
+        return ubah_kamar_by_mitraId(mitraId)
     else:
-        print("Isi Semua data baru (yang lama diganti):")
-        tipe = input("Tipe kamar : ").strip()
-        harga = int(input("Harga per malam(isi dengan angka): "))
-        kapasitas = int(input("Kapasitas orang(isi dengan angka): "))
-
-        status = input("Status (tersedia/tidak) : ").strip().lower()
-        if status not in ["tersedia", "tidak"]:
-            print("Input ditolak: Status harus 'tersedia' atau 'tidak'.\n")
-            return
-
-
-        kamar["penginapanId"] = penginapanId
-        kamar["tipe"] = tipe
-        kamar["harga"] = harga
-        kamar["kapasitas"] = kapasitas
-        kamar["status"] = status
+        print("Kosongkan saja jika tidak ingin diubah")
+        for k in kamar_list:
+            if k['id'] == kamarId:
+                tipe = input(f"tipe Kamar: ({k['tipe']}) ") or k["tipe"]
+                harga = int(input(f"Harga kamar per malam: {k['harga']}): ") or k["harga"])
+                kapasitas = int(input(f"kapasitas kamar: {k['kapasitas']}): ") or k["kapasitas"])
+                status = input(f"status kamar (tersedia/tidak/perbaikan): ({k['status']}): ") or k["status"]
+                if status not in ["tersedia", "tidak", "perbaikan"]:
+                    print("Input ditolak: Status harus 'tersedia' atau 'tidak'.\n")
+                    return
+                k['tipe'] = tipe
+                k['harga'] = harga
+                k['kapasitas'] = kapasitas
+                k['status'] = status
+                print("Data kamar berhasil diubah.\n")
         save_kamar()
-        print("Data kamar berhasil diubah.\n")
 
 
 def hapus_kamar():
+    load_kamar()
     tampilkan_kamar()
 
     id_hapus = input("Masukkan ID Kamar yang ingin dihapus: ")
