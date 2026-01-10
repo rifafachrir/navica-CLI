@@ -7,12 +7,15 @@ DB_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "database", "
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
 
+
 def input_id():
-    while True:
-        id_mitra = input("ID Mitra (tanpa spasi): ").strip()
-        if id_mitra and not ' ' in id_mitra:
-            return id_mitra
-        print("❌ ID Mitra tidak boleh kosong atau mengandung spasi!")
+    with open("database/dataMitra.txt", "r") as file:
+        lines = file.readlines()
+        jumlahMitra = len(lines)
+    
+    id_mitra = "MTR" + str(jumlahMitra + 1).zfill(3)
+    
+    return id_mitra
 
 def input_text(prompt):
     while True:
@@ -37,28 +40,71 @@ def input_email():
         print("❌ Format email tidak valid! (contoh: nama@domain.com)")
 
 def input_jenis_mitra():
-    while True:
-        jenis = input("Jenis Mitra ('transportasi', 'hiburan', 'rental', 'penginapan): ").strip().lower()
-        if jenis in ['transportasi', 'hiburan', 'rental', 'penginapan']:
-            return jenis.capitalize()
-        print("❌ Jenis Mitra hanya boleh 'Transportasi', 'Hiburan', 'Rental', atau 'Penginapan'!")
+    print("\nPilih jenis mitra:")
+    print("1. Transportasi")
+    print("2. Hiburan")
+    print("3. Rental Kendaraan")
+    print("4. Penginapan")
+    
+    choice = input("Pilih jenis perusahaan anda(1-4)")
+    if choice == '1':
+        return 'transportasi'
+    elif choice == '2':
+        return 'tiket'
+    elif choice == 'kendaraan':
+        return 'rental'
+    elif choice == '4':
+        return 'penginapan'
 
 def is_header(line):
     return line.strip() == "ID|Nama|Jenis|Alamat|Telepon|Email|Status"
 
 def tambah_mitra():
     print("\n=== TAMBAH MITRA BARU ===")
+    userData =[]
+    with open("database/userData.txt", "r") as f:
+        lines = f.readlines()
+        for line in lines:
+            bagian = line.strip().split("|")
+            userData.append({
+                'userId': bagian[0],
+                'email': bagian[1],
+            })
+            
+    
+    id_mitra = input_id()
+    nama = input_text("Nama Mitra: ")
+    for user in userData:
+        if user['email'] == email:
+            pemilik = user['userId']
+            email = user['email']
+    jenis = input_jenis_mitra()
+    alamat = input_text("Alamat: ")
+    telepon = input_telepon()
+    status = "Aktif"  # Auto-fill status
+
+    with open(DB_PATH, "a") as file:
+        data = f"{id_mitra}|{pemilik}|{nama}|{jenis}|{alamat}|{telepon}|{email}|{status}\n"
+        file.write(data)
+
+    print(f"✅ Mitra berhasil ditambahkan dengan status: {status}")
+    input("\nTekan Enter untuk melanjutkan...")
+
+def tambah_mitra_automatic(userId, email):
+    print("\n=== TAMBAH MITRA BARU ===")
+
+    
     
     id_mitra = input_id()
     nama = input_text("Nama Mitra: ")
     jenis = input_jenis_mitra()
     alamat = input_text("Alamat: ")
     telepon = input_telepon()
-    email = input_email()
+    email = email
     status = "Aktif"  # Auto-fill status
 
     with open(DB_PATH, "a") as file:
-        data = f"{id_mitra}|{nama}|{jenis}|{alamat}|{telepon}|{email}|{status}\n"
+        data = f"{id_mitra}|{userId}|{nama}|{jenis}|{alamat}|{telepon}|{email}|{status}\n"
         file.write(data)
 
     print(f"✅ Mitra berhasil ditambahkan dengan status: {status}")

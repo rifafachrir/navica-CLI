@@ -1,7 +1,4 @@
 # import menu as adminMenu
-import kendaraan.menuPemilikKendaraan as kendaraanMenu
-import penginapan.menuPemilikPenginapan as penginapanMenu
-import customer.menuCustomer as customerMenu
 import os
 import sys
 import re
@@ -82,7 +79,7 @@ def authentication(email, password):
                     elif i['role'] == 'kendaraan':
                         # print("Selamat datang, Pemilik Rental Kendaraan", i['username'])
                         kendaraanMenu.menu_pemilik_kendaraan(selected_user_id)
-                    elif i['role'] == 'hiburan':    
+                    elif i['role'] == 'tiket':    
                         tiketMenu.menu_tiket(selected_user_id)
                     elif i['role'] == 'admin':
                         tiketMenu.menu_tiket(selected_user_id)
@@ -169,13 +166,13 @@ def all_register():
 
     if role_choice == '1':
         role = 'penginapan'
-        mitra.tambah_mitra()
+        mitra.tambah_mitra_automatic(user_id, email)
     elif role_choice == '2':
         role = 'kendaraan'
-        mitra.tambah_mitra()
+        mitra.tambah_mitra_automatic(user_id, email)
     elif role_choice == '3':
         role = 'hiburan'
-        mitra.tambah_mitra()
+        mitra.tambah_mitra_automatic(user_id, email)
     elif role_choice == '4':
         role = 'customer'
     elif role_choice == '5':

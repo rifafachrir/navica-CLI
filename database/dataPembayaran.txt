@@ -3,3 +3,5 @@ PAY-P002|NAV002|-|400000|-|belum bayar
 PAY-P003|NAV002|-|400000|-|belum bayar
 PAY-P004|NAV003|Transfer Bank|400000|2026-01-09|Lunas
 PAY-K005|p003|E-Wallet|300000|2026-01-09|Lunas
+PAY-K006|p004|E-Wallet|400000|2026-01-10|Lunas
+PAY-K007|p005|-|400000|-|belum bayar

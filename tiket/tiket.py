@@ -49,7 +49,7 @@ def input_jenis():
             return jenis.capitalize()
         print("❌ Jenis hanya boleh 'Transportasi' atau 'Hiburan'!")
 
-def create_tiket(mitraId):
+def create_tiket_from_authentication(mitraId):
     id_tiket = generateId()
     nama_tiket = input("Nama Tiket: ").strip()
     harga = input("Harga: ").strip()

@@ -181,17 +181,19 @@ def lihat_kendaraan_by_mitraId(mitraId):
     if not kendaraan_saya:
         print("Belum ada data kendaraan.\n")
         return
-
-    for i, k in enumerate(kendaraan_data):
-        if k['mitraId'] != mitraId:
+    i = 0
+    for k in kendaraan_data:
+        if k['mitraId'] == mitraId:
             print(f"{1+i}")
             print(f"noPolisi: {k['noKendaraan']}")
             for m in data_pemilik:
-                if m['mitraId'] == k['mitraId']:
+                if mitraId == k['mitraId']:
                     print(f"Nama Mitra: {m['namaMitra']}")
+                    break
             print(f"namaKendaraan: {k['namaKendaraan']}")
             print(f"hargaSewaPerHari: {k['hargaSewaPerHari']}")
             print(f"status: {k['status']}")
+            i +=1
 
     print("-" * 30)
 
