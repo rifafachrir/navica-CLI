@@ -8,4 +8,4 @@
 8|kendaraan@gmail.com|123|kendaraan
 9|penginapan@gmail.com|123|penginapan
 10|tiket@gmail.com|123|tiket
-11|123||customer
+11|a|a|admin

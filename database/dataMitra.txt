@@ -1,3 +1,4 @@
 MTR001|8|PT rental|None|jakarta|0987654234567|kendaraan@gmial.com|Aktif
 MTR002|9|PT tidur|penginapan|jakarta|0987623456789|penginapan@gmail.com|Aktif
 MTR003|10|PT hiburan|tiket|jakarta|09876234512|tiket@gmail.com|Aktif
+MTR004|11|PT hiburan|kendaraan|jakarta|09876234512|a|Aktif
