@@ -7,3 +7,5 @@ PAY-K006|p004|E-Wallet|400000|2026-01-10|Lunas
 PAY-K007|p005|-|400000|-|belum bayar
 PAY-P008|NAV004|-|200000|-|belum bayar
 PAY-P009|NAV005|-|200000|-|belum bayar
+PAY-T010|NAV-T001|-|20000|-|belum bayar
+PAY-T014|NAV-T002|-|20000|-|belum bayar

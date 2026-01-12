@@ -171,7 +171,7 @@ def all_register():
         role = 'kendaraan'
         mitra.tambah_mitra_automatic(user_id, email)
     elif role_choice == '3':
-        role = 'hiburan'
+        role = 'tiket'
         mitra.tambah_mitra_automatic(user_id, email)
     elif role_choice == '4':
         role = 'customer'
