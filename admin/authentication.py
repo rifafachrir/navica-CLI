@@ -10,6 +10,7 @@ import penginapan.menuPemilikPenginapan as penginapanMenu
 import kendaraan.menuPemilikKendaraan as kendaraanMenu
 import tiket.menuTiket as tiketMenu
 import mitra.dataMitra as mitra
+import admin.menu as adminMenu
 
 file = os.path.exists("database/userData.txt")
 FILE_CUSTOMER = "database/dataCustomer.txt"
@@ -82,7 +83,8 @@ def authentication(email, password):
                     elif i['role'] == 'tiket':    
                         tiketMenu.menu_tiket(selected_user_id)
                     elif i['role'] == 'admin':
-                        tiketMenu.menu_tiket(selected_user_id)
+                        # tiketMenu.menu_tiket(selected_user_id)
+                        adminMenu.mainMenu(selected_user_id)
                     return True
 
                 else:

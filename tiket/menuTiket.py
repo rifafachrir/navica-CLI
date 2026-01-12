@@ -6,7 +6,7 @@ import tiket.dataTiket as pembelian
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 def menu_tiket(userId):
-    with open("database/mitraId.txt", "r") as f:
+    with open("database/dataMitra.txt", "r") as f:
         for line in f:
             bagian = line.strip().split("|")
             if bagian[1] == userId:
