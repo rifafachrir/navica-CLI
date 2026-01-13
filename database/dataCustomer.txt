@@ -1,4 +1,6 @@
 1|1|aku|disini|08123
-2|7|Rifa Fachri Ramadhan|bumi|0856789234
+2|7|Rifa Fachri Ramadhan|bumi|085156168341
 3|3|aku|disini|123456743
-4|11|||
+4|13|customer|Bandung|085123415321
+5|14|rifa|bogor|085156168341
+6|13|customer|Bandung|08123412341

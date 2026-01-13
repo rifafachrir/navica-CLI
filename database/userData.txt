@@ -9,3 +9,6 @@
 9|penginapan@gmail.com|123|penginapan
 10|tiket@gmail.com|123|tiket
 11|a|a|admin
+12|admin@gmail.com|123|admin
+
+13|customer@gmail.com|123|customer

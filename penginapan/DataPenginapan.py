@@ -14,6 +14,8 @@ mitra_list = []
 
 def load_penginapan():
     ensure_file()
+    penginapan_list.clear()
+    mitra_list.clear()
     
     with open(DATA_FILE, "r") as file:
         for line in file:
@@ -30,24 +32,28 @@ def load_penginapan():
             data = line.strip().split("|")
             mitra_list.append({
                 "id": data[0],
-                "nama": data[1],
-                "alamat": data[2],
-                "pemilik": data[3]
+                "userId": data[1],
+                "nama": data[2],
+                "jenis": data[3],
+                "alamat": data[4],
+                "telepon": data[5],
+                "email": data[6],
+                "status": data[7]
             })
     return penginapan_list
 
 
-def save_penginapan(penginapan_list):
+def save_penginapan():
     with open(DATA_FILE, "w") as file:
         for p in penginapan_list:
-            file.write(f"{p['id']}|{p['nama']}|{p['alamat']}|{p['pemilik']}\n")
+            file.write(f"{p['penginapan_id']}|{p['mitraId']}|{p['namaPenginapan']}|{p['alamat']}|{p['noTelp']}\n")
 
 
 def generate_id(penginapan_list):
     if not penginapan_list:
         return "P001"
-    last_id = int(penginapan_list[-1]["id"][1:])
-    return f"P{last_id + 1:03d}"
+    nomor = len(penginapan_list) + 1
+    return "P" + str(nomor).zfill(3)
 
 
 def tambah_penginapan():
@@ -58,10 +64,21 @@ def tambah_penginapan():
     alamat = input("Alamat Penginapan: ")
     for i, m in enumerate(mitra_list):
         print(f"{1+i}. {m['id']} - {m['nama']}")
+        noTelp = m['telepon']
     pemilik = input("Masukkan Id pemilik: ")
-    noTelp = input("Nomor Telepon: ")
+    found = False
+    for m in mitra_list:
+        if m["id"] == pemilik:
+            pemilik = m["id"]
+            found = True
+            break
+    
+    if found != True:
+        print("ID Pemilik tidak ditemukan. Penginapan tidak dapat ditambahkan.\n")
+        return tambah_penginapan()
+        
     new_penginapan = {
-        "penginapnaId": generate_id(penginapan_list),
+        "penginapan_id": generate_id(penginapan_list),
         "mitraId": pemilik,
         "namaPenginapan": nama,
         "alamat": alamat,
@@ -69,7 +86,7 @@ def tambah_penginapan():
     }
 
     penginapan_list.append(new_penginapan)
-    save_penginapan(penginapan_list)
+    save_penginapan()
 
     print("Penginapan berhasil ditambahkan.\n")
 
@@ -83,12 +100,13 @@ def tampilkan_penginapan():
         return
 
     for p in penginapan_list:
-        print(f"ID       : {p['id']}")
+        print(f"ID       : {p['penginapan_id']}")
         for m in mitra_list:
             if m["id"] == p["mitraId"]:
                 print(f"Pemilik  : {m['nama']}")
-        print(f"Nama     : {p['namaPenginapan']}")
-        print(f"Alamat   : {p['alamat']}")
+                break
+        print(f"Nama Penginapan    : {p['namaPenginapan']}")
+        print(f"Alamat Penginapan : {p['alamat']}")
         print(f"no Telepon: {p['noTelp']}")
         print("-" * 30)
 
@@ -100,22 +118,23 @@ def edit_penginapan():
     id_edit = input("Masukkan ID Penginapan yang ingin diedit: ")
 
     for p in penginapan_list:
-        if p["id"] == id_edit:
+        if p["penginapan_id"] == id_edit:
             print("Kosongkan jika tidak ingin mengubah.")
-            nama = input(f"Nama ({p['nama']}): ") or p["nama"]
+            nama = input(f"Nama ({p['namaPenginapan']}): ") or p["namaPenginapan"]
             alamat = input(f"Alamat ({p['alamat']}): ") or p["alamat"]
             for i, m in enumerate(mitra_list):
                 print(f"{1+i}. {m['id']} - {m['nama']}")
-                pemilik = input("Masukkan Id pemilik: ") or p['pemilik']
+            
+            pemilik = input("Masukkan Id pemilik: ") or p['mitraId']
             noTelp = input(f"Nomor Telepon ({p['noTelp']}): ") or p["noTelp"]
             
 
-            p["nama"] = nama
+            p["namaPenginapan"] = nama
             p["alamat"] = alamat
-            p["pemilik"] = pemilik
+            p["mitraId"] = pemilik
             p["noTelp"] = noTelp
 
-            save_penginapan(penginapan_list)
+            save_penginapan()
             print("Data penginapan berhasil diperbarui.\n")
             return
     print("ID penginapan tidak ditemukan.\n")
@@ -128,9 +147,9 @@ def hapus_penginapan():
     id_hapus = input("Masukkan ID Penginapan yang ingin dihapus: ")
 
     for p in penginapan_list:
-        if p["id"] == id_hapus:
+        if p["penginapan_id"] == id_hapus:
             penginapan_list.remove(p)
-            save_penginapan(penginapan_list)
+            save_penginapan()
             print("Penginapan berhasil dihapus.\n")
             return
 

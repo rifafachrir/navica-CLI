@@ -19,9 +19,9 @@ def menu_pemilik_kendaraan(userId):
             for line in lines:
                 bagian = line.strip().split("|")
                 # Format: mitraId|userId|nama|alamat|...
-                # if len(bagian) >= 2 and bagian[1] == userId: # ini bikin ga masuk ke bawah
-                mitraId = bagian[0]
-                namaMitra = bagian[2]
+                if bagian[1] == userId: # ini bikin ga masuk ke bawah
+                    mitraId = bagian[0]
+                    namaMitra = bagian[2]
                 print('masuk')
                 print(mitraId)
                 break

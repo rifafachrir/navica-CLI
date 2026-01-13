@@ -4,8 +4,28 @@ import re
 # Path ke file database
 DB_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "database", "dataMitra.txt")
 
+mitra_data  = []
+
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
+
+def loadData():
+    mitra_data.clear()
+    if os.path.exists(DB_PATH):
+        with open(DB_PATH, "r") as file:
+            lines = file.readlines()
+            for line in lines:
+                bagian = line.strip().split("|")
+                mitra_data.append({
+                    "id": bagian[0],
+                    "pemilik": bagian[1],
+                    "nama": bagian[2],
+                    "jenis": bagian[3],
+                    "alamat": bagian[4],
+                    "telepon": bagian[5],
+                    "email": bagian[6],
+                    "status": bagian[7]
+                })
 
 
 def input_id():
@@ -111,43 +131,22 @@ def tambah_mitra_automatic(userId, email):
     input("\nTekan Enter untuk melanjutkan...")
 
 def lihat_mitra():
-    try:
-        with open(DB_PATH, "r") as file:
-            lines = file.readlines()
-            
-        if not lines:
-            print("📋 Data mitra masih kosong")
-        else:
-            print("\n=== DAFTAR MITRA ===")
-            ada_data = False
-            for line in lines:
-                line = line.strip()
-                
-                # Skip header dan baris kosong
-                if not line or is_header(line):
-                    continue
-                    
-                if '|' in line:
-                    data = line.split("|")
-                    if len(data) == 7:
-                        ada_data = True
-                        # Emoji untuk status
-                        status_emoji = "✅" if data[6] == "Aktif" else "❌"
-                        print(f"""
-ID       : {data[0]}
-Nama     : {data[1]}
-Jenis    : {data[2]}
-Alamat   : {data[3]}
-Telepon  : {data[4]}
-Email    : {data[5]}
-Status   : {status_emoji} {data[6]}
--------------------------""")
-            
-            if not ada_data:
-                print("📋 Tidak ada data mitra yang valid")
-                
-    except FileNotFoundError:
-        print("📋 Data mitra belum ada")
+    loadData()
+    print("\n=== DAFTAR MITRA ===")
+    if not mitra_data:
+        print("❌ Tidak ada data mitra tersedia.")
+    
+    for m in mitra_data:
+        print(f"Id: {m['id']}")
+        print(f"Nama Mitra: {m['nama']}")
+        print(f"Jenis Mitra: {m['jenis']}")
+        print(f"Alamat: {m['alamat']}")
+        print(f"Telepon: {m['telepon']}")
+        print(f"Email: {m['email']}")
+        print(f"Status: {m['status']}")
+        print("-" * 30)
+
+        
     
     input("\nTekan Enter untuk melanjutkan...")
 
@@ -412,10 +411,10 @@ def main():
 4. 🔒 Nonaktifkan Mitra
 5. 🗑️  Hapus Mitra
 6. 🧹 Bersihkan Data Rusak
-7. 🚪 Keluar
+0. 🚪 Keluar
 """)
 
-        pilih = input("Pilih menu (1-7): ").strip()
+        pilih = input("Pilih menu (0-6): ").strip()
 
         if pilih == "1":
             tambah_mitra()
@@ -429,7 +428,7 @@ def main():
             hapus_mitra()
         elif pilih == "6":
             bersihkan_data()
-        elif pilih == "7":
+        elif pilih == "0":
             print("\n✨ Terima kasih telah menggunakan aplikasi!")
             break
         else:

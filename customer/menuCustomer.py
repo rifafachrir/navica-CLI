@@ -41,7 +41,7 @@ def menu_user(userId):
         elif menu == "2":
             sewaKendaraan.menu_customer(customerId)
         elif menu == "3":
-            komunitas.CommunityMenu()
+            komunitas.menuCustomer()
         elif menu == "4":
             tiket.menu_customer(customerId)
         elif menu == "0":

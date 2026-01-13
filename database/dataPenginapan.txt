@@ -1,1 +1,2 @@
-P002|MTR002|kosan rifa|jalan rifa|546789
+P001|MTR002|Tidoer Abadi|jakarta|09876234512
+P002|MTR002|kos Rifa|Bandung|09876234512

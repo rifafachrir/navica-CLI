@@ -96,20 +96,20 @@ def update_tiket(mitraId):
 
     list_tiket(mitraId)
 
-    tiketId = input("Masukan Data Id: ")
+    tiketId = input("Masukan Tiket Id: ")
     print("\n Kosongkan jika tidak ingin diubah")
 
     for t in data_tiket:
         if t['idTiket'] == tiketId:
             namaTiket = input(f"Masukan Nama Baru Tiket ({t['namaTiket']}): ").strip() or t['namaTiket']
             harga = input(f"Masukan Harga Baru ({t['harga']}): ").strip() or t['harga']
-            if t['jenis'] == 'Transportasi':
-                jenis = input(f"Masukan Jenis Baru ({t['jenis']}): ").strip().lower() or t['jenis']
+            jenis = input(f"Masukan Jenis Baru ({t['jenis']}): ").strip().lower() or t['jenis']
+            t['jenis'] = jenis
+            if t['jenis'] == 'transportasi':
                 asal = input(f"Masukan Asal Baru ({t['asal']}): ").strip() or t['asal']
                 tujuan = input(f"Masukan Tujuan Baru ({t['tujuan']}): ").strip() or t['tujuan']
             else:
                 print(f"jenis tiket yang terdaftar adalah: {t['jenis']}")
-                jenis = input_jenis() or t['jenis']
                 asal = input(f"Masukan Daerah Hiburan ({t['asal']}): ").strip() or t['asal']
                 tujuan = "-"
 
@@ -118,6 +118,7 @@ def update_tiket(mitraId):
             t['jenis'] = jenis
             t['asal'] = asal
             t['tujuan'] = tujuan
+            break
 
     with open(FILE_TIKET, 'w') as f:
         for t in data_tiket:

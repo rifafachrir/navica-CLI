@@ -8,3 +8,5 @@ S 123 DD|M004|supra|10000|tersedia
 D 2012 FD|MTR001|Rush|200000|tersedia
 D 2114 FDK|MTR001|Honda Brio|200000|tersedia
 d 2114 FDK|MTR001|Honda Brio|2000|tersedia
+F 2143 FAS|MTR001|Supra |200000|tersedia
+B 2144 DWS|MTR001|porche|1000000|tersedia

@@ -1,11 +1,12 @@
 # import kelolaCustomer as kelolaCustomer
 from . import kelolaCustomer
-import kendaraan.menuPemilikKendaraan as kendaraan
+import kendaraan.pemilikKendaraan as kendaraan
 import penginapan.SewaPenginapan as sewa
 import penginapan.DataKamarPenginapan as dataKamar
 import penginapan.DataPenginapan as dataPenginapan
 import komunitas.komunitas as komunitas
 import admin.authentication as auth
+import mitra.dataMitra as mitra
 import sys
 import os
 
@@ -36,13 +37,13 @@ def mainMenu(selected_user_id):
             kelolaCustomer.menu_kelola_customer()
 
         elif pilihan == "3":
-            print("Menu mitra belum tersedia.")
+            mitra.main()
 
         elif pilihan == "4":
             dataPenginapan.menu()
 
         elif pilihan == "5":
-            kendaraan.menu_pemilik_kendaraan(selected_user_id)
+            kendaraan.menuAdmin()
 
         elif pilihan == "6":
             komunitas.CommunityMenu()

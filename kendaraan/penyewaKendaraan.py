@@ -58,6 +58,11 @@ def load_data():
             lines = f.readlines()
             for line in lines:
                 bagian = line.strip().split("|")
+                # tgl_mulai = datetime.datetime.strptime(bagian[5], "%Y-%m-%d")
+                # tgl_selesai = datetime.datetime.strptime(bagian[6], "%Y-%m-%d")
+                if len(bagian) < 8:
+                    print("Data tidak valid, dilewati:", bagian)
+                    continue
                 tgl_mulai = datetime.datetime.strptime(bagian[5], "%Y-%m-%d")
                 tgl_selesai = datetime.datetime.strptime(bagian[6], "%Y-%m-%d")
 
@@ -127,7 +132,6 @@ def load_data():
                         "status": bagian[5]
                     })
                 else:
-                    print("Format data pembayaran tidak valid:", line)
                     continue
 
 
@@ -617,22 +621,21 @@ def menu_penyewa_kendaraan():
         print("=== MENU PENYEWA KENDARAAN ===")
         print("1. Tambah Data")
         print("2. Lihat Data")
-        print("4. Hapus Data")
-        print("5. Keluar")
+        print("3. Hapus Data")
+        print("0. Keluar")
 
         pilihan = input("Pilih menu (1-5): ").strip()
 
         if pilihan == "":
             print("Input tidak boleh kosong!")
             continue
-
         if pilihan == "1":
             tambah_penyewa()
         elif pilihan == "2":
             lihat_penyewa()
-        elif pilihan == "4":
+        elif pilihan == "3":
             hapus_penyewa()
-        elif pilihan == "5":
+        elif pilihan == "0":
             print("Terima kasih! Program selesai.")
             break
         else:

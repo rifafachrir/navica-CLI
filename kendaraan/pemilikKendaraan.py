@@ -283,10 +283,9 @@ def menuAdmin():
     load_data()
     while True:
         print("\n=== MENU ADMIN KENDARAAN ===")
-        print("1. Tambah Kendaraan")
-        print("2. Lihat Semua Kendaraan")
-        print("3. Edit Kendaraan")
-        print("4. Hapus Kendaraan")
+        print("1. Lihat Semua Kendaraan")
+        print("2. Edit Kendaraan")
+        print("3. Hapus Kendaraan")
         print("5. Keluar")
 
         pilih = input("Pilih menu: ").strip()
@@ -295,8 +294,6 @@ def menuAdmin():
             continue
 
         if pilih == "1":
-            tambah_kendaraan()
-        elif pilih == "2":
             lihat_kendaraan()
         elif pilih == "3":
             edit_kendaraan()

@@ -95,6 +95,8 @@ def load_data():
         lines = f.readlines()
         for line in lines:
             bagian = line.strip().split("|")
+            if len(bagian) < 6:
+                continue
             pembayaran_data.append({
                 "id": bagian[0],
                 "sewaId": bagian[1],
@@ -264,7 +266,7 @@ def bayar_pesanan_user(idBayar):
 
 
 
-def create_data(data):
+def create_data():
     load_data()
     print("\n=== PEMESANAN PENGINAPAN ===")
     id_sewa = generate_id_sewa()
@@ -346,7 +348,7 @@ def create_data(data):
 
     bayarId = create_pembayaran(id_sewa, total)
 
-    data.append({
+    data_sewa.append({
         "id": id_sewa,
         "penyewa": penyewa,
         "jenis": jenis,
@@ -599,14 +601,14 @@ def booking_with_mitraId(mitraId):
     print("\nPemesanan berhasil dibuat!\n")
 
 
-def read_data(data):
+def read_data():
     load_data()
     print("\n=== DAFTAR PEMESANAN ===")
-    if not data:
+    if not data_sewa:
         print("Belum ada data.\n")
         return
 
-    for d in data:
+    for d in data_sewa:
         customerId = d['penyewa']
         penginapanId = d['penginapanId']
         print(f"ID Sewa        : {d['id']}")
@@ -734,7 +736,7 @@ def update_status():
     # for i, s in enumerate(data_sewa):
 
     while True:
-        idSewa = input("Masukkan no id customer: ")
+        idSewa = input("Masukkan no id sewanya: ")
         if idSewa not in [d["id"] for d in data_sewa]:
             print("ID sewa tidak ditemukan")
         else:
@@ -777,13 +779,20 @@ def update_status():
 def check_in(sewaId):
     for b in pembayaran_data:
         if b['sewaId'] == sewaId:
-            if b['status'] == "belum lunas":
+            if b['status'] == "belum bayar":
                 print("konfirmasi ditolak: customer belum bayar !!! \n")
                 return update_status()
             else:
                 for s in data_sewa:
                     if s['id'] == sewaId:
-                        s['status'] = "Check-in"
+                        if s['status'] == "Check-in":
+                            print("konfirmasi ditolak: customer sudah check-in !!! \n")
+                            return update_status()
+                        elif s['status'] == "Check-out":
+                            print("konfirmasi ditolak: customer sudah check-out !!! \n")
+                            return update_status()
+                        else:
+                            s['status'] = "Check-in"
                 save_data_sewa()
                 print("konfirmasi berhasil: customer telah bayar !!! \n")
                 
@@ -795,6 +804,8 @@ def check_out(sewaId):
         if s['id'] == sewaId:
             if s['status'] == "Booking":
                 print("konfirmasi ditolak: customer belum check-in !!! \n")
+            elif s['status'] == "Check-out":
+                print("konfirmasi ditolak: customer sudah check-out !!! \n")
             else:
                 s['status'] == "Check-out"
                 break

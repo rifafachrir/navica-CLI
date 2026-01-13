@@ -95,6 +95,7 @@ def authentication(email, password):
 
 
 def login():
+    loadData()
     if len(user) == 0:
         print("Belum ada user. Silakan register dulu.")
         return
@@ -112,12 +113,22 @@ def login():
 def register():
     user_id = str(len(user) + 1).zfill(1)
     email = input("Masukkan email baru: ")
+    if email == "":
+        print("Email tidak boleh kosong!")
+        return register()
+    if is_email_exists(email):
+        print("Email sudah terdaftar. Silakan gunakan email lain.")
+        return register()
+    if not is_email_valid(email):
+        print("Format email tidak valid! Contoh: nama@email.com")
+        return register()
+    
     password = input_password()
-    confirm = input_password()
+    confirm = input("Konfirmasi password: ")
 
     if password != confirm:
         print("Password tidak sama!")
-        return
+        return register()
 
     user.append({'userId': user_id, 'email': email,
                 'password': password, 'role': 'customer'})
@@ -139,6 +150,7 @@ def register():
 
 
 def all_register():
+    loadData()
     user_id = str(len(user) + 1)
 
     email = input("Masukkan email baru: ").strip()
@@ -197,18 +209,17 @@ def all_register():
 
 
 def listUser():
-    with open("database/userData.txt", "r") as f:
-        lines = f.readlines()
-        for line in lines:
-            print(line.strip())
+    loadData()
+    for u in user:
+        print(f"UserID: {u['userId']}, Email: {u['email']}, Role: {u['role']}")
+        print("-" * 30)
 
 
 def searchUserByEmail(email):
     for i in user:
         if i['email'] == email:
             print("User ditemukan:")
-            print(i)
-            return i
+            print(f"UserID: {i['userId']}, Email: {i['email']}, Role: {i['role']}")
     print("User dengan email tersebut tidak ditemukan.")
     return None
 
@@ -234,19 +245,25 @@ def input_password():
 
         if pilihan == "1":
             password = getpass.getpass("Masukkan password: ")
+            while not password:
+                print("Password tidak boleh kosong!")
+                password = input_password()
             return password
         elif pilihan == "2":
             password = input("Masukkan password: ")
+            while not password:
+                print("Password tidak boleh kosong!")
+                password = input_password()
+
             return password
         else:
             print("Pilihan tidak valid.\n")
 
-    while not password:
-        print("Password tidak boleh kosong!")
-        password = input_password()
+    
 
 
 def forget_password():
+    loadData()
     email = input("Masukkan email Anda: ")
     found = False
 
@@ -273,27 +290,23 @@ def start_authentication():
     while True:
         choice = input(
             "\nPilih opsi:\n"
-            "1. Login\n"
-            "2. Register\n"
-            "3. List User\n"
-            "4. Search User by Email\n"
-            "5. Forget Password\n"
+            "1. Register\n"
+            "2. List User\n"
+            "3. Search User by Email\n"
+            "4. Forget Password\n"
             "0. Exit\n"
             "Pilih: "
         )
         if choice == '1':
-            login()
-        elif choice == '2':
             all_register()
             loadData()
-        elif choice == '3':
+        elif choice == '2':
             listUser()
-        elif choice == '4':
+        elif choice == '3':
             email = input("Masukkan email yang ingin dicari: ")
             searchUserByEmail(email)
-        elif choice == '5':
+        elif choice == '4':
             forget_password()
-            loadData()
         elif choice == '0':
             break
         else:
