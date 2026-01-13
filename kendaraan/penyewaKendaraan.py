@@ -1,3 +1,5 @@
+# Tambahkan ini biar gak crash
+tanggalSelesaiYangAda = None
 import os
 import datetime
 

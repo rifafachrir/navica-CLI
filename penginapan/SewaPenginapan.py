@@ -2,12 +2,11 @@ import os
 import datetime
 
 
-
 FILE_KAMAR = "database/DataKamarPenginapan.txt"
 FILE_CUSTOMER = "database/dataCustomer.txt"
 FILE_PEMBAYARAN = "database/dataPembayaran.txt"
 FILE_SEWA = "database/SewaPenginapan.txt"
-FILE_PENGINAPAN ="database/dataPenginapan.txt"
+FILE_PENGINAPAN = "database/dataPenginapan.txt"
 
 
 # Konfigurasi file database
@@ -21,13 +20,16 @@ data_sewa = []
 customer = []
 
 # conflict 1
+
+
 def load_data():
     # Bersihkan list sebelum memuat data baru
-    global kamar_list, penginapan_list, data_sewa, customer
+    global kamar_list, penginapan_list, data_sewa, customer, pembayaran_data
     kamar_list.clear()
     penginapan_list.clear()
     data_sewa.clear()
     customer.clear()
+    pembayaran_data.clear()  # <--- PENTING: Clear juga pembayaran
 
     # 1. Load Data Kamar
     if os.path.exists(FILE_KAMAR):
@@ -43,75 +45,77 @@ def load_data():
                         "tipe": bagian[3],
                         "harga": int(bagian[4]),
                         "kapasitas": int(bagian[5]),
-                        "status": bagian[6]
+                        "status": bagian[6].strip()
                     }
                     kamar_list.append(kamar)
 
     # 2. Load Data Penginapan
+    if os.path.exists(FILE_PENGINAPAN):
+        with open(FILE_PENGINAPAN, "r") as f:
+            lines = f.readlines()
+            for line in lines:
+                bagian = line.strip().split("|")
+                if len(bagian) >= 5:  # Pakai >= biar aman
+                    penginapan_list.append({
+                        "penginapanId": bagian[0],
+                        "mitraId": bagian[1],
+                        "namaPenginapan": bagian[2],
+                        "alamat": bagian[3],
+                        "noTelp": bagian[4]
+                    })
 
-    with open(FILE_PENGINAPAN, "r") as f:
-        lines = f.readlines()
-        for line in lines:
-            bagian = line.strip().split("|")
-            penginapan_list.append({
-                "penginapanId": bagian[0],
-                "mitraId": bagian[1],
-                "namaPenginapan": bagian[2],
-                "alamat": bagian[3],
-                "noTelp": bagian[4]
-            })
-    
     # 3. Load Data Sewa
-    with open(FILE_SEWA, "r", encoding="utf-8") as f:
-        lines = f.readlines()
-        for line in lines:
-            bagian = line.strip().split("|")
-            if len(bagian) == 10:
-                data_sewa.append({
-                    "id": bagian[0],
-                    "penyewa": bagian[1],
-                    "jenis": bagian[2],
-                    "penginapanId": bagian[3],
-                    "kode_kamar": bagian[4],
-                    "tanggal_mulai": bagian[5],
-                    "lama_menginap": bagian[6],
-                    "harga_permalam": bagian[7],
-                    "total": bagian[8],
-                    "status": bagian[9],
-                })
+    if os.path.exists(FILE_SEWA):
+        with open(FILE_SEWA, "r", encoding="utf-8") as f:
+            lines = f.readlines()
+            for line in lines:
+                bagian = line.strip().split("|")
+                if len(bagian) == 10:
+                    data_sewa.append({
+                        "id": bagian[0],
+                        "penyewa": bagian[1],
+                        "jenis": bagian[2],
+                        "penginapanId": bagian[3],
+                        "kode_kamar": bagian[4],
+                        "tanggal_mulai": bagian[5],
+                        "lama_menginap": bagian[6],
+                        "harga_permalam": bagian[7],
+                        "total": bagian[8],
+                        "status": bagian[9],
+                    })
 
+    # 4. Load Data Customer
+    if os.path.exists(FILE_CUSTOMER):
+        with open(FILE_CUSTOMER, "r") as f:
+            lines = f.readlines()
+            for line in lines:
+                bagian = line.strip().split("|")
+                if len(bagian) == 5:
+                    customer.append({
+                        "id": bagian[0],
+                        "nama": bagian[1],
+                        "alamat": bagian[2],
+                        "noTelp": bagian[3],
+                        "email": bagian[4],
+                    })
 
+    # 5. Load Data Pembayaran (PERHATIKAN: INI HARUS MASUK KE DALAM)
+    if os.path.exists(FILE_PEMBAYARAN):
+        with open(FILE_PEMBAYARAN, "r") as f:
+            lines = f.readlines()
+            for line in lines:
+                bagian = line.strip().split("|")
+                if len(bagian) == 6:
+                    pembayaran_data.append({
+                        "idBayar": bagian[0],
+                        "sewaId": bagian[1],
+                        "metode": bagian[2],
+                        "total": bagian[3],
+                        "tanggal": bagian[4],
+                        "status": bagian[5]
+                    })
 
-    with open(FILE_CUSTOMER, "r")as f:
-        lines = f.readlines()
-        for line in f:
-            bagian = line.strip().split("|")
-            if len(bagian) == 5:
-                customer.append({
-                    "id": bagian[0],
-                    "nama": bagian[1],
-                    "alamat": bagian[2],
-                    "noTelp": bagian[3],
-                    "email": bagian[4],
-                })
-
-
-    with open(FILE_PEMBAYARAN, "r") as f:
-        lines = f.readlines()
-        for line in f:
-            bagian = line.strip().split("|")
-            if len(bagian) == 6:
-                pembayaran_data.append({
-                    "id": bagian[0],
-                    "sewaId": bagian[1],
-                    "metode": bagian[2],
-                    "total": bagian[3],
-                    "tanggal": bagian[4],
-                    "status": bagian[5]
-                })
-
-    return data_sewa
-
+    return data_sewa  # <--- POSISI INI PENTING (Sejajar dengan if pertama)
 
 
 def load_kamar_by_penginapan(penginapan_id):
@@ -143,19 +147,19 @@ def cek_ketersediaan_kamar(noKamar, tanggalMulai, tanggalSelesai):
     for kamar in kamar_list:
         if kamar["id"] == noKamar:
             kamarYangAda = kamar["id"]
-            tanggalMulaiYangAda = datetime.datetime.strptime(kamar["tanggalMulai"], "%Y-%m-%d")
-            tanggalSelesaiYangAda = datetime.datetime.strptime(kamar["tanggalSelesai"], "%Y-%m-%d")
-    
+            tanggalMulaiYangAda = datetime.datetime.strptime(
+                kamar["tanggalMulai"], "%Y-%m-%d")
+            tanggalSelesaiYangAda = datetime.datetime.strptime(
+                kamar["tanggalSelesai"], "%Y-%m-%d")
+
     for s in data_sewa:
         if s["kode_kamar"] == noKamar:
             statusYangAda = s["status"]
-            
 
     if tanggalMulaiBaru <= tanggalSelesaiYangAda and tanggalMulaiYangAda <= tanggalSelesaiBaru:
         if kamarYangAda == noKamar and statusYangAda == "booking":
             return False
     return True
-
 
 
 # def save_data(data):
@@ -167,7 +171,7 @@ def cek_ketersediaan_kamar(noKamar, tanggalMulai, tanggalSelesai):
 #                 f"{d['total']}|{d['status']}\n"
 #             )
 def save_data_sewa():
-    
+
     with open(FILE_SEWA, "w") as f:
         for d in data_sewa:
             line = f"{d['id']}|{d['penyewa']}|{d['jenis']}|{d['nama_properti']}|{d['kode_kamar']}|{d['tanggal_mulai']}|{d['lama_menginap']}|{d['harga_permalam']}|{d['total']}|{d['status']}\n"
@@ -266,19 +270,34 @@ def generate_id_sewa():
 
 def create_pembayaran(sewaId, total):
     jumlah = 0
-    with open(FILE_PEMBAYARAN, "r") as f:
-        jumlah = len(f.readlines())
+    # Cek file ada atau tidak
+    if os.path.exists(FILE_PEMBAYARAN):
+        with open(FILE_PEMBAYARAN, "r") as f:
+            jumlah = len(f.readlines())
+
     idBayar = "PAY-P" + str(jumlah + 1).zfill(3)
     status = "belum bayar"
 
+    # 1. Tulis ke File
     with open(FILE_PEMBAYARAN, "a") as f:
         f.write(f"{idBayar}|{sewaId}|-|{total}|-|{status}\n")
+
+    # 2. [PERBAIKAN PENTING] Masukkan ke Memori RAM biar langsung muncul tanpa restart
+    pembayaran_data.append({
+        "idBayar": idBayar,
+        "sewaId": sewaId,
+        "metode": "-",
+        "total": str(total),
+        "tanggal": "-",
+        "status": status
+    })
+
     return idBayar
 
 
 def simpan_ke_pembayaran_db(id_bayar, metode, status):
     tgl_sekarang = str(datetime.date.today().strftime("%Y-%m-%d"))
-    
+
     for p in pembayaran_data:
         if p["idBayar"] == id_bayar:
             p["metode"] = metode
@@ -288,8 +307,8 @@ def simpan_ke_pembayaran_db(id_bayar, metode, status):
     # Simpan data
     with open(FILE_PEMBAYARAN, "w") as f:
         for p in pembayaran_data:
-            f.write(f"{p['idBayar']}|{p['sewaId']}|{p['metode']}|{p['total']}|{p['tanggal']}|{p['status']}\n")
-
+            f.write(
+                f"{p['idBayar']}|{p['sewaId']}|{p['metode']}|{p['total']}|{p['tanggal']}|{p['status']}\n")
 
 
 def bayar_pesanan_user(idBayar):
@@ -314,7 +333,6 @@ def bayar_pesanan_user(idBayar):
                 elif metode_in == "2":
                     metode = "E-Wallet"
 
-
                 yakin = input("Bayar sekarang? (y/n): ").lower()
                 if yakin == "y":
                     simpan_ke_pembayaran_db(bayarId, metode, "Lunas")
@@ -324,10 +342,8 @@ def bayar_pesanan_user(idBayar):
                     print("Pembayaran dibatalkan.")
                     break
 
-
-            else: 
+            else:
                 print("Kode pembayaran ini sudah Lunas.")
-
 
 
 def create_data(data):
@@ -339,8 +355,6 @@ def create_data(data):
         print(f"{i+1}. {cust['nama']}")
     select = int(input("Pilih Penyewa : ")) - 1
     penyewa = customer[select]["nama"]
-    
-    
 
     tanggal_menginap = input("Tanggal Menginap (YYYY-MM-DD) : ")
 
@@ -360,7 +374,8 @@ def create_data(data):
         if k["status"] == "tersedia" and k["tanggal_mulai"] != tanggal_menginap:
             tersedia.append(k)
     if len(tersedia) == 0:
-        print(f"Tidak ada kamar yang tersedia untuk tanggal {tanggal_menginap}.\n")
+        print(
+            f"Tidak ada kamar yang tersedia untuk tanggal {tanggal_menginap}.\n")
         return
 
     for i, k in enumerate(tersedia):
@@ -391,7 +406,7 @@ def create_data(data):
     if kamar_dipilih is None:
         print("Kamar dengan urutan tersebut tidak ditemukan.\n")
         return
-    
+
     lama_menginap = input("Lama Menginap (hari) : ")
     while not lama_menginap.isdigit():
         lama_menginap = input("Input harus angka : ")
@@ -400,7 +415,7 @@ def create_data(data):
     startDate = datetime.datetime.strptime(tanggal_menginap, "%Y-%m-%d")
     endDate = startDate + datetime.timedelta(days=lama_menginap)
 
-    if cek_ketersediaan_kamar(kamar_dipilih["id"], startDate, endDate) :
+    if cek_ketersediaan_kamar(kamar_dipilih["id"], startDate, endDate):
         print("Kamar Tersedia!!\n")
     else:
         print("Kamar Tidak Tersedia!!\n")
@@ -408,11 +423,11 @@ def create_data(data):
 
     # ambil data dari kamar
     penginapanId = kamar_dipilih["penginapanId"]
-    jenis = kamar_dipilih["tipe"]          # bisa kamu mapping ke 'Hotel'/'Vila' kalau mau
-    kode_kamar = str(kamar_dipilih["id"])  # sementara pakai ID kamar sebagai nomor kamar
+    # bisa kamu mapping ke 'Hotel'/'Vila' kalau mau
+    jenis = kamar_dipilih["tipe"]
+    # sementara pakai ID kamar sebagai nomor kamar
+    kode_kamar = str(kamar_dipilih["id"])
 
-
-    
     harga_permalam = str(kamar_dipilih["harga"])
     total = int(lama_menginap) * int(harga_permalam)
 
@@ -436,13 +451,10 @@ def create_data(data):
     # update status kamar jadi tidak
     update_status_kamar(kamar_dipilih["id"], "booking")
 
-
     print("\nPemesanan berhasil dibuat!\n")
     print("Silahkan lakukan pembayaran untuk melakukan pemesanan penginapan.")
     bayar_pesanan_user(bayarId)
     print("kode pembayaran anda adalah: ", bayarId)
-
-
 
 
 def bookingCutomer(customerId):
@@ -451,12 +463,13 @@ def bookingCutomer(customerId):
 
     for c in customer:
         if c["id"] == customerId:
-            penyewa = c["id"]        
+            penyewa = c["id"]
 
     tanggal_menginap = input("Tanggal Menginap (YYYY-MM-DD) : ")
 
     for i, nginap in enumerate(penginapan_list):
-        print(f"{i + 1}. (ID: {nginap['penginapanId']}) {nginap['namaPenginapan']} ")
+        print(
+            f"{i + 1}. (ID: {nginap['penginapanId']}) {nginap['namaPenginapan']} ")
     pilihan = int(input("Masukkan nomor penginapan: ")) - 1
     if 0 <= pilihan < len(penginapan_list):
         penginapanId = penginapan_list[pilihan]['penginapanId']
@@ -478,7 +491,8 @@ def bookingCutomer(customerId):
         if k["status"] == "tersedia" and k["tanggal_mulai"] != tanggal_menginap:
             tersedia.append(k)
     if len(tersedia) == 0:
-        print(f"Tidak ada kamar yang tersedia untuk tanggal {tanggal_menginap}.\n")
+        print(
+            f"Tidak ada kamar yang tersedia untuk tanggal {tanggal_menginap}.\n")
         return
 
     for i, k in enumerate(tersedia):
@@ -518,7 +532,7 @@ def bookingCutomer(customerId):
     startDate = datetime.datetime.strptime(tanggal_menginap, "%Y-%m-%d")
     endDate = startDate + datetime.timedelta(days=lama_menginap)
 
-    if cek_ketersediaan_kamar(kamar_dipilih["id"], startDate, endDate) :
+    if cek_ketersediaan_kamar(kamar_dipilih["id"], startDate, endDate):
         print("Kamar Tersedia!!\n")
     else:
         print("Kamar Tidak Tersedia!!\n")
@@ -526,9 +540,10 @@ def bookingCutomer(customerId):
 
     # ambil data dari kamar
     penginapanId = kamar_dipilih["penginapanId"]
-    jenis = kamar_dipilih["tipe"]           # bisa kamu mapping ke 'Hotel'/'Vila' kalau mau
-    kode_kamar = str(kamar_dipilih["id"])  # sementara pakai ID kamar sebagai nomor kamar
-
+    # bisa kamu mapping ke 'Hotel'/'Vila' kalau mau
+    jenis = kamar_dipilih["tipe"]
+    # sementara pakai ID kamar sebagai nomor kamar
+    kode_kamar = str(kamar_dipilih["id"])
 
     harga_permalam = str(kamar_dipilih["harga"])
     total = int(lama_menginap) * int(harga_permalam)
@@ -552,11 +567,11 @@ def bookingCutomer(customerId):
 
     update_status_kamar(kamar_dipilih["id"], "booking")
 
-
     print("\nPemesanan berhasil dibuat!\n")
     print("Silahkan lakukan pembayaran untuk melakukan pemesanan penginapan.")
     bayar_pesanan_user(bayarId)
     print("kode pembayaran anda adalah: ", bayarId)
+
 
 def booking_with_mitraId(mitraId):
     print("\n=== PEMESANAN PENGINAPAN ===")
@@ -567,9 +582,9 @@ def booking_with_mitraId(mitraId):
         print(f"{i+1}. {cust['nama']}")
     select = int(input("Pilih Penyewa : ")) - 1
     penyewa = customer[select]["nama"]
-    
+
     for p in penginapan_list:
-        if p['mitraId'] == mitraId:
+        if p['mitraId'] == str(current_penginapanId):
             penginapanId = p['penginapanId']
 
     tanggal_menginap = input("Tanggal Menginap (YYYY-MM-DD) : ")
@@ -589,7 +604,8 @@ def booking_with_mitraId(mitraId):
         if k["status"] == "tersedia" and k["tanggal_mulai"] != tanggal_menginap:
             tersedia.append(k)
     if len(tersedia) == 0:
-        print(f"Tidak ada kamar yang tersedia untuk tanggal {tanggal_menginap}.\n")
+        print(
+            f"Tidak ada kamar yang tersedia untuk tanggal {tanggal_menginap}.\n")
         return
 
     for i, k in enumerate(tersedia):
@@ -629,15 +645,17 @@ def booking_with_mitraId(mitraId):
     startDate = datetime.datetime.strptime(tanggal_menginap, "%Y-%m-%d")
     endDate = startDate + datetime.timedelta(days=lama_menginap)
 
-    if cek_ketersediaan_kamar(kamar_dipilih["id"], startDate, endDate) :
+    if cek_ketersediaan_kamar(kamar_dipilih["id"], startDate, endDate):
         print("Kamar Tersedia!!\n")
     else:
         print("Kamar Tidak Tersedia!!\n")
         return
 
     # ambil data dari kamar
-    jenis = kamar_dipilih["tipe"]           # bisa kamu mapping ke 'Hotel'/'Vila' kalau mau
-    kode_kamar = str(kamar_dipilih["id"])  # sementara pakai ID kamar sebagai nomor kamar
+    # bisa kamu mapping ke 'Hotel'/'Vila' kalau mau
+    jenis = kamar_dipilih["tipe"]
+    # sementara pakai ID kamar sebagai nomor kamar
+    kode_kamar = str(kamar_dipilih["id"])
 
     harga_permalam = str(kamar_dipilih["harga"])
     total = int(lama_menginap) * int(harga_permalam)
@@ -662,12 +680,10 @@ def booking_with_mitraId(mitraId):
     # update status kamar jadi tidak
     update_status_kamar(kamar_dipilih["id"], "booking")
 
-
     print("\nPemesanan berhasil dibuat!\n")
     print("Silahkan lakukan pembayaran untuk melakukan pemesanan penginapan.")
     bayar_pesanan_user(bayarId)
     print("kode pembayaran anda adalah: ", bayarId)
-
 
 
 def read_data(data):
@@ -685,7 +701,7 @@ def read_data(data):
                 print(f"Nama Penyewa   : {c['nama']}")
         print(f"Jenis          : {d['jenis']}")
         for p in penginapan_list:
-            if p['id'] == penginapanId:
+            if p['penginapanId'] == penginapanId:
                 print(f"Nama Properti  : {p['namaPenginapan']}")
         print(f"kodeKamar      : {d['kode_kamar']}")
         print(f"Tanggal Mulai  : {d['tanggal_mulai']}")
@@ -699,16 +715,15 @@ def read_data(data):
                 print("kode pembayaran : ", b["idBayar"])
                 print("Status Pembayaran : ", b["status"])
         print("-" * 30)
-       
 
-       
+
 def read_data_by_mitraId(mitraId):
     print("\n=== TAMBAH KAMAR ===")
 
     for k in penginapan_list:
         if k["mitraId"] == mitraId:
             penginapanId = k["penginapanId"]
-    
+
     for d in data_sewa:
         if d['penginapanId'] == penginapanId:
             print(f"ID Sewa        : {d['id']}")
@@ -716,7 +731,7 @@ def read_data_by_mitraId(mitraId):
                 print(f"Nama Penyewa   : {c['nama']}")
             print(f"Jenis          : {d['jenis']}")
             for p in penginapan_list:
-                if p['id'] == penginapanId:
+                if p['penginapanId'] == penginapanId:
                     print(f"Nama Properti  : {p['namaPenginapan']}")
             print(f"kodeKamar      : {d['kode_kamar']}")
             print(f"Tanggal Mulai  : {d['tanggal_mulai']}")
@@ -727,41 +742,61 @@ def read_data_by_mitraId(mitraId):
             print(f"Status         : {d['status']}")
             for b in pembayaran_data:
                 if b['sewaId'] == d["id"]:
+                    print("kode pembayaran : ", b["idBayar"])
                     print("Status Pembayaran : ", b["status"])
         print("-" * 30)
+
 
 def read_data_for_customer(customerId):
     print("\n === DAFTAR PEMESANAN PENGINAPAN ANDA ===")
 
     priority = {"booking", "check-in", "check-out"}
-
-
-
-    data_sewa.sort(key=lambda x: x["status"] in priority)
+    # Sorting
+    # Tambah reverse=True agar prioritas di atas
+    data_sewa.sort(key=lambda x: x["status"] in priority, reverse=True)
 
     for d in data_sewa:
         if d['penyewa'] == customerId:
-            customerId = d['penyewa']
-            penginapanId = d['penginapanId']
+            # Simpan ID ke variabel biar gampang
+            current_sewaId = d['id']
+            current_penginapanId = d['penginapanId']
+
             print(f"ID Sewa        : {d['id']}")
+
+            # Cari Nama Customer
             for c in customer:
                 if c['id'] == customerId:
                     print(f"Nama Penyewa   : {c['nama']}")
+
             print(f"Jenis          : {d['jenis']}")
+
+            # Cari Nama Penginapan (Gunakan str() biar aman)
             for p in penginapan_list:
-                if p['id'] == penginapanId:
+                if str(p['penginapanId']) == str(current_penginapanId):
                     print(f"Nama Properti  : {p['namaPenginapan']}")
+
             print(f"kodeKamar      : {d['kode_kamar']}")
             print(f"Tanggal Mulai  : {d['tanggal_mulai']}")
-            # print(f"Nomor Kamar    : {d['nomor_kamar']}")
             print(f"Lama Menginap  : {d['lama_menginap']} hari")
             print(f"Harga/Malam    : Rp {d['harga_permalam']}")
             print(f"Total Harga    : Rp {d['total']}")
             print(f"Status         : {d['status']}")
+
+            # Cari Data Pembayaran
+            found_payment = False
             for b in pembayaran_data:
-                if b['sewaId'] == d["id"]:
-                    print("Status Pembayaran : ", b["status"])
+                # Bandingkan ID sewa
+                if b['sewaId'] == current_sewaId:
+                    print(f"Kode Pembayaran: {b['idBayar']}")
+                    print(f"Status Bayar   : {b['status']}")
+                    found_payment = True
+
+            if not found_payment:
+                print("Status Bayar   : Data pembayaran tidak ditemukan")
+
             print("-" * 30)
+
+
 def read_data_by_id(idSewa):
     for d in data_sewa:
         if d['id'] == idSewa:
@@ -773,7 +808,7 @@ def read_data_by_id(idSewa):
                     print(f"Nama Penyewa   : {c['nama']}")
             print(f"Jenis          : {d['jenis']}")
             for p in penginapan_list:
-                if p['id'] == penginapanId:
+                if p['penginapanId'] == penginapanId:
                     print(f"Nama Properti  : {p['namaPenginapan']}")
             print(f"kodeKamar      : {d['kode_kamar']}")
             print(f"Tanggal Mulai  : {d['tanggal_mulai']}")
@@ -784,7 +819,9 @@ def read_data_by_id(idSewa):
             print(f"Status         : {d['status']}")
             for b in pembayaran_data:
                 if b['sewaId'] == d["id"]:
+                    print("kode pembayaran : ", b["idBayar"])
                     print("Status Pembayaran : ", b["status"])
+
 
 def update_status():
     print("\n=== UPDATE STATUS ===")
@@ -801,8 +838,6 @@ def update_status():
             print("silahkan masukkan kembali no id customer")
         else:
             print("opsi tidak valid silahkan ulangi dari masukkan id customer")
-        
-
 
     for d in data_sewa:
         if d["id"] == idSewa:
@@ -838,20 +873,22 @@ def update_status():
 
     print("ID tidak ditemukan.\n")
 
+
 def check_in(mitraId):
     print("\n=== CHECK-IN ===")
 
     for p in penginapan_list:
         if p['mitraId'] == mitraId:
             penginapanId = p['penginapanId']
-    
+
     idSewa = input("Masukkan ID sewa: ")
-    
+
     for s in data_sewa:
         if s['id'] == idSewa and s['penginapanId'] == penginapanId:
             s['status'] = "Check-in"
-    
+
     save_data_sewa()
+
 
 def check_out(mitraId):
     print("\n=== CHECK-IN ===")
@@ -859,15 +896,14 @@ def check_out(mitraId):
     for p in penginapan_list:
         if p['mitraId'] == mitraId:
             penginapanId = p['penginapanId']
-    
+
     idSewa = input("Masukkan ID sewa: ")
-    
+
     for s in data_sewa:
         if s['id'] == idSewa and s['penginapanId'] == penginapanId:
             s['status'] = "Check-out"
-    
-    save_data_sewa()
 
+    save_data_sewa()
 
 
 def delete_data(data):
@@ -937,10 +973,9 @@ def search_data(data):
 
 #     if pilihan == "1":
 #         data.sort(key=lambda x: x["penyewa"].lower())
-                
+
 
 # ===== FITUR UTAMA (Booking & Menu) =====
-
 
 def bookingCustomer(customerId):
     print("\n=== BOOKING PENGINAPAN ===")
@@ -954,7 +989,12 @@ def bookingCustomer(customerId):
         print(f"{nomor}. {p['namaPenginapan']}")
         nomor = nomor + 1
 
-    pilih_p = int(input("Pilih nomor penginapan: ")) - 1
+    try:
+        pilih_p = int(input("Pilih nomor penginapan: ")) - 1
+    except ValueError:
+        print("Input harus angka.")
+        return
+
     if pilih_p < 0 or pilih_p >= len(penginapan_list):
         print("Pilihan salah.")
         return
@@ -978,23 +1018,43 @@ def bookingCustomer(customerId):
         print(f"{nomor}. {k['nama']} ({k['tipe']}) - Rp {k['harga']}")
         nomor = nomor + 1
 
-    pilih_k = int(input("Pilih nomor kamar: ")) - 1
+    try:
+        pilih_k = int(input("Pilih nomor kamar: ")) - 1
+    except ValueError:
+        print("Input harus angka.")
+        return
+
     if pilih_k < 0 or pilih_k >= len(kamar_tersedia):
+        print("Pilihan salah.")
         return
 
     kamar_fix = kamar_tersedia[pilih_k]
 
     tgl = input("Tanggal Menginap (YYYY-MM-DD): ")
     lama = input("Lama Menginap (hari): ")
+    if not lama.isdigit():
+        print("Lama menginap harus angka.")
+        return
 
+    # Hitung total dan ID
     total_harga = int(lama) * int(kamar_fix['harga'])
-    id_baru = generate_id_sewa()
+    id_baru = generate_id_sewa() # Disini id_baru dibuat
+
+    print(f"\n>>> Total Harga: Rp {total_harga}")
+
+    # ==========================================================
+    # BAGIAN INI YANG HILANG DI KODINGAN KAMU SEBELUMNYA!
+    # Kita harus buat data pembayarannya dulu
+    # ==========================================================
+    bayarId = create_pembayaran(id_baru, total_harga) 
+    # ==========================================================
 
     # Simpan data booking baru
     data_baru = {
         "id": id_baru,
         "penyewa": customerId,
         "jenis": kamar_fix['tipe'],
+        "penginapanId": id_penginapan,
         "nama_properti": kamar_fix['nama'],
         "kode_kamar": str(kamar_fix['id']),
         "tanggal_mulai": tgl,
@@ -1010,7 +1070,8 @@ def bookingCustomer(customerId):
     # Update status kamar
     update_status_kamar(kamar_fix['id'], "booking")
 
-    print("\n>>> Booking Berhasil! Silakan masuk menu Pembayaran.")
+    print(f"\n>>> Booking Berhasil! Kode Pembayaran Anda: {bayarId}")
+    print("Silakan masuk menu Pembayaran.")
 
 
 def read_data_user(customerId):
@@ -1040,7 +1101,7 @@ def pindah_ruangan():
     if sewa is None:
         print("ID sewa tidak ditemukan.")
         return
-    
+
     # validasi status
     if sewa["status"] not in ["Booking", "Check-in"]:
         print("Pindah ruangan hanya bisa saat Booking atau Check-in.")
@@ -1052,18 +1113,18 @@ def pindah_ruangan():
     print("\nKamar Saat Ini:", kamar_lama)
 
     # cari kamar tersedia di penginapan yang sama
-    kamar_tersedia = [] 
-    for k in kamar_list: 
-        if ( 
-            k["penginapan_id"] == penginapanId and 
-            k["status"] == "tersedia" 
-        ): 
+    kamar_tersedia = []
+    for k in kamar_list:
+        if (
+            k["penginapan_id"] == penginapanId and
+            k["status"] == "tersedia"
+        ):
             kamar_tersedia.append(k)
-            
+
     if not kamar_tersedia:
         print("Tidak ada kamar lain yang tersedia.")
         return
-    
+
     # kamar tersedia
     print("\n=== DAFTAR KAMAR TERSEDIA ===")
     for i, k in enumerate(kamar_tersedia):
@@ -1100,8 +1161,9 @@ def pindah_ruangan():
 
 
 def userMenu(customerId):
-    load_data()
     while True:
+        load_data()
+
         print("\n=== MENU USER PENGINAPAN ===")
         print("1. Booking Kamar")
         print("2. Lihat Riwayat")
@@ -1121,10 +1183,9 @@ def userMenu(customerId):
             print("Pilihan salah.")
 
 
-
 def main():
-# Materi: Perulangan While
-    
+    # Materi: Perulangan While
+
     data = data_sewa
     # data = load_data()
     while True:
@@ -1152,7 +1213,7 @@ def main():
         # elif pilihan == "6":
         #     sort_data(data)
         elif pilihan == "7":
-                pindah_ruangan(data)
+            pindah_ruangan(data)
         elif pilihan == "8":
             print("Terima kasih telah menggunakan Navica.")
             break
@@ -1161,6 +1222,7 @@ def main():
     # Menampilkan semua data sewa (Admin)
     for d in data_sewa:
         print(d)
+
 
 load_data()
 if __name__ == "__main__":

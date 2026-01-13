@@ -1,0 +1,2 @@
+PAY-T001|NAV-T001|-|3500000|-|belum bayar
+PAY-T002|NAV-T002|Transfer Bank|3500000|2026-01-13|Lunas

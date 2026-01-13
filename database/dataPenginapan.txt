@@ -1,2 +1,3 @@
-P001|MTR001|villa bandung|jalan cibiru hilir|456785678
-P002|MTR002|kosan rifa|jalan rifa|546789
+P001|M001|villa bandung|Jl Dago|081234
+P002|M001|kosan rifa|Jl Tubagus|081235
+P003|M001|kosan roni|Jl Merdeka|081236

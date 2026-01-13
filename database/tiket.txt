@@ -1,0 +1,4 @@
+T001|M001|Konser Coldplay|3500000|Hiburan|Jakarta|Jakarta
+T002|M001|Kereta Argo Parahyangan|150000|Transportasi|Bandung|Jakarta
+T003|M002|Bus Rosalia Indah|250000|Transportasi|Jakarta|Semarang
+T004|M003|Dufan Ancol|300000|Hiburan|Jakarta|Jakarta

@@ -13,6 +13,7 @@ file_datas_tiket = []
 data_pembayaran = []
 tiket = []
 
+
 def load_data():
     with open(FILE_CUSTOMER, 'r') as f:
         for line in f:
@@ -27,12 +28,12 @@ def load_data():
                 })
             else:
                 print("Format data customer tidak valid:", line.strip())
-    
+
     with open(FILE_DATA_TIKET):
         with open(FILE_DATA_TIKET, 'r') as f:
             for line in f:
                 bagian = line.strip().split("|")
-                if len(bagian) == 4:
+                if len(bagian) == 5:
                     file_datas_tiket.append({
                         "pembelianId": bagian[0],
                         "idCustomer": bagian[1],
@@ -72,11 +73,9 @@ def load_data():
                 })
 
 
-
-
-
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
+
 
 def input_tanggal():
     while True:
@@ -88,7 +87,9 @@ def input_tanggal():
             except ValueError:
                 print("❌ Tanggal tidak valid! (contoh: 2024-12-31)")
         else:
-            print("❌ Format tanggal salah! Gunakan format YYYY-MM-DD (contoh: 2024-12-31)")
+            print(
+                "❌ Format tanggal salah! Gunakan format YYYY-MM-DD (contoh: 2024-12-31)")
+
 
 def input_harga():
     while True:
@@ -97,6 +98,7 @@ def input_harga():
             return harga
         print("❌ Harga hanya boleh ANGKA dan harus lebih dari 0!")
 
+
 def input_jenis():
     while True:
         jenis = input("Jenis (Transportasi/Hiburan): ").strip().lower()
@@ -104,10 +106,12 @@ def input_jenis():
             return jenis.capitalize()
         print("❌ Jenis hanya boleh 'Transportasi' atau 'Hiburan'!")
 
+
 def input_id(mitraId):
     for i, t in enumerate(tiket):
         if t['mitraId'] == mitraId:
-            print(f"{i+1} - {t['idTiket']} - {t['jenis']} - {t['asal']} - {t['tujuan']} - {t['harga']}")
+            print(
+                f"{i+1} - {t['idTiket']} - {t['jenis']} - {t['asal']} - {t['tujuan']} - {t['harga']}")
 
     while True:
         id_tiket = input("ID Tiket: ").strip()
@@ -118,22 +122,26 @@ def input_id(mitraId):
 
 def generateId():
     jumlah = len(file_datas_tiket) + 1
-    return  "NAV-T"+str(jumlah).zfill(3)
-    
+    return "NAV-T"+str(jumlah).zfill(3)
+
+
 def input_customer():
     for i, c in enumerate(customers):
-        print(f"{i+1} - {c['idCustomer']} - {c['nama']} - {c['alamat']} - {c['noTelepon']}")
+        print(
+            f"{i+1} - {c['idCustomer']} - {c['nama']} - {c['alamat']} - {c['noTelepon']}")
 
     selected = int(input("Pilih customer: ")) - 1
     return customers[selected]
 
+
 def input_tiket():
     for i, t in enumerate(tiket):
-        print(f"{i+1} - {t['idTiket']} - {t['jenis']} - {t['asal']} - {t['tujuan']} - {t['harga']}")
+        print(
+            f"{i+1} - {t['idTiket']} - {t['jenis']} - {t['asal']} - {t['tujuan']} - {t['harga']}")
 
     selected = int(input("Pilih tiket: ")) - 1
     return tiket[selected]
-    
+
 
 def input_text(prompt):
     while True:
@@ -142,75 +150,94 @@ def input_text(prompt):
             return text
         print(f"❌ {prompt.split(':')[0]} tidak boleh kosong!")
 
+
 def is_header(line):
     return line.strip() == "ID|Jenis|Nama|Asal|Tujuan|Tanggal|Harga|Status"
 
+
 def create_pembayaran(pembelianId, total):
+    # 1. Hitung ID Baru
     jumlah = 0
-    with open(FILE_PEMBAYARAN, 'r') as f:
-        jumlah = len(f.readlines())
+    # Cek file ada/tidak untuk menghitung baris
+    if os.path.exists(FILE_PEMBAYARAN):
+        with open(FILE_PEMBAYARAN, 'r') as f:
+            jumlah = len(f.readlines())
+
     idBayar = "PAY-T" + str(jumlah + 1).zfill(3)
     status = "belum bayar"
 
+    # 2. Simpan ke File (Harddisk)
     with open(FILE_PEMBAYARAN, "a") as f:
         f.write(f"{idBayar}|{pembelianId}|-|{total}|-|{status}\n")
+
+    # 3. [PENTING] Simpan ke Memori (RAM)
+    # Ini yang bikin pembayaran langsung bisa terdeteksi tanpa restart!
+    data_pembayaran.append({
+        "idBayar": idBayar,
+        "sewaId": pembelianId,
+        "metode": "-",
+        "total": str(total),
+        "tanggal": "-",
+        "status": status
+    })
+
     return idBayar
 
+
 def simpan_ke_pembayaran_db(id_bayar, metode, status):
-    tgl_sekarang = str(datetime.date.today().strftime("%Y-%m-%d"))
-    
+    # PERBAIKAN DI SINI: Gunakan .now() langsung
+    tgl_sekarang = datetime.now().strftime("%Y-%m-%d")
+
     for p in data_pembayaran:
         if p["idBayar"] == id_bayar:
             p["metode"] = metode
             p["tanggal"] = tgl_sekarang
             p["status"] = status
             break
-    # Simpan data
+
+    # Simpan data (Rewrite Mode)
     with open(FILE_PEMBAYARAN, "w") as f:
         for p in data_pembayaran:
-            f.write(f"{p['idBayar']}|{p['sewaId']}|{p['metode']}|{p['total']}|{p['tanggal']}|{p['status']}\n")
+            f.write(
+                f"{p['idBayar']}|{p['sewaId']}|{p['metode']}|{p['total']}|{p['tanggal']}|{p['status']}\n")
 
-    
+
 def bayar_pesanan_user(idBayar):
-    print("\n=== PEMBAYARAN TIKET===")
+    print("\n=== PEMBAYARAN TIKET ===")
     if idBayar == None:
         bayarId = input("Masukkan kode pembayaran Anda: ")
     else:
         bayarId = idBayar
 
+    found = False  # Penanda
     for p in data_pembayaran:
         if p["idBayar"] == bayarId:
+            found = True
             if p["status"] == "belum bayar":
                 print(f"\nTotal Bayar: Rp {p['total']}")
-                print("Metode Pembayaran:")
-                print("1. Transfer Bank")
-                print("2. E-Wallet")
+                print("Metode Pembayaran: 1. Transfer Bank | 2. E-Wallet")
 
                 metode_in = input("Pilih: ")
-                metode = "Cash"
-                if metode_in == "1":
-                    metode = "Transfer Bank"
-                elif metode_in == "2":
-                    metode = "E-Wallet"
+                metode = "Transfer Bank" if metode_in == "1" else "E-Wallet"
 
                 yakin = input("Bayar sekarang? (y/n): ").lower()
                 if yakin == "y":
                     simpan_ke_pembayaran_db(bayarId, metode, "Lunas")
                     print("Pembayaran Berhasil!")
-
                 else:
                     print("Pembayaran dibatalkan.")
-                    break
-
             else:
-                print("Pembayaran sudah lunas.")
-                break
-        
+                print("Kode pembayaran ini sudah Lunas.")
+            break  # Keluar loop setelah ketemu
+
+    # Pesan jika kode typo/tidak ada
+    if not found:
+        print("❌ Kode pembayaran tidak ditemukan. Cek kembali input Anda.")
+
 
 def pesan_tiket(mitraId):
     print("\n=== TAMBAH TIKET BARU ===")
     pembelianId = generateId()
-
 
     # nama = input_text("Nama: ")
     customerId = input_customer()
@@ -233,41 +260,53 @@ def pesan_tiket(mitraId):
     bayar_pesanan_user(bayarId)
     print("kode pembayaran anda adalah: ", bayarId)
     input("\nTekan Enter untuk melanjutkan...")
-    
+
 
 def pesan_tiket_by_customer(customerId):
     print("\n=== TAMBAH TIKET BARU ===")
     pembelianId = generateId()
 
+    # 1. Ambil Data Tiket
+    # tiket_data adalah Dictionary (Contoh: {'idTiket': 'T001', 'harga': '350000', ...})
+    tiket_data = input_tiket()
 
-    # nama = input_text("Nama: ")
-    tiket = input_tiket()
     tanggal = input_tanggal()
 
-    for t in tiket:
-        if t["idTiket"] == tiket:
-            harga = t["harga"]
-            break
+    # 2. PERBAIKAN: Ambil harga langsung dari Dictionary (GAK PERLU LOOPING)
+    harga = tiket_data["harga"]
+    id_tiket_pilihan = tiket_data["idTiket"]
 
+    # 3. Buat Pembayaran
     bayarId = create_pembayaran(pembelianId, harga)
+    status = "daftar"
 
-    
-    status = "daftar"  # Auto-fill status
+    # 4. Simpan ke Memori RAM (PENTING: Biar ID selanjutnya nambah otomatis)
+    file_datas_tiket.append({
+        "pembelianId": pembelianId,
+        "idCustomer": customerId,
+        "tiketId": id_tiket_pilihan,
+        "tanggal": tanggal,
+        "status": status
+    })
 
-    with open("dataTiket.txt", "a") as file:
-        data = f"{pembelianId}|{customerId}|{tiket}|{tanggal}|{status}\n"
+    # 5. Simpan ke File Database
+    # Gunakan variabel FILE_DATA_TIKET biar path-nya aman
+    with open(FILE_DATA_TIKET, "a") as file:
+        # Pastikan yang disimpan adalah ID Tiket (String), BUKAN Dictionary utuh
+        data = f"{pembelianId}|{customerId}|{id_tiket_pilihan}|{tanggal}|{status}\n"
         file.write(data)
 
-    print(f"✅ Tiket berhasil ditambahkan dengan status: {status}")
+    print(f"Tiket berhasil ditambahkan dengan status: {status}")
     bayar_pesanan_user(bayarId)
     print("kode pembayaran anda adalah: ", bayarId)
     input("\nTekan Enter untuk melanjutkan...")
+
 
 def lihat_tiket():
     try:
         with open("dataTiket.txt", "r") as file:
             lines = file.readlines()
-            
+
         if not lines:
             print("📋 Data tiket masih kosong")
         else:
@@ -275,11 +314,11 @@ def lihat_tiket():
             ada_data = False
             for line in lines:
                 line = line.strip()
-                
+
                 # Skip header dan baris kosong
                 if not line or is_header(line):
                     continue
-                    
+
                 if '|' in line:
                     data = line.split("|")
                     if len(data) == 5:  # Update: sekarang 8 kolom (dengan Status)
@@ -303,16 +342,18 @@ def lihat_tiket():
                                     print(f"kode pembayaran: {b['idBayar']}")
                                     print(f"status pembayaran: {b['status']}")
                         except ValueError:
-                            print(f"⚠️  Data rusak ditemukan, baris dilewati: {line[:50]}...")
+                            print(
+                                f"⚠️  Data rusak ditemukan, baris dilewati: {line[:50]}...")
                             continue
-            
+
             if not ada_data:
                 print("📋 Tidak ada data tiket yang valid")
-                
+
     except FileNotFoundError:
         print("📋 Data tiket belum ada")
-    
+
     input("\nTekan Enter untuk melanjutkan...")
+
 
 def lihat_tiket_by_mitraId(mitraId):
     for t in tiket:
@@ -321,7 +362,7 @@ def lihat_tiket_by_mitraId(mitraId):
     try:
         with open("dataTiket.txt", "r") as file:
             lines = file.readlines()
-            
+
         if not lines:
             print("📋 Data tiket masih kosong")
         else:
@@ -329,12 +370,11 @@ def lihat_tiket_by_mitraId(mitraId):
             ada_data = False
             for line in lines:
                 line = line.strip()
-                
-                
+
                 # Skip header dan baris kosong
                 if not line or is_header(line):
                     continue
-                    
+
                 if '|' in line:
                     data = line.split("|")
                     if data[2] == tiketId:
@@ -356,73 +396,104 @@ def lihat_tiket_by_mitraId(mitraId):
                                 print(f"status: {status_emoji} {data[7]}")
                                 for b in data_pembayaran:
                                     if b['idBayar'] == data[5]:
-                                        print(f"kode pembayaran: {b['idBayar']}")
-                                        print(f"status pembayaran: {b['status']}")
+                                        print(
+                                            f"kode pembayaran: {b['idBayar']}")
+                                        print(
+                                            f"status pembayaran: {b['status']}")
                             except ValueError:
-                                print(f"⚠️  Data rusak ditemukan, baris dilewati: {line[:50]}...")
+                                print(
+                                    f"⚠️  Data rusak ditemukan, baris dilewati: {line[:50]}...")
                                 continue
-            
+
             if not ada_data:
                 print("📋 Tidak ada data tiket yang valid")
-                
+
     except FileNotFoundError:
         print("📋 Data tiket belum ada")
-    
+
     input("\nTekan Enter untuk melanjutkan...")
 
+
 def lihat_tiket_by_customerId(customerId):
+    print("\n=== DAFTAR TIKET ANDA ===")
+
+    # [1] Perbaikan Path File (Gunakan variabel Global biar aman)
+    if not os.path.exists(FILE_DATA_TIKET):
+        print("📋 Belum ada riwayat pembelian tiket.")
+        return
+
     try:
-        with open("dataTiket.txt", "r") as file:
+        with open(FILE_DATA_TIKET, "r") as file:
             lines = file.readlines()
-            
-        if not lines:
-            print("📋 Data tiket masih kosong")
-        else:
-            print("\n=== DAFTAR TIKET ===")
-            ada_data = False
-            for line in lines:
-                line = line.strip()
-                
-                
-                # Skip header dan baris kosong
-                if not line or is_header(line):
-                    continue
-                    
-                if '|' in line:
-                    data = line.split("|")
-                    if data[1] == customerId:
-                        if len(data) == 5:  # Update: sekarang 8 kolom (dengan Status)
-                            try:
-                                ada_data = True
-                                # Emoji untuk status
-                                status_emoji = "✅" if data[7] == "Sudah Terpakai" else "🎫"
-                                print(f"Id: {data[0]}")
-                                for c in customers:
-                                    if c['idCustomer'] == data[1]:
-                                        print(f"nama: {c['nama']}")
-                                for t in tiket:
-                                    if t['idTiket'] == data[2]:
-                                        print(f"nama Tiket: {t['namaTiket']}")
-                                        print(f"harga: {t['harga']}")
-                                        print(f"jenis Tiket : {t['jenis']}")
-                                print(f"tanggal: {data[3]}")
-                                print(f"status: {status_emoji} {data[7]}")
-                            except ValueError:
-                                print(f"⚠️  Data rusak ditemukan, baris dilewati: {line[:50]}...")
-                                continue
-            
-            if not ada_data:
-                print("📋 Tidak ada data tiket yang valid")
-                
-    except FileNotFoundError:
-        print("📋 Data tiket belum ada")
-    
+
+        ada_data = False
+        for line in lines:
+            line = line.strip()
+
+            # Validasi baris data
+            if not line or is_header(line):
+                continue
+
+            if '|' in line:
+                data = line.split("|")
+
+                # Filter data milik customer yang login
+                if data[1] == customerId:
+                    # [2] Perbaikan Logika Indexing (Sesuai format 5 kolom)
+                    # Format: ID|CustID|TiketID|Tanggal|Status
+                    if len(data) >= 5:
+                        ada_data = True
+                        pembelianId = data[0]
+                        tiketId = data[2]
+                        tanggal = data[3]
+                        status_tiket = data[4]
+
+                        print(f"ID Pembelian   : {pembelianId}")
+                        print(f"Tanggal Booking: {tanggal}")
+
+                        # Cari Detail Tiket (Nama, Harga, dll)
+                        found_tiket = False
+                        for t in tiket:
+                            if t['idTiket'] == tiketId:
+                                print(f"Nama Tiket     : {t['namaTiket']}")
+                                print(f"Jenis          : {t['jenis']}")
+                                print(
+                                    f"Rute           : {t['asal']} -> {t['tujuan']}")
+                                print(
+                                    f"Harga          : Rp {int(t['harga']):,}")
+                                found_tiket = True
+                                break
+                        if not found_tiket:
+                            print(
+                                f"Nama Tiket     : Data tiket {tiketId} tidak ditemukan (mungkin dihapus)")
+
+                        print(f"Status Tiket   : {status_tiket}")
+
+                        # Cari Status Pembayaran
+                        # Mencocokkan 'sewaId' di pembayaran dengan 'pembelianId' di tiket
+                        status_bayar = "Belum Bayar/Tidak Ditemukan"
+                        for b in data_pembayaran:
+                            if b['sewaId'] == pembelianId:
+                                status_bayar = b['status']
+                                break
+
+                        print(f"Status Bayar   : {status_bayar}")
+                        print("-" * 35)
+
+        if not ada_data:
+            print("📋 Anda belum pernah memesan tiket.")
+
+    except Exception as e:
+        print(f"Terjadi kesalahan: {e}")
+
     input("\nTekan Enter untuk melanjutkan...")
+
 
 def update_tiket(mitraId):
     print("\n=== UPDATE SCHEDULE (TANGGAL SAJA) ===")
     lihat_tiket_by_mitraId(mitraId)
-    id_cari = input("Masukkan ID Tiket yang ingin diupdate tanggalnya: ").strip()
+    id_cari = input(
+        "Masukkan ID Tiket yang ingin diupdate tanggalnya: ").strip()
 
     try:
         with open("dataTiket.txt", "r") as file:
@@ -457,6 +528,7 @@ def update_tiket(mitraId):
         print(f"❌ Tiket dengan ID '{id_cari}' tidak ditemukan")
 
     input("\nTekan Enter untuk melanjutkan...")
+
 
 def verifikasi_tiket(mitraId):
     print("\n=== VERIFIKASI TIKET ===")
@@ -539,6 +611,7 @@ Status   : {tiket_info[7]}
     print("✅ Tiket berhasil diverifikasi! Status diubah menjadi 'Sudah Terpakai'")
     input("\nTekan Enter untuk melanjutkan...")
 
+
 def hapus_tiket():
     print("\n=== HAPUS TIKET ===")
     id_cari = input("Masukkan ID Tiket yang ingin dihapus: ").strip()
@@ -555,12 +628,12 @@ def hapus_tiket():
     with open("dataTiket.txt", "w") as file:
         for line in lines:
             line_stripped = line.strip()
-            
+
             # Tulis ulang header jika ada
             if is_header(line_stripped):
                 file.write(line)
                 continue
-                
+
             if line_stripped and '|' in line_stripped:
                 data = line_stripped.split("|")
                 if len(data) >= 1 and data[0] == id_cari:
@@ -572,7 +645,7 @@ def hapus_tiket():
         print("✅ Tiket berhasil dihapus!")
     else:
         print(f"❌ Tiket dengan ID '{id_cari}' tidak ditemukan")
-    
+
     input("\nTekan Enter untuk melanjutkan...")
 
 # def bersihkan_data():
@@ -580,19 +653,19 @@ def hapus_tiket():
 #     try:
 #         with open("dataTiket.txt", "r") as file:
 #             lines = file.readlines()
-        
+
 #         data_valid = []
 #         data_rusak = 0
 #         has_header = False
-        
+
 #         for line in lines:
 #             line_stripped = line.strip()
-            
+
 #             # Simpan header jika ada
 #             if is_header(line_stripped):
 #                 has_header = True
 #                 continue
-                
+
 #             if line_stripped and '|' in line_stripped:
 #                 data = line_stripped.split("|")
 #                 if len(data) == 8:  # Update: sekarang harus 8 kolom
@@ -607,20 +680,20 @@ def hapus_tiket():
 #                         data_rusak += 1
 #                 else:
 #                     data_rusak += 1
-        
+
 #         # Tulis ulang tanpa header
 #         with open("dataTiket.txt", "w") as file:
 #             file.writelines(data_valid)
-        
+
 #         print(f"✅ Pembersihan selesai!")
 #         if has_header:
 #             print(f"   Header dihapus: 1")
 #         print(f"   Data valid: {len(data_valid)}")
 #         print(f"   Data rusak dihapus: {data_rusak}")
-        
+
 #     except FileNotFoundError:
 #         print("❌ File data tidak ditemukan")
-    
+
 #     input("\nTekan Enter untuk melanjutkan...")
 
 # # Program Utama
@@ -661,7 +734,9 @@ def hapus_tiket():
 #         print("❌ Pilihan tidak valid! Pilih angka 1-7")
 #         input("\nTekan Enter untuk melanjutkan...")
 
+
 load_data()
+
 
 def menu_customer(customerId):
     while True:
@@ -672,7 +747,7 @@ def menu_customer(customerId):
         print("0. Keluar")
         pilihan = input("Pilih menu (0-2): ")
         if pilihan == "1":
-            pesan_tiket(customerId)
+            pesan_tiket_by_customer(customerId)
         elif pilihan == "2":
             lihat_tiket_by_customerId(customerId)
         elif pilihan == '3':

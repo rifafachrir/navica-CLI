@@ -1,2 +1,4 @@
-vb-01|villa Bandung|luxury|10000000|2|tersedia
-vb-01|Villa Batoe|luxury|2000000|1|tidak
+K01|P001|Kamar Sultan|Luxury|1000000|2|booking
+K02|P001|Kamar Melati|Standard|500000|1|tersedia
+K03|P002|Kamar Anggrek|Standard|300000|1|tersedia
+K04|P003|Kamar Mawar|Vip|700000|2|tersedia
