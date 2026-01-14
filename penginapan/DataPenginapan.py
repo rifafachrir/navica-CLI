@@ -67,11 +67,16 @@ def tambah_penginapan():
         noTelp = m['telepon']
     pemilik = input("Masukkan Id pemilik: ")
     found = False
+    print(pemilik)
+    print(type(pemilik))
     for m in mitra_list:
         if m["id"] == pemilik:
+            print("Pemilik ditemukan:", m["nama"])
+            print("type pemilikId:", type(m["id"]))
             pemilik = m["id"]
             found = True
             break
+        continue
     
     if found != True:
         print("ID Pemilik tidak ditemukan. Penginapan tidak dapat ditambahkan.\n")

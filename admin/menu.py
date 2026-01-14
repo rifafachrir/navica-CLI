@@ -1,9 +1,8 @@
 # import kelolaCustomer as kelolaCustomer
 from . import kelolaCustomer
 import kendaraan.pemilikKendaraan as kendaraan
-import penginapan.SewaPenginapan as sewa
-import penginapan.DataKamarPenginapan as dataKamar
-import penginapan.DataPenginapan as dataPenginapan
+import kendaraan.menuAdmin as kendaraan
+import penginapan.menuAdmin as penginapan
 import komunitas.komunitas as komunitas
 import admin.authentication as auth
 import mitra.dataMitra as mitra
@@ -13,7 +12,7 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
-def mainMenu(selected_user_id):
+def mainMenu():
     print("=== Selamat Datang di Navica (Alpha 1.0) ===")
 
     while True:
@@ -40,10 +39,10 @@ def mainMenu(selected_user_id):
             mitra.main()
 
         elif pilihan == "4":
-            dataPenginapan.menu()
+            penginapan.menu_penginapan_admin()
 
         elif pilihan == "5":
-            kendaraan.menuAdmin()
+            kendaraan.menu_pemilik_kendaraan()
 
         elif pilihan == "6":
             komunitas.CommunityMenu()

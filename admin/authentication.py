@@ -56,7 +56,7 @@ def loadData():
                         "noTelepon": bagian[4]
                     })
                 else:
-                    print("Format data vudyomrt tidak valid: ", line.strip())
+                    print("Format data customer tidak valid: ", line.strip())
 
 
 def authentication(email, password):
@@ -84,7 +84,7 @@ def authentication(email, password):
                         tiketMenu.menu_tiket(selected_user_id)
                     elif i['role'] == 'admin':
                         # tiketMenu.menu_tiket(selected_user_id)
-                        adminMenu.mainMenu(selected_user_id)
+                        adminMenu.mainMenu()
                     return True
 
                 else:
@@ -165,7 +165,7 @@ def all_register():
         return
 
     password = input("Masukkan password baru: ").strip()
-    if password == "":
+    if password == None:
         print("Password tidak boleh kosong!")
         return
 
@@ -216,11 +216,14 @@ def listUser():
 
 
 def searchUserByEmail(email):
+    found = False
     for i in user:
         if i['email'] == email:
+            found = True
             print("User ditemukan:")
             print(f"UserID: {i['userId']}, Email: {i['email']}, Role: {i['role']}")
-    print("User dengan email tersebut tidak ditemukan.")
+    if found == False:    
+        print("User dengan email tersebut tidak ditemukan.")
     return None
 
 
@@ -245,13 +248,13 @@ def input_password():
 
         if pilihan == "1":
             password = getpass.getpass("Masukkan password: ")
-            while not password:
+            while password == None:
                 print("Password tidak boleh kosong!")
                 password = input_password()
             return password
         elif pilihan == "2":
             password = input("Masukkan password: ")
-            while not password:
+            while password == None:
                 print("Password tidak boleh kosong!")
                 password = input_password()
 
@@ -287,6 +290,7 @@ def forget_password():
 
 
 def start_authentication():
+    loadData()
     while True:
         choice = input(
             "\nPilih opsi:\n"
@@ -313,6 +317,5 @@ def start_authentication():
             print("Opsi tidak valid. Silakan coba lagi.")
 
 
-loadData()
 if __name__ == "__main__":
     start_authentication()

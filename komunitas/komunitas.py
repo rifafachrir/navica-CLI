@@ -175,7 +175,7 @@ def delete_comment_by_admin(postId):
             if not c['comment']:
                 print("Post tidak memiliki komentar.")
                 return
-            c['comments'].remove(c)
+            comments.remove(c)
             with open(FILE_COMMENT, "w") as f:
                 for c in comments:
                     f.write(f"{c['postId']}|{c['comment']}\n")

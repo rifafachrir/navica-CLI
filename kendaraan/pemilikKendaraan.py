@@ -286,7 +286,7 @@ def menuAdmin():
         print("1. Lihat Semua Kendaraan")
         print("2. Edit Kendaraan")
         print("3. Hapus Kendaraan")
-        print("5. Keluar")
+        print("0. Keluar")
 
         pilih = input("Pilih menu: ").strip()
         if pilih == "":
@@ -295,11 +295,11 @@ def menuAdmin():
 
         if pilih == "1":
             lihat_kendaraan()
-        elif pilih == "3":
+        elif pilih == "2":
             edit_kendaraan()
-        elif pilih == "4":
+        elif pilih == "3":
             hapus_kendaraan()
-        elif pilih == "5":
+        elif pilih == "0":
             print("Terima kasih!")
             break
         else:
